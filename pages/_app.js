@@ -1,5 +1,6 @@
 import React from 'react';
 import App from 'next/app';
+import Head from 'next/head'
 import '../css/bootstrap.min.css';
 import css from '../css/styles.less';
 import MainLayout from '../components/layouts/MainLayout'
@@ -12,6 +13,9 @@ class SicuroApp extends App {
         const Layout = Component.Layout || FrontendLayout;
         return (
             <MainLayout>
+                <Head>
+                    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab&display=swap" rel="stylesheet"/>
+                </Head>
                 <Layout>
                     <Component {...pagePros}/>
                 </Layout>
