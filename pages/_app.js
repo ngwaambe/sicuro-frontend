@@ -5,7 +5,7 @@ import '../css/bootstrap.min.css';
 import css from '../css/styles.less';
 import MainLayout from '../components/layouts/MainLayout'
 import FrontendLayout from "../components/layouts/FrontendLayout";
-
+import { appWithTranslation } from "../i18n"
 
 class SicuroApp extends App {
     render() {
@@ -24,4 +24,4 @@ class SicuroApp extends App {
     }
 }
 
-export default SicuroApp;
+export default appWithTranslation(SicuroApp);

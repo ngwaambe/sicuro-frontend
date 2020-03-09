@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "NODE_ENV=production node server.js"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,10 @@
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "css": "^2.2.4",
+    "express": "^4.17.1",
     "less": "^3.11.1",
     "next": "^9.2.2",
+    "next-i18next": "^4.2.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
   }
