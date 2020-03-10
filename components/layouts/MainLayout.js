@@ -1,9 +1,8 @@
 import React from "react"
 import Link from 'next/link'
-import {withTranslation} from "../../i18n";
+import {i18n, withTranslation} from "../../i18n";
 
 class MainLayout extends React.Component {
-
     render() {
         return (
             <div id="wrapper">
@@ -47,7 +46,7 @@ class MainLayout extends React.Component {
                                         <h3 className="title-bar-footer">{this.props.t('menu-service')}</h3>
                                         <ul className="recent-post-link">
                                             <li>
-                                                <Link href="/services/index"><a>{this.props.t('menu-service')}</a></Link>
+                                                <Link href='/services/en/index'><a>{this.props.t('menu-service')}</a></Link>
                                             </li>
                                             <li>
                                                 <Link href="/pricesAndFees"><a>{this.props.t('menu-prices_and_fees')}</a></Link>

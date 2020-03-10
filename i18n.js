@@ -5,6 +5,8 @@ const NextI18NextInstance = new NextI18Next({
     otherLanguages: ['it',"es"]
 })
 export const {
+    Link,
+    i18n,
     appWithTranslation,
     withTranslation,
 } = NextI18NextInstance
