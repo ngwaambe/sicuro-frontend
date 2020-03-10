@@ -19,7 +19,7 @@ const FrontendLayout = props => (
                                 </span>
                         </div>
                         <div>
-                            <form prependId="false">
+                            <form>
                                 <Link href="/index">
                                     <a>Sicuro</a>
                                 </Link>
