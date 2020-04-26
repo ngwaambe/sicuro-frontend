@@ -1,8 +1,14 @@
 import React from "react"
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import {i18n, withTranslation} from "../../i18n";
 
 class MainLayout extends React.Component {
+    constructor({props}) {
+        super(props);
+        //this.router = useRouter()
+    }
+
     render() {
         return (
             <div id="wrapper">
@@ -24,7 +30,7 @@ class MainLayout extends React.Component {
                         </div>
                     </div>
                 </section>
-                <footer className="footer_extra_style">     {/*-- missing class for home --*/}
+                <footer>     {/*-- missing class for home --*/}
                     <div className="footer-area-top">
                         <div className="container">
                             <div className="row">
