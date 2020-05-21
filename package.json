@@ -22,12 +22,21 @@
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
+    "bootstrap": "^4.4.1",
     "css": "^2.2.4",
     "express": "^4.17.1",
-    "less": "^3.11.1",
-    "next": "^9.2.2",
-    "next-i18next": "^4.2.0",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "i18next": "^19.4.4",
+    "jquery": "^1.9.1",
+    "less": "^2.7.3",
+    "next": "^9.3.6",
+    "next-i18next": "link:../../",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "reactstrap": "^8.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.4",
+    "@types/react": "^16.9.34",
+    "typescript": "^3.8.3"
   }
 }

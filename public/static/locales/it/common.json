@@ -47,7 +47,7 @@
   "paymentAcoount": "Conto di pagamento",
   "TransactionStatus-SELELR_INSPECTION_VALIDATED": "periodo di ispezione terminato positivamente. Sicuro.com deve rimborsare l'acquirente (se il pagamento risulta non disponibile, si prega di impostare un account su cui effettuare il pagamento)",
   "MySicuro": "Il mio account",
-  "confirmTransactionModified": "<p>Stai per modificare i termini della transazione.</p> <p>Ti ricordiamo che il tuo partner in questa transazione, dovr\u00E0 a sua volta revisionarli e accettarli prima di continuare la trattativa.</p> <p>Clicca su <b>\"accetta\"</b> per proseguire.</p>",
+  "confirmTransactionModified": "<p>Stai per modificare i termini della transazione.</p> <p>Ti ricordiamo che il tuo partner in questa transazione, dovr\u00E0 a sua volta revisionarli e accettarli prima di continuare la trattativa.</p> <p>Clicca su <strong>\"accetta\"</strong> per proseguire.</p>",
   "country": "Nazione",
   "TransactionStatus-CONFLICT_RESOLUTION_EXCEEDED": "Il venditore non ha dato alcun riscontro entro i 60 giorni stabiliti per trovare un accordo con l'acquirente o iniziare un arbitrato/causa legale. Si desume che il venditore ha deciso di accettare la merce restituita. sicuro.com rimborser\u00E0 l'acquirente (\u00E8 necessario che l'acquirente abbia selezionato un metodo di pagamento valido).",
   "Transaction-notif-subject-confirmedByUsers": "La transazione \u00E8 stata confermata",
@@ -388,7 +388,7 @@
   "menu-administration": "Amministrazione",
   "userName": "Nome utente",
   "document": "Documento",
-  "buyer-confirmGoodsReception-info": "<p>Per favore, assicurati di essere realmente in possesso del dominio (o domini) in oggetto prima di confermare.</p> <p>Se ci confermi di aver ricevuto il dominio, darai anche inizio al periodo di ispezione da te concordato con il venditore.</p> <p>Seleziona <b>\"Conferma ricezione del dominio \"</b> per continuare.</p>",
+  "buyer-confirmGoodsReception-info": "<p>Per favore, assicurati di essere realmente in possesso del dominio (o domini) in oggetto prima di confermare.</p> <p>Se ci confermi di aver ricevuto il dominio, darai anche inizio al periodo di ispezione da te concordato con il venditore.</p> <p>Seleziona <strong>\"Conferma ricezione del dominio \"</strong> per continuare.</p>",
   "changepassword": "Cambia Password",
   "Transaction-action-acceptDomains": "Accetta dominio(i)",
   "Payment-Request-epilog2": "sul conto fiduciario da noi predisposto, entro i prossimi 5 giorni:",
@@ -604,5 +604,7 @@
   "resetPasswordValidator-emailError": "Non ci sono utenti con questa email nel nostro sistema",
   "transactionTabView-currentStatus": "Stato attuale",
   "error-with-status": "Auf dem Server ist ein Fehler ({{statusCode}}) aufgetreten",
-  "error-without-status": "Auf dem Server ist ein Fehler aufgetreten"
+  "error-without-status": "Auf dem Server ist ein Fehler aufgetreten",
+  "banner-title": "<strong style=\"color:#5ec5ed\">sicuro.com</strong> é la piattaforma che ti permette di acquistare e vendere online in tutta sicurezza",
+  "banner-description": "Grazie all´intermediazione di sicuro.com, puoi acquistare e vendere nella rete proteggendoti dal rischio delle truffe onilne. La piattaforma di sicuro.com è semplice e intuitiva e ti permette di avviare una transazione con pochi clic!"
 }

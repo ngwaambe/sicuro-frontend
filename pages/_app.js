@@ -1,7 +1,7 @@
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head'
-import '../css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import css from '../css/styles.less';
 import MainLayout from '../components/layouts/MainLayout'
 import FrontendLayout from "../components/layouts/FrontendLayout";
@@ -12,11 +12,12 @@ class SicuroApp extends App {
         const {Component, pagePros} = this.props;
         const Layout = Component.Layout || FrontendLayout;
         return (
-            <MainLayout>
+            <MainLayout {...pagePros}>
                 <Head>
                     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab&display=swap" rel="stylesheet"/>
+                    {/*<script src="/js/main.js" />*/}
                 </Head>
-                <Layout>
+                <Layout {...pagePros}>
                     <Component {...pagePros}/>
                 </Layout>
             </MainLayout>

@@ -1,0 +1,10 @@
+
+.transactionStepHeader strong:first-of-type {color: #5ec5ed;}
+.transactionStepHeader strong:last-of-type {color: #a0c100;}
+
+h1.transactionStepHeader {
+    color: #222222;
+    line-height: 1.4;
+    margin-bottom: 30px;
+    text-align: center;
+}

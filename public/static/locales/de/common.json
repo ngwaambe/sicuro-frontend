@@ -1,5 +1,6 @@
 {
-  "preferedLanguage": "Preferred Language",
+  "preferedLanguage": "Preferred Language s",
+  "slider1Label":"Secure domain transfer s",
   "emailConfirmation": "Confirm E-mail Address",
   "Transaction-action-agree": "Accept",
   "nameAbbreviation-required": "Name abbreviation is required",
@@ -45,7 +46,7 @@
   "PaymentAccounts": "Payment accounts",
   "TransactionStatus-SELELR_INSPECTION_VALIDATED": "has terminated the inspection period with a positive outcome. sicuro.com has to refund the Buyer (if Buyer\u2019s payment account is still not available, Buyer has to provide a payment account to continue).",
   "MySicuro": "My Sicuro",
-  "confirmTransactionModified": "<p>Are you sure you want to modify the terms of this transaction?</p> <p>Remember that your partner in this transaction will have to review and agree to the terms you have modified.</p> <p>Click <b>\"accept\"</b> to proceed.</p>",
+  "confirmTransactionModified": "<p>Are you sure you want to modify the terms of this transaction?</p> <p>Remember that your partner in this transaction will have to review and agree to the terms you have modified.</p> <p>Click <strong>\"accept\"</strong> to proceed.</p>",
   "country": "Country",
   "TransactionStatus-CONFLICT_RESOLUTION_EXCEEDED": "Seller didn\u2019t act within the period of 60 days to provide sicuro.com with an agreement with Buyer or a proof of launch of legal case/arbitrage. It\u2019s assumed that the seller decided to accept the resent object of transaction. sicuro.com will now refund the Buyer (if Buyer\u2019s payment account is still not available, Buyer has to provide a payment account to continue).",
   "Transaction-notif-subject-confirmedByUsers": "Transaction has been confirmed",
@@ -404,7 +405,7 @@
   "menu-administration": "Administration",
   "userName": "User Name",
   "document": "Document",
-  "buyer-confirmGoodsReception-info": "<p>Please make sure that you are in full ownership of the domain(s) before confirming.</p> <p>If you confirm receipt, the inspection period agreed with the seller will commence.</p> <p>Select <b>\"confirm reception of domain(s)\"</b> to continue.</p>",
+  "buyer-confirmGoodsReception-info": "<p>Please make sure that you are in full ownership of the domain(s) before confirming.</p> <p>If you confirm receipt, the inspection period agreed with the seller will commence.</p> <p>Select <strong>\"confirm reception of domain(s)\"</strong> to continue.</p>",
   "changepassword": "Change Password",
   "vatApplicable": "Vat is applicable",
   "Transaction-action-acceptDomains": "Accept Domain(s)",
@@ -603,5 +604,8 @@
   "resetPasswordValidator-emailError": "Non ci sono utenti con questa email nel nostro sistema",
   "transactionTabView-currentStatus": "Current status",
   "error-with-status": "Auf dem Server ist ein Fehler ({{statusCode}}) aufgetreten",
-  "error-without-status": "Auf dem Server ist ein Fehler aufgetreten"
+  "error-without-status": "Auf dem Server ist ein Fehler aufgetreten",
+  "banner-title": "<strong style=\"color:#5ec5ed\">Sicuro.com</strong> is the online platform that allows customers to buy and sell online in total safety",
+  "banner-description": "With the brokerage service of sicuro.com, you can make your online business while being protected from scams and frauds. The online platform of sicuro.com is immediate and simple, and allows customers to start a new transaction with just a few clicks!",
+  "slider5-text":"<p>Check out our prices and fees on the pages listed below; our easy to use fee calculator allows you to quickly evaluate the exact price of your transaction. Follow this <a href=\"services/pricesAndFees.jsf\">link</a> to learn more.</p>"
 }

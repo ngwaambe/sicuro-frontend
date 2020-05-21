@@ -1,0 +1,19 @@
+{
+  "slider1-label":"Secure domain transfer",
+  "slider2-label":"Do you sell online?",
+  "slider3-label":"Do you buy online?",
+  "slider4-label":"WHAT GUARANTEES DOES SICURO.COM OFFER?",
+  "slider5-label":"Our prcies and fees",
+  "container.link":"LEARN MORE",
+  "slider1-text":"Thanks to the collaboration with Namecase,<br/> <strong>sicuro.com</strong> offers the best service <br/>to manage the sale or purchase of domain names",
+  "slider2-text":"<p>Protect yourself against  scams from  online payments<br/> and offer  more guarantees to your buyers!</p>",
+  "slider3-text":"<p>Buy safely! We will send your payment to the seller<br/> only when you have received and inspected the merchandise!</p>",
+  "slider4-text":"<p>Unfortunately <strong>scams and fraud are common</strong> in online transactions. <br/>The intermediary\u2019s role played by sicuro.com offers <strong>guarantees for both</strong>  buyers and sellers. <strong>Sellers</strong> will be able to verify the amount paid before sending the merchandise and <strong>buyers</strong> will be able to receive and inspect the merchandise before the seller is paid. Sicuro.com receives a maximum fee of 3% of the transaction vale for this service, starting from <strong>5\u20AC only!</strong></p>",
+  "slider5-text":"<p>Check out our prices and fees on the pages listed below; our easy to use fee calculator allows you to quickly evaluate the exact price of your transaction. Follow this <Link to=\"services/pricesAndFees.jsf\">link</Link> to learn more.</p>",
+  "step5-label":"<strong>sicuro.com</strong><br/> pays the seller",
+  "step4-label":"The buyer checks <br />& accepts the merchandise",
+  "step3-label":"The seller <br />sends the merchandise",
+  "step2-label":"The buyer <br />deposits the money",
+  "step1-label":"Buyer and seller <br />sign an agreement",
+  "slider-lead":"Buy and sell online safely with <strong>sicuro.com</strong><br />in <strong>just 5 easy steps</strong>"
+}
