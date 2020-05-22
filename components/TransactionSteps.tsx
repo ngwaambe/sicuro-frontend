@@ -17,7 +17,6 @@ const TransactionStep = (props: TransactionStepProps) => (
 
 const TransactionSteps = (props) => {
     const { t } = useTranslation('slider');
-    console.log(t('slider-lead')+"sdfjknsldfhaslkdfjhaslkfdjhasdkflh");
     return (
         <>
             <section className="transactionSteps">

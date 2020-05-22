@@ -1,5 +1,6 @@
 import React from "react";
 import {Link, Trans, withTranslation} from "../../i18n";
+import PropTypes from "prop-types";
 
 const SecurityPage = ({t}) => {
     return (
@@ -44,6 +45,10 @@ const SecurityPage = ({t}) => {
             </section>
         </React.Fragment>
     );
+}
+
+SecurityPage.propTypes = {
+    t: PropTypes.func.isRequired,
 }
 
 export default withTranslation('common')(SecurityPage)

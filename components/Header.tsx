@@ -1,38 +1,52 @@
 import {Link, withTranslation, i18n} from "../i18n";
 import React from "react";
 import classnames from "classnames";
-import {PropTypes} from "prop-types";
+import PropTypes from 'prop-types'
 
 const marginR2Style = {
     marginRight: '2px'
 }
+interface HeaderState {
+    prevScrollpos: number,
+    visible: boolean,
+    prevDirection: number
+}
 
-class Header extends React.Component {
+class Header extends React.Component<{}, HeaderState>{
     constructor(props) {
         super(props);
         this.state = {
             prevScrollpos: window.pageYOffset,
-            visible: true
+            visible: true,
+            prevDirection: window.scrollY
         };
     }
     static propTypes = {
-        t: PropTypes.func.isRequired,
+        t: PropTypes.func.isRequired
     }
 
-    static getInitialProps = async () => ({
-        namespacesRequired: ['common'],
-    })
+    static async getInitialProps (){
+        return {namespacesRequired: ['common']}
+    }
 
     handleScroll =  (event:Event) => {
-        const { prevScrollpos } = this.state;
+        const {prevScrollpos, prevDirection} = this.state;
+
         if (window.innerWidth > 991) {
-            const currentScrollPos = window.pageYOffset;
-            const visible = prevScrollpos > currentScrollPos;
+            const currentScrollPos = (window.pageYOffset<0)? 0: window.pageYOffset;
+            const viewDiff = prevScrollpos - currentScrollPos;
+            const direction = (prevDirection > window.scrollY) ? true : false;
+            const visible = viewDiff > 0 && viewDiff ? false : viewDiff >= 0;
+            console.log("visibile: "+visible+" diff: "+viewDiff+" dire: "+direction);
             this.setState({
                 prevScrollpos: currentScrollPos,
                 visible: visible
             });
         }
+    }
+
+    changeLanguage = (language:string) => {
+        i18n.changeLanguage(language);
     }
 
     // Adds an event listener when the component is mount.
@@ -62,20 +76,20 @@ class Header extends React.Component {
                                 </div>
                                 <div className="col-lg-7 col-md-4 TextAlignRightMobile TextAlignLeftMobile">
                                     <a href="/index">
-                                            <a>Sicuro</a>
+                                            Sicuro
                                         </a>
 
                                         <Link href="/login">
                                             <a>Login</a>
                                         </Link>
 
-                                        <a type='button' onClick={() => i18n.changeLanguage('it')}>
+                                        <a type='link' onClick={() => this.changeLanguage('it')}>
                                             <img src="/img/it.png"/>
                                         </a> |
-                                        <a type='button' onClick={() => i18n.changeLanguage('en')}>
+                                        <a type='link' onClick={() => this.changeLanguage('en')}>
                                             <img src="/img/en.png"/>
                                         </a> |
-                                        <a type='button' onClick={() => i18n.changeLanguage('es')}>
+                                        <a type='link' onClick={() => this.changeLanguage('es')}>
                                             <img src="/img/es.png"/>
                                         </a>
                                 </div>

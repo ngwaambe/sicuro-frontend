@@ -8,11 +8,12 @@ class IndexPage extends React.Component{
     constructor(props) {
         super(props);
     }
-    static async getInitialProps() {
-        return {namespacesRequired: ['common', 'slider', 'home']}
-    }
 
-    static async propTypes() {
+    static getInitialProps = async () => ({
+        namespacesRequired: ['common', 'slider', 'home'],
+    })
+
+    static propTypes() {
         t: PropTypes.func.isRequired
     }
 

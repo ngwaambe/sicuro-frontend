@@ -1,10 +1,7 @@
 import React from "react";
 import {Link, Trans, withTranslation} from "../i18n";
+import PropTypes from "prop-types";
 
-
-const positionStyle = {
-    position:'realtive'
-}
 const SecurityPage = ({t}) => {
     return (
         <React.Fragment>
@@ -13,7 +10,7 @@ const SecurityPage = ({t}) => {
                     <div className="breadcrumbs-area">
                         <h1>Security</h1>
                         <ul>
-                            <li><Link href="/index">Home</Link>
+                            <li><Link href="/index"><a>Home</a></Link>
                                 -
                             </li>
                             <li>Sicurity</li>
@@ -21,7 +18,7 @@ const SecurityPage = ({t}) => {
                     </div>
                 </div>
             </section>
-            <section className="bg-accent s-space-layout7" style={positionStyle}>
+            <section className="bg-accent s-space-layout7" >
                 <div className="container">
                     <div className="box-simple-text">
                         <p>On the web you can find great offers and deals. Using the Internet, we are able to find and
@@ -77,5 +74,13 @@ const SecurityPage = ({t}) => {
         </React.Fragment>
     );
 }
+
+SecurityPage.propTypes = {
+    t: PropTypes.func.isRequired,
+}
+
+SecurityPage.getInitialProps = ({
+    namespacesRequired: ['common'],
+})
 
 export default withTranslation('common')(SecurityPage)

@@ -29,7 +29,7 @@
     "jquery": "^1.9.1",
     "less": "^2.7.3",
     "next": "^9.3.6",
-    "next-i18next": "link:../../",
+    "next-i18next": "^4.4.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "reactstrap": "^8.4.1"

@@ -72,7 +72,7 @@ const InfoSlider = ({t}) => {
                 <img src={item.src} alt={item.altText}/>
                 <div className="carousel-caption d-none d-md-block">
                     <h2 className="top-title">{t(item.captionLabel)}</h2>
-                    <p><Trans>{t(item.captionText)}</Trans></p>
+                    <Trans>{t(item.captionText)}</Trans>
                 </div>
             </CarouselItem>
         );
