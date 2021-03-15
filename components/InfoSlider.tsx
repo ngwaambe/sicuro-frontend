@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types'
+import styles from './InfoSlider.module.css';
 import {
     Carousel,
     CarouselItem,
     CarouselControl,
     CarouselIndicators,
 } from 'reactstrap';
-import {withTranslation, Trans , useTranslation} from '../i18n'
+import {Trans , useTranslation} from 'next-i18next'
 
 const items = [
     {
@@ -16,32 +16,32 @@ const items = [
         captionText: 'slider1-text'
     },
     {
-        src: 'img/slide-1.jpg',
+        src: 'img/slide-2.jpg',
         altText: 'Slide 2',
         captionLabel: 'slider2-label',
         captionText: 'slider2-text'
     },
     {
-        src: 'img/slide-1.jpg',
+        src: 'img/slide-3.jpg',
         altText: 'Slide 3',
         captionLabel: 'slider3-label',
         captionText: 'slider3-text'
     },
     {
-        src: 'img/slide-1.jpg',
+        src: 'img/slide-4.jpg',
         altText: 'Slide 4',
         captionLabel: 'slider4-label',
         captionText: 'slider4-text'
     },
     {
-        src: 'img/slide-1.jpg',
+        src: 'img/slide-5.jpg',
         altText: 'Slide 5',
         captionLabel: 'slider5-label',
         captionText: 'slider5-text'
     }
 ];
 
-const InfoSlider = ({t}) => {
+const InfoSlider = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [animating, setAnimating] = useState(false);
 
@@ -63,15 +63,16 @@ const InfoSlider = ({t}) => {
     }
 
     const slides = items.map((item) => {
-        const { t } = useTranslation('slider');
+        const { t } = useTranslation("slider");
         return (
             <CarouselItem
                 onExiting={() => setAnimating(true)}
                 onExited={() => setAnimating(false)}
                 key={item.altText}>
-                <img src={item.src} alt={item.altText}/>
-                <div className="carousel-caption d-none d-md-block">
-                    <h2 className="top-title">{t(item.captionLabel)}</h2>
+                <img className={styles.carouselItemImage} src={item.src} alt={item.altText}/>
+                <div className={styles.carouselCaption}>
+                    <h2 className={styles.topTitle}><Trans>{t(item.captionLabel)}</Trans></h2>
+
                     <Trans>{t(item.captionText)}</Trans>
                 </div>
             </CarouselItem>
@@ -90,9 +91,4 @@ const InfoSlider = ({t}) => {
             </Carousel>
     );
 }
-
-InfoSlider.propTypes = {
-    t: PropTypes.func.isRequired,
-}
-
-export default withTranslation('slider')(InfoSlider);
+export default InfoSlider;

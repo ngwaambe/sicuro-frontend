@@ -1,7 +1,12 @@
-import {Link, Trans, withTranslation} from "../../i18n";
+import {Trans, useTranslation} from "next-i18next";
 import React from "react";
+import PageLayout from "../../components/layouts/PageLayout";
+import PropTypes from "prop-types";
+import Link from "next/link"
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
-const TermsPage = ({t}) => {
+const TermsPage = () => {
+    const {t} = useTranslation(["termspage", "common"])
     return(
         <React.Fragment>
             <section className="inner-page-banner-area legal-banner-background">
@@ -30,24 +35,14 @@ const TermsPage = ({t}) => {
                     </div>
                 </div>
             </section>
-            <section className="s-space-default overlay-default banner-backgroung" >
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div className="text-center">
-                                <h2 className="section-lg-title-light">
-                                    <Trans>
-                                        {t('banner-title')}
-                                    </Trans>
-                                </h2>
-                                <p className="lead banner-para-light">{t('banner-description')}</p>
-                                <a href="#" className="btn-ftf-rd-sm-p-dp">{t('contact-us')}</a></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </React.Fragment>
     );
 }
+TermsPage.layout = PageLayout;
 
-export default withTranslation('common')(TermsPage);
+
+export const getStaticProps = async ({locale}) => ({
+    props: {...(await serverSideTranslations(locale, ["termspage", "common"]))}
+})
+
+export default TermsPage;

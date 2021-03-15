@@ -1,6 +1,9 @@
-import {Link, Trans} from "../../i18n";
-import React from "react";
-import {withTranslation} from "react-i18next";
+import {Trans} from "next-i18next";
+import React , { Fragment}from "react";
+import {useTranslation} from "react-i18next";
+import PageLayout from "../../components/layouts/PageLayout";
+import Link from "next/link"
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 const marginR2Style = {
     marginBottom: '8px'
@@ -9,16 +12,17 @@ const pStyle = {
     display:'inline'
 }
 
-const RulesPage = ({t}) => {
-    return(
-        <React.Fragment>
+const RulesPage = () => {
+    const {t} = useTranslation(["rulespage", "common"])
+    return (
+        <Fragment>
             <section className="inner-page-banner-area legal-banner-background">
                 <div className="container">
                     <div className="breadcrumbs-area">
-                        <h1>Transaction Rules</h1>
+                        <h1><Trans>{t('menu-transaction_rules')}</Trans></h1>
                         <ul>
-                            <li><Link href="/index">Home</Link> - </li>
-                            <li>Transaction Rules</li>
+                            <li><Link href="/index"><Trans>{t('menu-home')}</Trans></Link></li>
+                            <li><Trans>{t('menu-transaction_rules')}</Trans></li>
                         </ul>
                     </div>
                 </div>
@@ -27,41 +31,15 @@ const RulesPage = ({t}) => {
                 <div className="container">
                     <div className="box">
                         <ol className="list_indent">
-                            <h3>Preamble</h3>
+                            <h3>{t('preamble-title')}</h3>
                             <li style={marginR2Style}>
-                                <p style={pStyle}>sicuro.com's online trustee service offers customers the
-                                    opportunity, when online shopping, to entrust the management of payments to
-                                    sicuro.com. The Law Firm of Bernhard H. Jansen, partner of sicuro.com, receives and
-                                    manages in trust the purchase price of the goods or services by the Buyer and sends
-                                    it to the Seller after the service has been provided (Trustee Service) . sicuro.com
-                                    does not have a role either as Buyer or as Seller (or as Intermediary, if involved),
-                                    nor does it represent any of the Parties involved. This process is intended to
-                                    ensure, in cooperation with the law firm of Bernhard H. Jansen, which operates
-                                    through a trust account administered and dedicated solely to the operations of
-                                    sicuro.com, a secure and reliable transaction of the purchase price, for the seller,
-                                    and a secure and reliable provision of services or goods for the Buyer. The Law Firm
-                                    of Bernhard H. Jansen is not a contractual partner of the Buyer or of the Seller and
-                                    has contractual relationships only with sicuro.com. Therefore, the sending and
-                                    receiving of payments by the law firm of Bernhard H. Jansen takes place exclusively
-                                    on the instructions of sicuro.com.</p>
+                                <p style={pStyle}>{t('preamble-item1')}</p>
                             </li>
                             <li style={marginR2Style}>
-                                <p style={pStyle}>All payments are received and sent by the Law Firm of
-                                    Bernhard H. Jansen. The payment of the trust amounts is not made by sicuro.com but,
-                                    by virtue of the contractual agreements between sicuro.com and the law firm of
-                                    Bernhard H. Jansen, can only be made by the Law Firm of Bernhard H. Jansen.
-                                    sicuro.com is responsible for the technical execution of transactions between
-                                    customers and sicuro.com; the Law Firm Bernhard H. Jansen is responsible, as
-                                    administrator of the trust funds, solely for the flow of the money.</p>
+                                <p style={pStyle}>{t('preamble-item2')}</p>
                             </li>
                             <li style={marginR2Style}>
-                                <p style={pStyle}>The following provisions shall be referred to as the
-                                    "General Rules of Trusted Transactions for Domain Names"." The parties hereto
-                                    employ, authorize and instruct sicuro.com to act in connection with the Transaction
-                                    under the terms and conditions on the Transaction Overview Screens, these General
-                                    Trust Instructions, Terms of Use and any supplemental sicuro.com Instructions as
-                                    hereinafter defined and all collectively referred to as the "Transaction Rules" of
-                                    sicuro.com.</p>
+                                <p style={pStyle}>{t('preamble-item3')}</p>
                             </li>
                         </ol>
                         <ol className="list_indent">
@@ -1007,24 +985,14 @@ const RulesPage = ({t}) => {
                     </div>
                 </div>
             </section>
-            <section className="s-space-default overlay-default banner-backgroung" >
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div className="text-center">
-                                <h2 className="section-lg-title-light">
-                                    <Trans>
-                                        {t('banner-title')}
-                                    </Trans>
-                                </h2>
-                                <p className="lead banner-para-light">{t('banner-description')}</p>
-                                <a href="#" className="btn-ftf-rd-sm-p-dp">{t('contact-us')}</a></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </React.Fragment>
-    );
+        </Fragment>
+);
 }
 
-export default withTranslation('common')(RulesPage)
+RulesPage.layout = PageLayout;
+
+export const getStaticProps = async ({locale}) => ({
+    props: {...(await serverSideTranslations(locale, ["rulespage", "common"]))}
+})
+
+export default RulesPage

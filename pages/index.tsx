@@ -1,48 +1,45 @@
 import React from "react";
-import PropTypes from 'prop-types'
+import {Trans, useTranslation, withTranslation} from "next-i18next";
+import Link from "next/link";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import FrontendLayout from "../components/layouts/FrontendLayout";
 import InfoSlider from "../components/InfoSlider";
-import {Trans, Link, withTranslation} from "../i18n";
 import TransactionSteps from "../components/TransactionSteps";
 
-class IndexPage extends React.Component{
-    constructor(props) {
-        super(props);
-    }
+const marginStyle1 : React.CSSProperties = {
+  marginTop:'45px',
+  marginBottom:'45px'
+}
+const marginStyle2: React.CSSProperties = {
+  marginBottom:'10px'
+}
 
-    static getInitialProps = async () => ({
-        namespacesRequired: ['common', 'slider', 'home'],
-    })
-
-    static propTypes() {
-        t: PropTypes.func.isRequired
-    }
-
-    render() {
-        return (
-            <>
-                <InfoSlider/>
-                <TransactionSteps/>
-                <section className="full-width-section-layout2 bg-accent">
-                    <div className="item-content-wrapper">
-                        <div className="container d-flex align-items-center">
-                            <div className="row">
-                                <div className="inner-title-bold inner-designation-primary lead col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                                    <h2 className="marginBottom30">{this.props.t('security-lead')}</h2>
-                                    <Trans>{this.props.t('security-text')}</Trans>
-                                    <Link href="/security"><a>{this.props.t('container-link')}</a></Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="item-img-wrapper">
-                        <img src="/img/img-001.png" className="img-responsive" alt="GARANZIE E SICUREZZA"/>
-                        <br/>
-                    </div>
-                </section>
-            </>
-        )
-    }
+const IndexPage = () => {
+  const {t} = useTranslation(["home"])
+  return (
+    <>
+      <InfoSlider/>
+      <TransactionSteps/>
+      <section className="s-space-default">
+        <div className="rowContainer">
+          <div className="column50">
+            <div style={marginStyle2}><img src="/img/img-004.jpg"/></div>
+          </div>
+          <div className="column50">
+              <h2 className="marginBottom30"><Trans>{t('security-lead')}</Trans></h2>
+              <Trans>{t('security-text')}</Trans>
+            </div>
+        </div>
+      </section>
+    </>
+  );
 };
 
+IndexPage.layout = FrontendLayout;
 
-export default withTranslation("home")(IndexPage);
+export const getStaticProps = async ({locale}) => (
+  {
+    props:{ ...( await serverSideTranslations(locale, ["home", "common","slider"]))}
+  }
+)
+export default IndexPage;
