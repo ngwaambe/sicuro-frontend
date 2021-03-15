@@ -1,3 +1,99 @@
+.transactionSteps {
+    padding: 115px 0 88px;
+}
+
+.transactionStepsContainer {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media only screen and (max-width: 1199px) {
+    .transactionSteps {
+        padding: 105px 0 78px;
+    }
+    .transactionStepsContainer {
+        max-width: 1140px;
+    }
+}
+@media only screen and (max-width: 991px) {
+    .transactionSteps {
+        padding: 95px 0 68px;
+    }
+    .transactionStepsContainer {
+        max-width: 960px;
+    }
+}
+@media only screen and (max-width: 767px) {
+    .transactionSteps {
+        padding: 85px 0 58px;
+    }
+    .transactionStepsContainer {
+        max-width: 720px;
+    }
+}
+@media only screen and (max-width: 479px) {
+    .transactionSteps {
+        padding: 15px 0 48px;
+    }
+    .transactionStepsContainer {
+        max-width: 540px;
+    }
+}
+@media only screen and (max-width: 320px) {
+    .transactionSteps {
+        padding: 15px 0 38px;
+    }
+    .transactionStepsContainer {
+        max-width: 540px;
+    }
+}
+.transactionStepHeader strong:first-of-type {
+    color: #5ec5ed;
+}
+.transactionStepHeader strong:last-of-type {
+    color: #a0c100;
+}
+h1.transactionStepHeader {
+    color: #222222;
+    line-height: 1.4;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.transactionStepsRow {
+    display: flex;
+    padding: 10px;
+    justify-content:center;
+}
+@media only screen and (max-width: 1199px) {
+    .transactionStepsRow {
+        flex-direction: column;
+    }
+}
+@media only screen and (max-width: 991px) {
+    .transactionStepsRow {
+        flex-direction: column;
+    }
+}
+.transactionStep {
+    text-align: center;
+    line-height: 20px;
+    justify-content: center;
+    align-items: center;
+    box-sizing: content-box;
+    position: relative;
+    flex-direction: column;
+    min-width: 228px;
+    margin-top: 15px;
+}
+.transactionStep img {
+    margin-bottom: 15px;
+}
+.transactionStep strong:first-of-type {
+    color: #5ec5ed;
+}
 
 .transactionStepHeader strong:first-of-type {color: #5ec5ed;}
 .transactionStepHeader strong:last-of-type {color: #a0c100;}
@@ -8,3 +104,4 @@ h1.transactionStepHeader {
     margin-bottom: 30px;
     text-align: center;
 }
+

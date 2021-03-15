@@ -1,7 +1,9 @@
 import React from "react";
-import {withTranslation, Link, Trans} from "../i18n";
+import {useTranslation, Trans} from "next-i18next";
+import Link from "next/link"
 
-const FaqPage = ({t}) => {
+const FaqPage = () => {
+    const {t} = useTranslation('home')
     return (
         <React.Fragment>
             <section className="inner-page-banner-area service-banner-background">
@@ -138,8 +140,5 @@ const FaqPage = ({t}) => {
         </React.Fragment>
     );
 }
-FaqPage.getInitialProps = async () => ({
-    namespacesRequired: ['common','home'],
-})
 
-export default withTranslation('home')(FaqPage)
+export default FaqPage

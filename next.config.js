@@ -1,15 +1,4 @@
-const withLess = require('@zeit/next-less')
-const withCSS = require("@zeit/next-css");
-
-module.exports = withCSS(
-    withLess({
-        webpack(config, options) {
-            return config;
-        },
-        publicRuntimeConfig:{
-            localeSubpaths: typeof process.env.LOCALE_SUBPATHS === 'string'
-                ? process.env.LOCALE_SUBPATHS
-                : 'none',
-        }
-    }),
-);
+const { i18n } = require('./next-i18next.config')
+module.exports = {
+    i18n,
+}

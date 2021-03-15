@@ -1,0 +1,36 @@
+.loginForm {
+    min-height: 280px;
+    vertical-align: center;
+    margin-bottom: 20px;
+}
+
+.inputField {
+
+}
+.loginHeader {
+    margin: 0 0 10px 0;
+}
+
+.loginError {
+    font-weight: 600;
+    font-size: 14px;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    color: #cc071e;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+
+.resetButton{
+    margin-top: 10px;
+}

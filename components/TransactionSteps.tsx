@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
-import {withTranslation, Trans, useTranslation} from "../i18n";
+import {Trans, useTranslation} from "next-i18next";
 import React, {ReactNode} from "react";
+import styles from "./TransactionSteps.module.css"
 
 interface TransactionStepProps {
     imageSource: string;
@@ -8,7 +8,7 @@ interface TransactionStepProps {
 }
 
 const TransactionStep = (props: TransactionStepProps) => (
-    <div className="transactionStep">
+    <div className={styles.transactionStep}>
         <img src={props.imageSource}/>
         <br/>
         {props.children}
@@ -19,12 +19,12 @@ const TransactionSteps = (props) => {
     const { t } = useTranslation('slider');
     return (
         <>
-            <section className="transactionSteps">
-                <div className="container">
-                    <h1 className="transactionStepHeader">
-                        <Trans>{props.t('slider-lead')}</Trans>
+            <section className={styles.transactionSteps}>
+                <div className={styles.transactionStepsContainer}>
+                    <h1 className={styles.transactionStepHeader}>
+                        <Trans>{t('slider-lead')}</Trans>
                     </h1>
-                    <div className="transactionStepsRow">
+                    <div className={styles.transactionStepsRow}>
                         <TransactionStep imageSource="/img/step-1.png">
                             <Trans>{t('step1-label')}</Trans>
                         </TransactionStep>
@@ -46,9 +46,4 @@ const TransactionSteps = (props) => {
         </>
         );
 }
-
-TransactionSteps.propTypes = {
-    t: PropTypes.func.isRequired,
-}
-
-export default withTranslation('slider')(TransactionSteps);
+export default TransactionSteps;
