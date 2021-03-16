@@ -1,0 +1,82 @@
+.TextAlignRightMobile {
+    margin-left: auto;
+}
+.TextAlignRightMobile a{
+    padding-left: 8px;
+}
+
+.ImageMargin img{
+    margin: 0px 3px 1px 2px;
+}
+
+@media only screen and (max-width: 767px) {
+    .ClearDisplayMobile {
+        display: block !important;
+        padding: 10px 0;
+        margin-left: -10px;
+    }
+}
+.flexCotainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.marginR2Style{
+    marginRight: '2px'
+}
+
+.mainMenuAreaTop {
+    background: #02404f;
+    padding: 4px 0;
+    color: #d9dadb;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.menuText {
+    height: 18px;
+    border-left: solid thin;
+    border-color:inherit;
+    margin-left: 5px;
+    margin-right: 0.4125rem;
+    padding-left: 0.525rem;
+    vertical-align: middle;
+}
+
+.space{
+    margin-left: 20px;
+}
+
+.mainMenuAreaTop a {
+    color: #d9dadb;
+}
+.mainMenuAreaTop a:hover {
+    color: #a0c100;
+}
+.mainMenuAreaTopText {
+    margin-left: 5px;
+    margin-left: 0.1125rem;
+    margin-right: 0.4125rem;
+    padding-left: 10px;
+    padding-left: 0.525rem;
+    height: 18px;
+    height: 1.125rem;
+    border-left: solid thin;
+    border-color: inherit;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .mainMenuAreaTop {
+        display: none;
+    }
+}
+@media only screen and (max-width: 479px) {
+    .mainMenuAreaTop {
+        display: none;
+    }
+}
+@media only screen and (max-width: 767px) {
+    .mainMenuAreaTop {
+        display: none;
+    }
+}
