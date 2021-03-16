@@ -24,8 +24,7 @@ const handle = app.getRequestHandler();
         changeOrigin: false,
         logLevel: 'debug'
       }))
-      server.use('/api/auth/token', setRequestBody);
-      server.use('/api/auth/token', executeLogin);
+      server.use('/api/auth/token',setRequestBody, executeLogin);
     }
 
     server
