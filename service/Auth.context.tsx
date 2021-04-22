@@ -1,5 +1,5 @@
 import React, {useContext, createContext, Reducer, useReducer, useEffect} from "react"
-import {State, User} from "../state";
+import {AppView, Customer, State, User} from "../state";
 
 
 type Action = (s: State) => State;
@@ -10,14 +10,26 @@ export const UserContext = createContext({})
 const initialUser = {
   loggedIn: false,
   username:"",
-  title:"",
-  firstName: "",
-  lastName: ""}
+  userId: 0
+}
 
 
 export const updateUser = (user: User) => (state:State) =>({
   ...state,
   user
+})
+
+export const updateCustomer = (customer:Customer) => (state:State) =>({
+  ...state,
+  customer
+})
+
+
+export const clearState = () =>(state:State) =>({})
+
+export const setView = (view: AppView) => (state:State) =>({
+  ...state,
+  view
 })
 
 /**
@@ -35,18 +47,22 @@ export const useDispatch: any = () => useContext(UserContext)
 // create and export the AuthProvider - this is imported to the _app.js file
 // and wrapped around the whole app, providing context to the whole app, and
 // is called each time this specific context is accessed (updated or retrieved)
-export const AuthProvider = ({ children }: any) => {
+export const AuthProvider = ({ children , loggedIn}) => {
+  //console.log("user:"+JSON.stringify(loggedIn)+",  username:"+JSON.stringify(username));
   let localState = null;
-  if (typeof localStorage !== 'undefined' && localStorage.getItem('userInfo')) {
-    localState = JSON.parse(localStorage.getItem('userInfo') || '');
-  }
-  const [state, dispatch] = useReducer(reducer, localState || {user:initialUser});
-  if (typeof localStorage !== 'undefined') {
-    useEffect(() => {
+  /*if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('state')) {
+    localState = JSON.parse(sessionStorage.getItem('state') || '');
+  }*/
+  const [state, dispatch] = useReducer(reducer, {user: {loggedIn:loggedIn}});
+  /**/
+  useEffect(() => {
       //console.log(state)
-      localStorage.setItem('userInfo', JSON.stringify(state));
-    }, [state]);
-  }
+      //sessionStorage.setItem('state', JSON.stringify(state));
+      if (!loggedIn) {
+        dispatch(clearState())
+      }
+  }, [loggedIn]);
+  /**/
 
   return (<UserContext.Provider  value={[state, dispatch]}>{children}</UserContext.Provider>)
 }

@@ -2,7 +2,6 @@ import {withTranslation} from 'next-i18next';
 import React, {Component, ReactNode, useRef, useState} from "react";
 import PropTypes from "prop-types";
 import LoginHeader from "../LoginHeader";
-import IdleTimer from 'react-idle-timer'
 
 interface Props {
   t:any

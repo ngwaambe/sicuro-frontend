@@ -1,12 +1,21 @@
 .TextAlignRightMobile {
     margin-left: auto;
 }
+
+.TextAlignRightMobile a svg{
+    vertical-align:middle;
+}
+
+.TextAlignRightMobile a img{
+    vertical-align:middle;
+}
+
 .TextAlignRightMobile a{
     padding-left: 8px;
 }
 
-.ImageMargin img{
-    margin: 0px 3px 1px 2px;
+.Header svg{
+    vertical-align:middle;
 }
 
 @media only screen and (max-width: 767px) {
@@ -27,7 +36,7 @@
 
 .mainMenuAreaTop {
     background: #02404f;
-    padding: 4px 0;
+    padding: 5px 0;
     color: #d9dadb;
     font-weight: 500;
     font-size: 14px;

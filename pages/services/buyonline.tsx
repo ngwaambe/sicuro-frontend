@@ -3,6 +3,7 @@ import PageLayout from "../../components/layouts/PageLayout";
 import React from "react"
 import Link from "next/link"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import Grid from "@material-ui/core/Grid";
 
 const marginStyle1 : React.CSSProperties = {
     marginTop:'45px',
@@ -34,18 +35,22 @@ const BuyOnlinePage = () => {
             </section>
             <section className="s-space-top-default">
                 <div className="container">
-                    <div className="row">
-                        <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12} md={6}>
                             <Trans i18nKey="buyonline-text1" defaults={t('buyonline-text1')} components={{ 1: <ul/>, 2:<li/>}}>{t('buyonline-text1')}</Trans>
-                            <div style={marginStyle1}><img
-                              src="/img/img-004.jpg"/></div>
-                        </div>
-                        <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <div style={marginStyle2}>
-                                <img src="/img/img-005.jpg"/></div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <img src="/img/img-004.jpg"/>
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <img src="/img/img-005.jpg"/>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
                             <Trans i18nKey="buyonline-text2" defaults={t('buyonline-text2')} components={{1:<h4/>}}>{t('buyonline-text2')}</Trans>
-                        </div>
-                    </div>
+                        </Grid>
+                    </Grid>
                 </div>
             </section>
         </React.Fragment>

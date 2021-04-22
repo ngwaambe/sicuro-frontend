@@ -3,6 +3,7 @@ import {Trans, useTranslation} from "next-i18next";
 import PageLayout from "../../components/layouts/PageLayout";
 import Link from "next/link"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import Grid from "@material-ui/core/Grid";
 
 const strongStyle = {
   color: '#5ec5ed'
@@ -43,8 +44,8 @@ const ServiceIndexPage = () => {
       {/*Service Area Start Here */}
       <section className="bg-accent s-space-layout7">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div className="aligneImage"><img src="/img/ico-001.png"/></div>
                 <div className="media-body">
@@ -56,8 +57,8 @@ const ServiceIndexPage = () => {
                   </Trans>
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            </Grid>
+            <Grid item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div className="aligneImage"><img src="/img/ico-002.png"/></div>
                 <div className="media-body">
@@ -69,8 +70,8 @@ const ServiceIndexPage = () => {
                   </Trans>
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            </Grid>
+            <Grid item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div className="aligneImage"><img src="/img/ico-003.png"/></div>
                 <div className="media-body">
@@ -82,10 +83,10 @@ const ServiceIndexPage = () => {
                   </Trans>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            </Grid>
+          </Grid>
+          <Grid container justify="space-between">
+            <Grid item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div className="aligneImage"><img src="/img/ico-001.png"/></div>
                 <div className="media-body">
@@ -96,13 +97,10 @@ const ServiceIndexPage = () => {
                   </Trans>
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-              <div className="media mb-30">
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-              <div className="media mb-30">
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={4}>
+              <div className="mb-30">
                 <div className="aligneImage"><img src="/img/ico-003.png"/></div>
                 <div className="media-body">
                   <h3 className="service-title-dark"><Link
@@ -112,8 +110,8 @@ const ServiceIndexPage = () => {
                   </Trans>
                 </div>
               </div>
-            </div>
-          </div>
+            </Grid>
+          </Grid>
         </div>
       </section>
       {/*Service Area End Here */}

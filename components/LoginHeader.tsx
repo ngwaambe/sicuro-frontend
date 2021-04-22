@@ -1,61 +1,53 @@
 import {default as BaseLink} from 'next/link';
 import Router from 'next/router';
 import styles from './LoginHeader.module.css'
-import {updateUser, useDispatch} from "../service/Auth.context";
-import React from "react";
+import {clearState, updateUser, useDispatch} from "../service/Auth.context";
+import React, {useEffect} from "react";
 import PersonIcon from '@material-ui/icons/PersonTwoTone';
 import HomceIcon from '@material-ui/icons/HomeTwoTone'
+import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone';
+import PhoneTwoToneIcon from '@material-ui/icons/PhoneTwoTone';
 import ExitToAppIcon from '@material-ui/icons/ExitToAppTwoTone';
 import {useTranslation} from "next-i18next";
+import {Container} from "@material-ui/core";
+import {clearToken} from "../service/authentication";
 
 const LoginHeader = () => {
   const[state, dispatch] = useDispatch();
   const {i18n} = useTranslation()
+
   const changeLanguage = (language:string) => {
     i18n.changeLanguage(language);
   }
 
   const logout = () => {
-    fetch("/api/logout", {
-      method : "post",
-      headers: {
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify({})
-    });
-
-    dispatch(updateUser(
-      {
-        loggedIn: false,
-        username:'',
-        firstName:'',
-        lastName:''
-      }
-    ));
-
-    Router.push('/');
+    clearToken().then(()=>{
+      //dispatch(clearState());
+      Router.push("/")
+    })
   }
 
   return (
     <div className={styles.mainMenuAreaTop}>
-      <div className="container">
+      <Container maxWidth="lg">
         <div className={styles.flexCotainer}>
-          <div className={styles.ImageMargin}>
-            <span className={styles.marginR2Style}>
-              <img src="/img/ico-tel.png"/>+49 (0) 228 38759255
-            </span>
-            <span className={styles.ClearDisplayMobile}>
-              <img src="/img/email-ico.png" />
-              <a href="mailto:contact@sicuro.com">contact[at]sicuro.com</a>
-            </span>
+          <div className={styles.Header}>
+               <PhoneTwoToneIcon fontSize="default"/>
+               <span className={styles.menuText}>+49 (0) 228 38759255</span>
+
+              <a href="mailto:contact@sicuro.com">
+                <EmailTwoToneIcon fontSize="default"/>
+                <span className={styles.menuText}>contact[at]sicuro.com</span>
+              </a>
           </div>
           <div className={styles.TextAlignRightMobile}>
             <BaseLink href="/">
               <a>
               <HomceIcon fontSize="default"/>
               <span className={styles.menuText}>Sicuro</span>
-              </a></BaseLink>
-            {!state.user.loggedIn &&
+              </a>
+            </BaseLink>
+            { (state?.user===undefined || !state?.user.loggedIn) &&
               <BaseLink href="/authenticate">
                 <a className={styles.space}>
                     <PersonIcon fontSize="default"/>
@@ -63,7 +55,7 @@ const LoginHeader = () => {
                 </a>
               </BaseLink>
             }
-            {state.user.loggedIn  &&
+            { (state?.user !==undefined && state?.user.loggedIn)  &&
              <>
              <BaseLink href="/profile/">
                   <a>
@@ -96,7 +88,7 @@ const LoginHeader = () => {
             </BaseLink>
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }

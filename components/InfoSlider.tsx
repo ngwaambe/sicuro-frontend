@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import styles from './InfoSlider.module.css';
-import {
-    Carousel,
-    CarouselItem,
-    CarouselControl,
-    CarouselIndicators,
-} from 'reactstrap';
+//import 'react-awesome-slider/dist/styles.css';
+import AwesomeSlider from 'react-awesome-slider';
+import withAutoplay from 'react-awesome-slider/dist/autoplay';
 import {Trans , useTranslation} from 'next-i18next'
 
 const items = [
@@ -41,54 +38,29 @@ const items = [
     }
 ];
 
+
 const InfoSlider = () => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [animating, setAnimating] = useState(false);
-
-    const next = () => {
-        if (animating) return;
-        const nextIndex = activeIndex === items.length - 1 ? 0 : activeIndex + 1;
-        setActiveIndex(nextIndex);
-    }
-
-    const previous = () => {
-        if (animating) return;
-        const nextIndex = activeIndex === 0 ? items.length - 1 : activeIndex - 1;
-        setActiveIndex(nextIndex);
-    }
-
-    const goToIndex = (newIndex) => {
-        if (animating) return;
-        setActiveIndex(newIndex);
-    }
-
+    const AutoplaySlider = withAutoplay(AwesomeSlider)
     const slides = items.map((item) => {
         const { t } = useTranslation("slider");
         return (
-            <CarouselItem
-                onExiting={() => setAnimating(true)}
-                onExited={() => setAnimating(false)}
-                key={item.altText}>
-                <img className={styles.carouselItemImage} src={item.src} alt={item.altText}/>
-                <div className={styles.carouselCaption}>
+            <div data-src={item.src} key={item.src}>
+                <div className={styles.caption}>
                     <h2 className={styles.topTitle}><Trans>{t(item.captionLabel)}</Trans></h2>
-
                     <Trans>{t(item.captionText)}</Trans>
                 </div>
-            </CarouselItem>
+            </div>
         );
     });
 
     return (
-            <Carousel
-                activeIndex={activeIndex}
-                next={next}
-                previous={previous}>
-                <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={goToIndex}/>
+            <AutoplaySlider
+              play={true}
+              cancelOnInteraction={true}
+              interval={1200}
+              cssModule={styles}>
                 {slides}
-                <CarouselControl direction="prev" directionText="Previous" onClickHandler={previous}/>
-                <CarouselControl direction="next" directionText="Next" onClickHandler={next}/>
-            </Carousel>
+            </AutoplaySlider>
     );
 }
 export default InfoSlider;

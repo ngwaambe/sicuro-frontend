@@ -4,6 +4,7 @@ import classnames from "classnames";
 import PropTypes from 'prop-types'
 import {useTranslation} from "next-i18next";
 import Link from "next/link";
+import {Container} from "@material-ui/core";
 
 const MenuHeader = () => {
   const {t} = useTranslation('common')
@@ -28,16 +29,14 @@ const MenuHeader = () => {
 
   return (
     <div className={classnames("main-menu-area", {"stick": !visible})}>
-      <div className="container">
-        <div className="row no-gutters d-flex align-items-center">
-          <div className="col-lg-3 col-md-3">
-            <div className="logo-area">
+      <Container maxWidth="lg">
+        <div className="row d-flex align-items-center">
+          <div className="logo-area">
               <BaseLink href="/">
                 <img src="/img/logo.png" alt="logo"/>
               </BaseLink>
             </div>
-          </div>
-          <div className="col-lg-8 col-md-8 possition-static" id="main-nav-wrap">
+          <div className="possition-static" id="main-nav-wrap">
             <div className="elv-main-menu">
               <nav id="main-nav">
                 <ul>
@@ -84,18 +83,9 @@ const MenuHeader = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }
-/*
-MenuHeader.propTypes = {
-  t: PropTypes.func.isRequired,
-}
-
-MenuHeader.getInitialProps = async () => ({
-  namespacesRequired: ['common'],
-})
-*/
 
 export default MenuHeader

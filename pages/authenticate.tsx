@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Trans, useTranslation} from "next-i18next";
 import LoginLayout from "../components/layouts/LoginLayout";
 import LoginForm from "../components/LoginForm";
@@ -6,8 +6,7 @@ import RegistrationForm from "../components/RegistrationForm";
 import ResetPasswordForm from "../components/ResetPasswordForm"
 import {NextPageContext} from "next";
 import Cookies from "universal-cookie";
-import NavService from "../service/NavService";
-import {checkToken} from "../service/authentication";
+import {checkToken} from "../service/checkToken";
 import {useRouter} from "next/router";
 import {NextRouter} from "next/dist/next-server/lib/router/router";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
@@ -19,6 +18,8 @@ import {ActionButton, StyledFormTypography, StyledTextField} from "../components
 import CommonStyles from "../components/common.module.css";
 import styles from "../components/ResetPasswordForm.module.css";
 import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
+import {updateUser, useDispatch} from "../service/Auth.context";
+import {clearToken} from "../service/authentication";
 
 enum Action {
   LOGIN,
@@ -43,7 +44,6 @@ interface LocalState {
   activationStatus: ActivationStatus;
 }
 
-
 const ActivationModal = (props:ActivationProps) => {
   const {t} = useTranslation(["login", "common"])
   return (
@@ -58,8 +58,12 @@ const ActivationModal = (props:ActivationProps) => {
           </IconButton>
         </ModalHeader>
         <ModalBody>
-          {props.status === ActivationStatus.SUCCESS && <StyledFormTypography>{t('reset_password_text')}</StyledFormTypography>}
-          {props.status === ActivationStatus.FAILED && <StyledFormTypography><Trans>{t('reset_password_success_text')}</Trans></StyledFormTypography>}
+          {props.status === ActivationStatus.SUCCESS &&
+            <StyledFormTypography>{t('reset_password_text')}</StyledFormTypography>
+          }
+          {props.status === ActivationStatus.FAILED &&
+          <StyledFormTypography><Trans>{t('reset_password_success_text')}</Trans></StyledFormTypography>
+          }
                   </ModalBody>
         <ModalFooter divider={true} confirm={true}>
           <ActionButton
@@ -77,10 +81,24 @@ const ActivationModal = (props:ActivationProps) => {
 }
 
 const LoginPage = (props) => {
+  const[_,dispatch] = useDispatch();
+
   const [state, setState] = useState<LocalState>({
     action: Action.LOGIN,
     activationStatus: props.activationStatus
   });
+  useEffect( () => {
+    //delete toke
+    console.log("clear token");
+    clearToken();
+    dispatch(updateUser(
+      {
+        loggedIn: false,
+        username:'',
+      }
+    ));
+  }, []);
+
 
   const doRegistration = () => {
     setState({
@@ -128,26 +146,13 @@ const LoginPage = (props) => {
   )
 }
 
-  /*LoginPage.getInitialProps =  async (ctx: NextPageContext ) => {
-  const cookies = new Cookies(ctx.req ? ctx.req.headers.cookie : null);
-  const token = cookies.get('token')
-  const navService = new NavService();
-  if (token !== '' && token !== undefined) {
-    const success =  await checkToken(token)
-    if (success) {
-     navService.redirectUser("/profile", ctx);
-    }
-  }
-  return {namespacesRequired: ['login','common']}
-} */
-
-
 export const  getServerSideProps = async(ctx) => {
+
   const cookies = new Cookies(ctx.req ? ctx.req.headers.cookie : null);
   const token = cookies.get('token')
   if (token !== '' && token !== undefined) {
-    const success =  await checkToken(token)
-    if (success) {
+    const isloggedIn =  await checkToken(token)
+    if (isloggedIn) {
       return {
         redirect: {
           permanent: false,
@@ -160,11 +165,10 @@ export const  getServerSideProps = async(ctx) => {
   const  code = ctx.query.code
   if (code !== undefined) {
     const result = await activateAccount(code as string)
-    console.log(result.success)
     return {
       props: {
         ...await serverSideTranslations(ctx.locale, ["login", "common"]),
-        activationStatus: (result.success) ? ActivationStatus.SUCCESS : ActivationStatus.FAILED
+        activationStatus: (result.success) ? ActivationStatus.SUCCESS : ActivationStatus.FAILED,
       }
     }
   }

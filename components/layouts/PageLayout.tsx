@@ -41,20 +41,14 @@ class PageLayout extends Component<Props> {
                     {/*About Area Start Here */}
                     <section className="s-space-default overlay-default banner-backgroung">
                         <div className="container">
-                            <div className="row">
-                                <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div className="text-center">
-                                        <h2 className="section-lg-title-light">
-                                            <Trans
-                                              i18nKey="banner-title"
-                                              defaults={this.props.t('banner-title')}
-                                              components={{1:<strong className="sicuroColor"/> }}/>
-                                        </h2>
-                                        <p className="lead banner-para-light">{this.props.t('banner-description')}</p>
-                                        <a href="#" className="btn-ftf-rd-sm-p-dp">{this.props.t('contact-us')}</a>
-                                    </div>
-                                </div>
-                            </div>
+                            <h2 className="section-lg-title-light">
+                                <Trans
+                                  i18nKey="banner-title"
+                                  defaults={this.props.t('banner-title')}
+                                  components={{1: <strong className="sicuroColor"/>}}/>
+                            </h2>
+                            <p className="lead banner-para-light">{this.props.t('banner-description')}</p>
+                            <a href="#" className="btn-ftf-rd-sm-p-dp">{this.props.t('contact-us')}</a>
                         </div>
                     </section>
                     {/*About Area End Here */}

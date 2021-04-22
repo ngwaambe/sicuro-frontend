@@ -3,6 +3,7 @@ import PageLayout from "../../components/layouts/PageLayout";
 import React from "react";
 import Link from "next/link"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import Grid from "@material-ui/core/Grid";
 
 const margenBottom = {
     marginBottom: '10px'
@@ -45,27 +46,35 @@ const SellOnlinePage = () => {
       </section>
       <section className="s-space-top-default">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={6}>
               <h4><Trans>{t('question1')}</Trans></h4>
               <p><Trans>{t('answer1')}</Trans></p>
-              <div style={imageLayout1}>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6}>
+                <img src="/img/img-002.jpg"/>
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={6}>
+              <div>
                 <img src="/img/img-001.jpg"/>
               </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6}>
               <h4><Trans>{t('question2')}</Trans></h4>
               <p><Trans>{t('answer2')}</Trans></p>
-            </div>
-            <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-              <div style={imageLayout2}>
-                <img src="/img/img-002.jpg"/>
-              </div>
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={6}>
               <h4><Trans>{t('question3')}</Trans></h4>
               <p><Trans i18nKey="answer3" defaults={t('answer3')} components={{ 1: <ul/>, 2:<li/>}}>{t('answer3')}</Trans></p>
-              <div style={imageLayout3}>
-                <img src="/img/img-002.jpg"/>
-              </div>
-            </div>
-          </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6}>
+              <img src="/img/img-002.jpg"/>
+            </Grid>
+          </Grid>
         </div>
       </section>
     </React.Fragment>

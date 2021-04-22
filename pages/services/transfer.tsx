@@ -3,6 +3,7 @@ import PageLayout from "../../components/layouts/PageLayout";
 import React from "react";
 import Link from "next/link"
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import Grid from "@material-ui/core/Grid";
 
 const imageStyle: React.CSSProperties = {
   display: 'inline-block',
@@ -58,8 +59,8 @@ const DomainTransferPage = () => {
       </section>
       <section className="bg-accent s-space-layout7">
         <div className="container">
-          <div style={containerStyle}>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12" style={containerItem}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div style={imageStyle}>
                   <img src="/img/ico-001.png"/>
@@ -78,8 +79,8 @@ const DomainTransferPage = () => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12" style={containerItem}>
+            </Grid>
+            <Grid  item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div style={imageStyle}>
                   <img src="/img/ico-002.png"/></div>
@@ -97,8 +98,8 @@ const DomainTransferPage = () => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="col-lg-4 col-md-4 col-sm-6 col-xs-12" style={containerItem}>
+            </Grid>
+            <Grid  item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div style={imageStyle}>
                   <img src="/img/ico-003.png"/>
@@ -117,8 +118,8 @@ const DomainTransferPage = () => {
                   />
                 </div>
               </div>
-            </div>
-          </div>
+            </Grid>
+          </Grid>
         </div>
       </section>
     </React.Fragment>

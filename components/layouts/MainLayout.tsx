@@ -1,7 +1,7 @@
 import React, {ReactNode} from "react"
 import Link from "next/link";
-import {useTranslation} from "next-i18next";
 import {withTranslation} from "react-i18next";
+import {Container, Grid} from "@material-ui/core";
 
 interface Props {
     t:any
@@ -19,10 +19,10 @@ const MainLayout = (props: Props) => {
           <footer className="footer">
               {/*-- missing class for home --*/}
               <div className="footer-area-top">
-                  <div className="container">
+                  <Container maxWidth="lg">
 
-                      <div className="row">
-                          <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                      <Grid container justify="space-evenly" spacing={4}>
+                          <Grid item xs={12} sm={6} md={3} className="footerMenu">
                               <div className="footer-box">
                                   <h3 className="title-bar-footer">{t('menu-about_us')}</h3>
                                   <ul className="recent-post-link">
@@ -34,8 +34,8 @@ const MainLayout = (props: Props) => {
                                       </li>
                                   </ul>
                               </div>
-                          </div>
-                          <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={3} className="footerMenu">
                               <div className="footer-box">
                                   <h3 className="title-bar-footer">{t('menu-service')}</h3>
                                   <ul className="recent-post-link">
@@ -69,8 +69,8 @@ const MainLayout = (props: Props) => {
                                       </li>
                                   </ul>
                               </div>
-                          </div>
-                          <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={3} className="footerMenu">
                               <div className="footer-box">
                                   <h3 className="title-bar-footer">{t('menu-support')}</h3>
                                   <ul className="recent-post-link">
@@ -82,8 +82,8 @@ const MainLayout = (props: Props) => {
                                       </li>
                                   </ul>
                               </div>
-                          </div>
-                          <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={3} className="footerMenu">
                               <div className="footer-box">
                                   <h3 className="title-bar-footer">{t('menu-legal')}</h3>
                                   <ul className="recent-post-link">
@@ -100,21 +100,21 @@ const MainLayout = (props: Props) => {
                                       </li>
                                   </ul>
                               </div>
-                          </div>
-                      </div>
-                  </div>
+                          </Grid>
+                      </Grid>
+                  </Container>
               </div>
               <div className="footer-area-bottom">
-                  <div className="container">
-                      <div className="row">
-                          <div className="col-lg-10 col-md-10">
+                  <Container maxWidth="lg">
+                      <Grid container justify="space-between">
+                          <Grid item xs={12} sm={6} md={10}>
                               <p>&copy; 2017 SICURO.COM - All rights reserved.</p>
-                          </div>
-                          <div className="col-lg-2 col-md-2">
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={2}>
                               <p>Powered by <a target="_blank" href="https://www.exagonlab.com">Exagon</a></p>
-                          </div>
-                      </div>
-                  </div>
+                          </Grid>
+                      </Grid>
+                  </Container>
               </div>
           </footer>
       </div>
