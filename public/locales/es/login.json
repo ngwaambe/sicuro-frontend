@@ -23,5 +23,6 @@
   "reset_password_success_text": "Su contraseña se ha restablecido correctamente y se ha enviado un correo electrónico con su nueva contraseña a su dirección de correo electrónico de inicio de sesión.. <strong>Verifique su correo electrónico y siga las instrucciones en el correo electrónico para iniciar sesión en Sicuro.</strong>",
   "reset_password_failure_text": "<strong>Lamentablemente, no pudimos procesar su solicitud. Ya estamos trabajando en una solución.<strong>",
   "request_link": "Solicitar enlace",
-  "invalid_email_text": "Por favor ingrese una dirección de correo electrónico válida."
+  "invalid_email_text": "Por favor ingrese una dirección de correo electrónico válida.",
+  "sign_out": "Desconectar"
 }

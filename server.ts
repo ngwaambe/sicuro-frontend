@@ -3,9 +3,12 @@ import next from 'next'
 import { isProd, isTest, isDev, isInt } from './env';
 import { SERVICE_BASE_URL } from './config';
 import mockRouter from './mock-data';
-import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 import setRequestBody from "./middleware/set-request-body"
 import executeLogin from "./middleware/process-login"
+import executeTokenCheck from "./middleware/checktoken"
+import setToken from "./middleware/setToken"
+import {parseCookies} from "./service/common";
 
 const port = process.env.PORT || 3000
 const app = next({ dev: process.env.NODE_ENV !== 'production' })
@@ -16,14 +19,19 @@ const handle = app.getRequestHandler();
     await app.prepare();
     const server = express();
     const serviceBaseUrl = SERVICE_BASE_URL()
+    //server.use('/api', setToken);
     if (isDev(process.env)) {
+      console.log(`>=> mock `)
       server.use('/api', mockRouter)
     } else {
-      server.use('/api', createProxyMiddleware(['/api/**', '!/api/login', '!/api/logout','!/api/auth/token'],{
+      console.log(`>=> int/pre/prod `)
+      server.use('/api', createProxyMiddleware(['/api/**', '!/api/login', '!/api/logout','!/api/auth/token', '!/api/auth/check_token'],{
         target: `${serviceBaseUrl}`,
         changeOrigin: false,
+        onProxyReq:onProxyReq,
         logLevel: 'debug'
       }))
+      server.use('/api/auth/check_token',setRequestBody, executeTokenCheck)
       server.use('/api/auth/token',setRequestBody, executeLogin);
     }
 
@@ -41,3 +49,11 @@ const handle = app.getRequestHandler();
   }
 })();
 
+function onProxyReq(proxyReq, req, res) {
+  // add custom header
+  const cookies = parseCookies(req);
+
+  //console.log(JSON.stringify(req.headers)+"#########################################################")
+  //console.log(JSON.stringify(req.headers['authorization'])+"#########################################################")
+  //proxyReq.setHeader('Authorization', req.headers['authorization']); //TODO do we really neeed to copy this
+}

@@ -23,5 +23,6 @@
   "reset_password_success_text": "Your password has successfully been reseted and an e-mail with your new password has been sent to your login e-mail address. <strong>Please check your e-mail, and follow the instructions in the e-mail to log into Sicuro.</strong>",
   "reset_password_failure_text": "<strong>Unfortunately we could not process your request. We are already working on a solution.<strong>",
   "request_link": "Request Link",
-  "invalid_email_text": "Please enter valid email address."
+  "invalid_email_text": "Please enter valid email address.",
+  "sign_out": "Sign out"
 }

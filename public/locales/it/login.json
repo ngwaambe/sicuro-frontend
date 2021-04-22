@@ -23,5 +23,6 @@
   "reset_password_success_text": "La password stata resettata e una email con la nuova password stata spedita al tuo indirizzo di login. <strong> Controlla la tua email e segui le istruzioni per accedere al tuo account</strong>",
   "reset_password_failure_text": "<strong>Purtroppo non è stato possibile elaborare la tua richiesta. Stiamo già lavorando a una soluzione.<strong>",
   "request_link": "Richiedi collegamento",
-  "invalid_email_text": "Inserisci indirizzo email valido."
+  "invalid_email_text": "Inserisci indirizzo email valido.",
+  "sign_out": "Sign out"
 }

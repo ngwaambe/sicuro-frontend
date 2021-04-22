@@ -21,7 +21,10 @@ export class ServiceError extends Error {
 export interface ResponseStatus {
   success: boolean
 }
-
+export interface ResponseData<T>{
+  status:number;
+  data?:T
+}
 
 export class FetchTimeoutError extends Error {
   constructor(message: string) {
@@ -30,12 +33,16 @@ export class FetchTimeoutError extends Error {
   }
 }
 
+export enum AppView{
+  DASCHBOARD,
+  SIGNIN,
+  SIGNUP,
+  USER_DETAILS,
+  TRANSACTION
+}
+
 export interface User {
-  loggedIn: boolean;
-  username?: string;
-  title?: string;
-  firstName?: string;
-  lastName?: string;
+  loggedIn: boolean
 }
 
 export enum Title {
@@ -56,6 +63,33 @@ export enum Language {
   it = "language_it"
 }
 
+export interface Address {
+  id: number,
+  street: string,
+  houseNumber: string,
+  streetExtension?: string,
+  postalCode: string,
+  city: string,
+  region?: string,
+  countryIso: string,
+  phoneNumber?: string
+}
+
+export interface Customer {
+  id:number,
+  customerNumber: string,
+  title: Title,
+  firstName: string,
+  lastName: string,
+  gender: string,
+  email: string,
+  preferedLanguage:Language,
+  applyVat:boolean,
+  organisation?:string,
+  address?: Address,
+  taxNumber?:string,
+  identityNumber?:string
+}
 
 export interface SignupRequest {
   organisation?: {
@@ -73,5 +107,7 @@ export interface SignupRequest {
 }
 
 export interface State {
-  user?: User
+  user?: User,
+  customer?:Customer
+  view?: AppView
 }
