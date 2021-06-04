@@ -38,13 +38,13 @@ const Activateaccount = (props) => {
 
 export const getServerSideProps = async(context)=>{
   console.log(context.query)
-  const  code = context.query.code
+  const  code = context.query.uuid
   if (code !== undefined) {
     const result = await activateAccount(code as string)
     console.log(result.success)
     return {props:{...await serverSideTranslations(context.locale, ["home", "common","slider"]), step:(result.success)?Step.SUCCESS : Step.FAILED}}
   }
-  return {props:{...await serverSideTranslations(context.locale, ["home", "common","slider"]), step:Step.SUCCESS}}
+  return {props:{...await serverSideTranslations(context.locale, ["home", "common","slider"]), step:Step.FAILED}}
 }
 
 Activateaccount.layout = LoginLayout

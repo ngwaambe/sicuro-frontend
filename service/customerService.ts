@@ -1,59 +1,51 @@
-import {Address, Customer, Language, ResponseData, ServiceError, Title} from "../state";
+import {
+  Address,
+  Customer,
+  Language,
+  ResponseData,
+  Title,
+  UpdateCustomerRequest,
+} from "../state";
 import {APP_BASE_URL} from "../config";
-import {checkStatus, getErrorMessage} from "./common";
+import {checkStatus, redirectTo, toCustomer, toResponseData} from "./common";
 
-
-export const toAddress = (address: any): Address =>({
-  id: address.id,
-  street: address.street,
-  houseNumber: address.houseNumber,
-  streetExtension: address.streetExtension,
-  postalCode: address.postalCode,
-  city: address.city,
-  region: address.region,
-  countryIso: address.countryIso,
-  phoneNumber: address.phoneNumber
-})
-
-
-
-export const toCustomer = (customer: any): Customer =>({
-  id: customer.id,
-  customerNumber: customer.customerNumber,
-  title: Title[customer.title],
-  firstName: customer.firstName,
-  lastName: customer.lastName,
-  gender: customer.gender,
-  email: customer.email,
-  preferedLanguage:Language[customer.preferedLanguage]?? Language.SELECT,
-  applyVat:customer.applyVat,
-  organisation:customer.organisation,
-  address: toAddress(customer.address),
-  taxNumber: customer.taxNumber,
-  identityNumber: customer.identityNumber
-
-})
-
-export const formatCustomerName = (customer:Customer): string =>{
-  return `${customer.title} ${customer.firstName} ${customer.lastName}`
-}
-
-export const toResponseData = <T>(status:number, data?:T): ResponseData<T>=>({
-  status:status,
-  data:data
-})
-
-export const getCustomer = (customerId: string, token:string): Promise<ResponseData<Customer>> => {
+export const getCustomer = (customerId: string): Promise<ResponseData<Customer>> => {
   console.log(`${APP_BASE_URL()}/api/customers/${customerId}`)
   return fetch(`${APP_BASE_URL()}/api/customers/${customerId}`, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Bearer ${token}`
     },
     method: 'GET'
   }).then(checkStatus({
     success: (data, resp) => toResponseData(resp.status, toCustomer(data)),
-    error: (data, resp) => toResponseData(resp.status, null)
+    error: (data, resp) =>{
+      if (resp.status === 401) {
+        return redirectTo("http://localhost:3000/authenticate")
+      }
+      return toResponseData(resp.status, null)
+    }
   }))
 }
+
+export const updatePersonalData = (customerId: number, request:UpdateCustomerRequest): Promise<ResponseData<Customer>> => {
+  return fetch(`${APP_BASE_URL()}/api/customers/${customerId}`, {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+    body: JSON.stringify(request),
+    method: 'PUT'
+  }).then(checkStatus({
+    success: (data, resp) => {
+      return toResponseData(resp.status, toCustomer(data))
+    },
+    error: (data, resp) => {
+      if (resp.status === 401) {
+         return redirectTo("http://localhost:3000/authenticate")
+      }
+      return toResponseData(resp.status, null)
+    }
+  }))
+}
+

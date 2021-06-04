@@ -1,40 +1,57 @@
 import { Request, Response } from 'express';
 import {SERVICE_BASE_URL} from './../config';
-import jwt_decode from "jwt-decode";
-const memCache = require("../service/get-cache");
+import{ getCustomerId, getTokenExpirationDate, hasTemproraryPwd, hasSecurityQuestion } from "../service/common"
+const memCache = require('memory-cache');
+
 
 export default async (req: Request, mainResponse: Response, next: any) => {
   const serviceBaseUrl = SERVICE_BASE_URL()
   const tokenRequest = JSON.parse(req.body);
   if (tokenRequest !== undefined && tokenRequest.token !== undefined && memCache.get(tokenRequest.token)) {
        const payload = memCache.get(tokenRequest.token)
-       const expirationDate = getTokenExpirationDate(tokenRequest.token)
-       if ( ((expirationDate * 1000) - Date.now()) / 60000 < 3) {
-         try {
-           const result = await refreshToken(serviceBaseUrl, payload)
-           if(result.status === 200){
-             const ttl = ( (result.data as any).expires_in * 1000) - Date.now();
-             memCache.put( (result.data as any).access_token, result.data, ttl);
-             return mainResponse.json({active:true, exp:100, refreshToken:result.data})
+       if (payload !== null ) {
+         const expirationDate = getTokenExpirationDate(payload.access_token)
+         if ( ((expirationDate * 1000) - Date.now()) / 60000 < 3) {
+           try {
+             const result = await refreshToken(serviceBaseUrl, payload)
+             if(result.status === 200){
+               const access_token = (result.data as any).access_token
+               console.log("refreshed token:"+access_token)
+               const ttl = ( (result.data as any).expires_in * 1000) - Date.now();
+               memCache.put( tokenRequest.token, result.data, ttl);
+               const tempPwd = hasTemproraryPwd(access_token)
+               const securityQuestion = hasSecurityQuestion(access_token)
+               const customerId = getCustomerId(payload.access_token)
+               return mainResponse.json({
+                 active: true,
+                 tempPwd: tempPwd,
+                 securityQuestion: securityQuestion,
+                 customerId: customerId
+               })
+             }
+           } catch (err) {
+             console.log(`Authentication token is invalid. (message=${err.message})`, {
+               stack: err.stack,
+               meta: {req, mainResponse},
+             });
+             return mainResponse.json({active:false})
            }
-         } catch (err) {
-           console.log(`Authentication token is invalid. (message=${err.message})`, {
-             stack: err.stack,
-             meta: {req, mainResponse},
-           });
+         } else {
+           const tempPwd = hasTemproraryPwd(payload.access_token)
+           const securityQuestion = hasSecurityQuestion(payload.access_token)
+           const customerId = getCustomerId(payload.access_token)
+           return mainResponse.json({
+             active: true,
+             tempPwd: tempPwd,
+             securityQuestion: securityQuestion,
+             customerId: customerId
+           })
          }
-       } else {
-         return mainResponse.json({active:true, exp:100})
        }
   }
   return mainResponse.json({active:false, exp:0})
 };
 
-
-const getTokenExpirationDate = (token: string):number =>{
-  const decodedtoken = jwt_decode(token)
-  return decodedtoken['exp'];
-}
 
 const refreshToken = async (url: string, payload: any):Promise<any> =>{
   const response = await fetch(`${url}/api/auth/refresh_token`, {

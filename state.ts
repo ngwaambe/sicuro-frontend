@@ -21,6 +21,7 @@ export class ServiceError extends Error {
 export interface ResponseStatus {
   success: boolean
 }
+
 export interface ResponseData<T>{
   status:number;
   data?:T
@@ -42,14 +43,16 @@ export enum AppView{
 }
 
 export interface User {
-  loggedIn: boolean
+  loggedIn: boolean,
+  tempPwd?: boolean,
+  securityQuestion?: boolean,
+  customerId?: number
 }
 
 export enum Title {
   SELECT = "Select",
   Mr = "title-Mr",
   Ms = "title-Ms",
-  Mrs = "title-Mrs",
   Mr_Dr = "title-Mr_Dr",
   Mrs_Dr = "title-Ms_Dr",
   Mr_Prof = "title-Mr_Prof",
@@ -83,12 +86,23 @@ export interface Customer {
   lastName: string,
   gender: string,
   email: string,
-  preferedLanguage:Language,
+  language:Language,
   applyVat:boolean,
   organisation?:string,
   address?: Address,
   taxNumber?:string,
   identityNumber?:string
+}
+
+export interface UpdateCustomerRequest {
+  title: string,
+  firstName: string,
+  lastName: string,
+  language: string,
+  organisation?: {
+    name: string,
+    taxnumber: string
+  },
 }
 
 export interface SignupRequest {

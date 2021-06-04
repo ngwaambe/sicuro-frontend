@@ -1,6 +1,7 @@
 import express from 'express';
 import {parseCookies} from "./service/common";
-const memCache = require("./service/get-cache");
+import { v4 as uuidv4 } from 'uuid';
+const memCache = require('memory-cache');
 
 const DIFF = 900000
 const MEM: any = {expireDate: Date.now() + DIFF}
@@ -25,7 +26,7 @@ export const customer: any = {
     lastName:"Wolwgang",
     gender:"Male",
     email:"ngwaambe@hotmail.com",
-    preferedLanguage:"en",
+    language:"en",
     applyVat:false,
     organisation:"",
     address: address,
@@ -52,8 +53,10 @@ router.post('/auth/check_token', (req, res) => {
 
 router.post('/auth/token', (req, res) => {
     console.log("------ mock --------"+req.url)
-    var token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuZ3dhYW1iZUBob3RtYWlsLmNvbSIsImlhdCI6MTYxMTc1Nzc2NCwiZXhwIjoxNjExODQ0MTY0fQ.P1jQlOTpGldq4vBzWlQ2d8yavSWgt1vDLIMHiVbnM2pc876tVWwLOHKzkR5oa2IoITmQft7VBsUh3dZjzL_Rmw";
-    res.cookie("token",token,{
+    const sessionId = uuidv4()
+    var data = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuZ3dhYW1iZUBob3RtYWlsLmNvbSIsImlhdCI6MTYxMTc1Nzc2NCwiZXhwIjoxNjExODQ0MTY0fQ.P1jQlOTpGldq4vBzWlQ2d8yavSWgt1vDLIMHiVbnM2pc876tVWwLOHKzkR5oa2IoITmQft7VBsUh3dZjzL_Rmw";
+    memCache.put( sessionId, data, 25300000);
+    res.cookie("token",sessionId,{
         httpOnly: true,
         maxAge: 3600 * 1000,
         sameSite: "strict",

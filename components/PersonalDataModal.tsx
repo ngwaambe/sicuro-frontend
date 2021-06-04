@@ -1,8 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   IconButton,
   InputLabel,
@@ -16,10 +14,12 @@ import {Customer, Language, Title} from "../state";
 import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
 import {updateCustomer, useDispatch} from "../service/Auth.context";
-import {validateEmail} from "../service/UtilService";
+import {updatePersonalData} from "../service/customerService";
+import {languageToString, titleToString} from "../service/common";
 
 interface Props {
   onClose: ()=> void,
+  onSave:  ()=> void,
   customer:Customer
 }
 
@@ -39,12 +39,17 @@ interface LocalProps {
   languageError: boolean
 }
 
-const EditPersonaData = (props:Props) => {
+const EditPersonaData =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
   const [state, dispatch] = useDispatch()
-  const customer = state.customer;
+  const customer = props.customer;
+
+  const checkOrganisation = (customer:Customer):boolean => {
+    return ( !(customer.organisation === undefined) && customer.organisation !== null )? true: false;
+  }
+
   const [localState, setLocalState] = useState<LocalProps>({
-    isOrganistion: ( (customer.organisation !== undefined) && (customer.organisation.trim().length >0))? true: false,
+    isOrganistion: checkOrganisation(customer),
     organisationName: customer.organisation,
     organisationNameError: false,
     taxNumber: customer.taxNumber,
@@ -55,15 +60,20 @@ const EditPersonaData = (props:Props) => {
     firstNameError: false,
     lastName: customer.lastName,
     lastNameError: false,
-    language: customer.preferedLanguage,
+    language: customer.language,
     languageError:false
   })
-  const update = () => {
-    if (localState.organisationName && (localState.taxNumber === null || localState.taxNumber.length === 0) ||
+
+  const changeIsValid = () =>{
+    return (localState.organisationName  && (localState.taxNumber === null || localState.taxNumber.length === 0) ||
       localState.firstName === '' ||
       localState.lastName === '' ||
       localState.language === Language.SELECT ||
-      localState.title === Title.SELECT) {
+      localState.title === Title.SELECT);
+  }
+
+  const update = async () => {
+    if (changeIsValid()) {
       setLocalState({
         ...localState,
         titleError: (localState.title === Title.SELECT),
@@ -75,14 +85,45 @@ const EditPersonaData = (props:Props) => {
       });
       return;
     }
-    dispatch(updateCustomer( {
-        ...customer,
-        title: localState.title,
-        organisationName: localState.organisationName,
+    const request = {
+      title: titleToString(localState.title),
+      firstName: localState.firstName,
+      lastName: localState.lastName,
+      language: languageToString(localState.language),
+    }
+    if (localState.isOrganistion) {
+      request['organisation'] = {
+        name: localState.organisationName,
         taxNumber: localState.taxNumber
-      }));
-    props.onClose();
+      }
+    }
+    const result =  await updatePersonalData(customer.id, request)
+    if (result.status === 200) {
+      updateLocalState();
+      updateGlobalState;
+      props.onSave();
+    }
   }
+
+  const updateLocalState = () => setLocalState({
+    ...localState,
+    title: localState.title,
+    organisationName: localState.organisationName,
+    taxNumber: localState.taxNumber,
+    language: localState.language,
+    firstName: localState.firstName,
+    lastName: localState.lastName
+  })
+
+  const updateGlobalState = () => dispatch(updateCustomer({
+    ...customer,
+    title: localState.title,
+    organisation: localState.organisationName,
+    taxNumber: localState.taxNumber,
+    language: localState.language,
+    firstName: localState.firstName,
+    lastName: localState.lastName
+  }));
 
   const onChange = (propAttr: string, propErrorAttr: string) => (event) => {
     var isError
@@ -97,7 +138,6 @@ const EditPersonaData = (props:Props) => {
       ...localState,
       [propAttr]: event.target.value,
       [propErrorAttr]: isError,
-
     })
   }
 
@@ -206,7 +246,7 @@ const EditPersonaData = (props:Props) => {
         </ActionButton>
       </ModalFooter>
     </Modal>
-  )
+  );
 };
 
-export default EditPersonaData;
+export default EditPersonaData

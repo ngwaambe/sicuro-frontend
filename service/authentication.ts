@@ -3,8 +3,6 @@ import { APP_BASE_URL} from '../config';
 import { checkStatus } from './common';
 import { ResponseStatus } from '../state'
 import {defaultFailedResponsse, defaultSuccessResponse} from "./UtilService";
-import jwt_decode from "jwt-decode";
-const memCache = require("../service/get-cache");
 
 export interface GetTokenResponse {
   access_token: string;
@@ -16,8 +14,8 @@ export interface GetTokenResponse {
 
 export interface CheckTokenResponse {
   active: boolean;
-  exp: number;
-  refreshToken:GetTokenResponse;
+  tempPwd?: boolean,
+  securityQuestion?: boolean,
   error?: string;
   error_description?: string;
 }
@@ -37,8 +35,8 @@ const toTokenResponse = (tokenResponse: any, error: boolean):GetTokenResponse =>
 
 export const checkTokenResponse = (response: any, error: boolean):CheckTokenResponse => ({
   active: (!error)? response.active : false,
-  exp: (!error)? response.exp : 0,
-  refreshToken: ((!error) && !(response.refreshToken === undefined))? toTokenResponse(response.refreshToken, false): null,
+  tempPwd: (!error)? response.tempPwd : false,
+  securityQuestion: (!error)? response.securityQuestion : false,
   error: (error) ? response.error : null,
   error_description: (error) ? response.error_description : null
 });

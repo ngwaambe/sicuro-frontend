@@ -1,15 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import cookie from "cookie"
 
 export default (req:NextApiRequest, res:NextApiResponse) => {
-  res.setHeader("Set-Cookie", cookie.serialize("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
-      sameSite: "strict",
-      path: "/",
-    })
-  );
-  //res.writeHead(302, {Location:'/'});
+  if (req.cookies['token']) {
+      res.setHeader("Set-Cookie", "token=;httpOnly=true;maxAge=0;expires=Thu, 01 Jan 1970 00:00:01 GMT;sameSite=strict;path=/")
+  }
   res.statusCode = 200;
   res.end();
 }

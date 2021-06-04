@@ -6,14 +6,6 @@ type Action = (s: State) => State;
 // create the context
 export const UserContext = createContext({})
 
-// set up initial state which is used in the below `AuthProvider` function
-const initialUser = {
-  loggedIn: false,
-  username:"",
-  userId: 0
-}
-
-
 export const updateUser = (user: User) => (state:State) =>({
   ...state,
   user
@@ -47,23 +39,22 @@ export const useDispatch: any = () => useContext(UserContext)
 // create and export the AuthProvider - this is imported to the _app.js file
 // and wrapped around the whole app, providing context to the whole app, and
 // is called each time this specific context is accessed (updated or retrieved)
-export const AuthProvider = ({ children , loggedIn}) => {
-  //console.log("user:"+JSON.stringify(loggedIn)+",  username:"+JSON.stringify(username));
-  let localState = null;
-  /*if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('state')) {
-    localState = JSON.parse(sessionStorage.getItem('state') || '');
-  }*/
-  const [state, dispatch] = useReducer(reducer, {user: {loggedIn:loggedIn}});
-  /**/
+export const AuthProvider = ({ children , loggedIn, tempPwd, securityQuestion, customerId}) => {
+  const [state, dispatch] = useReducer(
+    reducer, {
+      user: {
+        loggedIn: loggedIn,
+        tempPwd: tempPwd,
+        securityQuestion: securityQuestion,
+        customerId: customerId
+      }
+    });
+
   useEffect(() => {
-      //console.log(state)
-      //sessionStorage.setItem('state', JSON.stringify(state));
       if (!loggedIn) {
         dispatch(clearState())
       }
   }, [loggedIn]);
-  /**/
-
   return (<UserContext.Provider  value={[state, dispatch]}>{children}</UserContext.Provider>)
 }
 

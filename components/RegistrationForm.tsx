@@ -193,6 +193,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
     setOpen(true);
     createAccount(toSignupRequest()).then(
       (res) => {
+        console.log(JSON.stringify(res))
         if (res.success) {
           setStep(RegistrationStep.done)
           resetRegistrationform()
@@ -207,7 +208,6 @@ const RegistrationForm: React.FC<Props> = (props) => {
       setOpen(false)
       setStep(RegistrationStep.failed)
       resetRegistrationform()
-      console.log(error.message);
     });
   }
 

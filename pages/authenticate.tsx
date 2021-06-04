@@ -4,11 +4,7 @@ import LoginLayout from "../components/layouts/LoginLayout";
 import LoginForm from "../components/LoginForm";
 import RegistrationForm from "../components/RegistrationForm";
 import ResetPasswordForm from "../components/ResetPasswordForm"
-import {NextPageContext} from "next";
 import Cookies from "universal-cookie";
-import {checkToken} from "../service/checkToken";
-import {useRouter} from "next/router";
-import {NextRouter} from "next/dist/next-server/lib/router/router";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {activateAccount} from "../service/createAccount";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "../components/Modal";
@@ -19,7 +15,7 @@ import CommonStyles from "../components/common.module.css";
 import styles from "../components/ResetPasswordForm.module.css";
 import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
 import {updateUser, useDispatch} from "../service/Auth.context";
-import {clearToken} from "../service/authentication";
+import {authServiceCheckToken, clearToken} from "../service/authentication";
 
 enum Action {
   LOGIN,
@@ -44,7 +40,7 @@ interface LocalState {
   activationStatus: ActivationStatus;
 }
 
-const ActivationModal = (props:ActivationProps) => {
+const ResetPasswordModal = (props:ActivationProps) => {
   const {t} = useTranslation(["login", "common"])
   return (
     <>
@@ -87,16 +83,10 @@ const LoginPage = (props) => {
     action: Action.LOGIN,
     activationStatus: props.activationStatus
   });
+
   useEffect( () => {
-    //delete toke
-    console.log("clear token");
     clearToken();
-    dispatch(updateUser(
-      {
-        loggedIn: false,
-        username:'',
-      }
-    ));
+    dispatch(updateUser({loggedIn: false, customerId:undefined}));
   }, []);
 
 
@@ -130,7 +120,7 @@ const LoginPage = (props) => {
         <div>
           <div className={styleName}>
             { (state.activationStatus !== undefined && state.activationStatus != ActivationStatus.EXPIRED) &&
-              <ActivationModal onClose={doLogin} status={state.activationStatus}/>
+              <ResetPasswordModal onClose={doLogin} status={state.activationStatus}/>
             }
             {state.action ===  Action.RESET_PASSWORD && <ResetPasswordForm onClose={doLogin} /> }
             {(state.action === Action.LOGIN || state.action === Action.RESET_PASSWORD)  && <LoginForm resetPassword={resetPassword}/>}
@@ -147,12 +137,11 @@ const LoginPage = (props) => {
 }
 
 export const  getServerSideProps = async(ctx) => {
-
   const cookies = new Cookies(ctx.req ? ctx.req.headers.cookie : null);
   const token = cookies.get('token')
   if (token !== '' && token !== undefined) {
-    const isloggedIn =  await checkToken(token)
-    if (isloggedIn) {
+    const result =  await authServiceCheckToken(token)
+    if (result.active) {
       return {
         redirect: {
           permanent: false,

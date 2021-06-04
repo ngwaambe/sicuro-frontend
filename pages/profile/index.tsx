@@ -1,22 +1,17 @@
-import React, {useEffect} from "react";
+import React from "react";
 import LoginLayout from "../../components/layouts/LoginLayout";
-import {checkToken} from "../../service/checkToken";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {getCustomerId, parseCookies} from "../../service/common";
+import {parseCookies} from "../../service/common";
 import Container from "@material-ui/core/Container";
-import {updateCustomer, useDispatch} from "../../service/Auth.context";
-import jwt_decode from "jwt-decode";
 import Grid from "@material-ui/core/Grid";
-import {getCustomer, toCustomer} from "../../service/customerService";
+import { getCustomerSSR,} from "../../service/ssrService";
 import {GetServerSideProps} from "next";
 import {Customer, ResponseData} from "../../state";
 import TransactionStats from "../../components/TransactionStats";
 import ProfileNaviagtionMenu from "../../components/ProfileNavigationMenu";
 
 const ProfilePage = ({data}) => {
-  const [state, dispatch] = useDispatch()
   const customer:Customer = JSON.parse(data)
-
   return (
     <React.Fragment>
       <div className="s-space-equal">
@@ -40,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const data = parseCookies(ctx.req)
     if (!(Object.keys(data).length === 0 && data.constructor === Object)) {
       if (data.token !== '' && data.token !== undefined) {
-        const result: ResponseData<Customer> = await getCustomer(getCustomerId(data.token), data.token)
+        const result: ResponseData<Customer> = await getCustomerSSR(data.token)
         if (result.status === 200) {
           return {
             props: {

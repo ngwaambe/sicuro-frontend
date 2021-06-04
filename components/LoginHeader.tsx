@@ -22,7 +22,7 @@ const LoginHeader = () => {
 
   const logout = () => {
     clearToken().then(()=>{
-      //dispatch(clearState());
+      dispatch(clearState());
       Router.push("/")
     })
   }

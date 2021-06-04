@@ -4,7 +4,7 @@ import {checkStatus} from "./common";
 import {defaultFailedResponsse, defaultSuccessResponse} from "./UtilService";
 
 export const createAccount = (signupRequest: SignupRequest): Promise<ResponseStatus> =>
-  fetch(`${APP_BASE_URL}/api/auth/signup`, {
+  fetch(`${APP_BASE_URL()}/api/auth/signup`, {
     body: JSON.stringify(signupRequest),
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
@@ -17,12 +17,11 @@ export const createAccount = (signupRequest: SignupRequest): Promise<ResponseSta
 
 
 export const activateAccount = (activationCode: string): Promise<ResponseStatus> =>
-  fetch(`${APP_BASE_URL}/api/auth/activate_account`, {
-    body: JSON.stringify({code:activationCode}),
+  fetch(`${APP_BASE_URL()}/api/auth/activate_account/${activationCode}`, {
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     },
-    method: 'PUT'
+    method: 'GET'
   }).then( checkStatus({
     success: (data) => defaultSuccessResponse(data),
     error: (data) => defaultFailedResponsse(data)

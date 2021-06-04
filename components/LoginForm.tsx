@@ -67,7 +67,7 @@ const LoginForm : React.FC<Props> = (props) => {
         if (!res.success) {
           setUserState({...userState, error: true})
         } else {
-          const user = { username: '',loggedIn: true}
+          const user = { loggedIn: true}
           dispatch(updateUser(user));
           dispatch(setView(AppView.DASCHBOARD)),
           router.push('/profile')

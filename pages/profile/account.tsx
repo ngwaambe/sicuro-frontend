@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import LoginLayout from "../../components/layouts/LoginLayout";
-import {checkToken} from "../../service/checkToken";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {parseCookies, getCustomerId} from "../../service/common";
+import {parseCookies} from "../../service/common";
 import Grid from "@material-ui/core/Grid";
 import {GetServerSideProps} from "next";
 import ProfileNaviagtionMenu from "../../components/ProfileNavigationMenu";
@@ -13,11 +12,9 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {ActionButton} from "../../components/CustomMaterialUI";
 import {useTranslation} from "next-i18next";
 import EditPersonaData from "../../components/PersonalDataModal";
-import {updateCustomer, useDispatch} from "../../service/Auth.context";
-import jwt_decode from "jwt-decode";
 import {Customer, ResponseData, ServiceError} from "../../state";
-import {getCustomer} from "../../service/customerService";
-
+import {getCustomer } from "../../service/customerService";
+import { getCustomerSSR} from "../../service/ssrService";
 const useStyle = makeStyles({
   root: {
     minHeight:"130px",
@@ -51,52 +48,74 @@ enum Action {
 }
 
 interface Props {
- action: Action
+ action: Action,
+ customer: Customer,
+ counter: number
 }
 
 
 const AccountPage = ({data}) => {
   const {t} = useTranslation('common')
   const classes = useStyle();
-  const [state, dispatch] = useDispatch()
   const customer:Customer = JSON.parse(data)
-  useEffect(() =>{
-    dispatch(updateCustomer(customer))
-  }, [])
-  const[localState, setLocalState] = useState<Props>({
-    action:Action.DO_NOTHING
+  const[state, setState] = useState<Props>({
+    action:Action.DO_NOTHING,
+    customer: customer,
+    counter: 0,
   })
 
+  const fetchCustomer = async () => {
+    const result: ResponseData<Customer> = await getCustomer(customer.id.toString())
+    if (result.status == 200){
+      setState({
+        ...state,
+        customer: result.data
+      })
+    }
+  }
+
+  useEffect(() =>{
+    fetchCustomer()
+  }, [state.counter])
+
+
   const changeEmail = () => {
-    setLocalState({...state, action:Action.CHANGE_EMAIL})
+    setState({...state, action:Action.CHANGE_EMAIL})
   }
 
   const changePassword = () => {
-    setLocalState({...state, action:Action.CHANGE_PASSWORD})
+    setState({...state, action:Action.CHANGE_PASSWORD})
   }
 
   const editPersonalData = () => {
-    setLocalState({...state, action:Action.EDIT_PERSONAL_DATA})
+    setState({...state, action:Action.EDIT_PERSONAL_DATA})
   }
 
   const closeModal = () => {
-    setLocalState({
+    setState({
       ...state,
       action:Action.DO_NOTHING
     })
-    console.log('Screw you'+state.action);
+  }
+
+  const saveAndCloseModal = () =>{
+    setState({
+      ...state,
+      action:Action.DO_NOTHING,
+      counter: state.counter + 1
+    })
   }
 
   return (
     <div className="s-space-equal">
-      {localState.action === Action.CHANGE_EMAIL && <EditPersonaData onClose={closeModal} customer={customer}/>}
-      {localState.action === Action.CHANGE_PASSWORD && <EditPersonaData onClose={closeModal} customer={customer}/>}
-      {localState.action === Action.EDIT_PERSONAL_DATA && <EditPersonaData onClose={closeModal} customer={customer}/>}
+      {state.action === Action.CHANGE_EMAIL && <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
+      {state.action === Action.CHANGE_PASSWORD && <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
+      {state.action === Action.EDIT_PERSONAL_DATA && <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
       {customer !== undefined  &&
       <Container maxWidth="lg">
         <Grid container justify="center" spacing={3}>
           <Grid item xs={12} sm={12} md={3}>
-            <ProfileNaviagtionMenu customer={customer}/>
+            <ProfileNaviagtionMenu customer={state.customer}/>
           </Grid>
           <Grid item xs={12} sm={12} md={9}>
             <Typography variant="h5" component="h2">{t('UserAccount')}</Typography>
@@ -105,7 +124,7 @@ const AccountPage = ({data}) => {
                  <Card variant="outlined" className={classes.root}>
                    <CardHeader title={t('emailAddress')} classes={{title:classes.title}}/>
                    <CardContent>
-                     <Typography align={"left"} component="span">{customer.email}</Typography>
+                     <Typography align={"left"} component="span">{state.customer.email}</Typography>
                    </CardContent>
                    <CardActions className={classes.action}>
                      <ActionButton
@@ -141,7 +160,7 @@ const AccountPage = ({data}) => {
                  <Card variant="outlined">
                    <CardHeader title={t('personalInformation')} classes={{title:classes.title}}/>
                    <CardContent>
-                     <Typography align={"left"} component="span">{t(customer.title)} {customer.firstName} {customer.lastName}</Typography>
+                     <Typography align={"left"} component="span">{t(state.customer.title)} {state.customer.firstName} {state.customer.lastName}</Typography>
                    </CardContent>
                    <CardActions className={classes.action}>
                      <ActionButton
@@ -178,7 +197,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const cookie = parseCookies(ctx.req)
     if (!(Object.keys(cookie).length === 0 && cookie.constructor === Object)) {
       if (cookie.token !== '' && cookie.token !== undefined) {
-        const result: ResponseData<Customer> = await getCustomer(getCustomerId(cookie.token), cookie.token)
+        const result: ResponseData<Customer> = await getCustomerSSR(cookie.token)
         if (result.status === 200) {
           return {
             props: {

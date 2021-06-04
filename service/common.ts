@@ -1,6 +1,4 @@
-import {ServiceError, FetchTimeoutError} from '../state';
-import express, {NextFunction} from 'express';
-import {State, User} from '../state'
+import {ServiceError, FetchTimeoutError, Title, Language, Address, Customer, ResponseData} from '../state';
 import cookie from "cookie"
 import jwt_decode from "jwt-decode";
 
@@ -82,3 +80,61 @@ export const getCustomerId = (token: string):string =>{
   const decodedToken =  jwt_decode(token);
   return decodedToken['customerId']
 }
+
+export const getTokenExpirationDate = (token: string):number =>{
+  const decodedtoken = jwt_decode(token)
+  return decodedtoken['exp'];
+}
+
+export const hasTemproraryPwd = (token: string): boolean => {
+  const decodedtoken = jwt_decode(token)
+  return decodedtoken['tempPwd'];
+}
+
+export const hasSecurityQuestion = (token: string): boolean => {
+  const decodedtoken = jwt_decode(token)
+  return decodedtoken['securityQuestion'];
+}
+
+
+export const toAddress = (address: any): Address =>({
+  id: address.id,
+  street: address.street,
+  houseNumber: address.houseNumber,
+  streetExtension: address.streetExtension,
+  postalCode: address.postalCode,
+  city: address.city,
+  region: address.region,
+  countryIso: address.countryIso,
+  phoneNumber: address.phoneNumber
+})
+
+export const toCustomer = (customer: any): Customer =>({
+  id: customer.id,
+  customerNumber: customer.customerNumber,
+  title: Title[customer.title],
+  firstName: customer.firstName,
+  lastName: customer.lastName,
+  gender: customer.gender,
+  email: customer.email,
+  language:Language[customer.language]?? Language.SELECT,
+  applyVat:customer.applyVat,
+  organisation:customer.organisation,
+  address: (customer.address !== undefined && customer.address !== null ) ? toAddress(customer.address) : null,
+  taxNumber: customer.taxNumber,
+  identityNumber: customer.identityNumber
+
+})
+
+export const formatCustomerName = (customer:Customer): string =>{
+  return `${customer.title} ${customer.firstName} ${customer.lastName}`
+}
+
+export const toResponseData = <T>(status:number, data?:T): ResponseData<T>=>({
+  status:status,
+  data:data
+})
+
+export const titleToString = (title:Title): string => Object.keys(Title).filter(k => Title[k] == title).pop()
+
+export const languageToString = (language:Language): string => Object.keys(Language).filter(k => Language[k] == language).pop()

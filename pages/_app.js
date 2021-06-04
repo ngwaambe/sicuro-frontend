@@ -13,7 +13,7 @@ import {MyTheme} from "../components/CustomMaterialUI";
 import {ThemeProvider} from "@material-ui/core";
 import nextI18NextConfig from '../next-i18next.config'
 import {parseCookies} from "../service/common";
-import {authServiceCheckToken} from "../service/authentication";
+import {authServiceCheckToken, CheckTokenResponse} from "../service/authentication";
 
 
 //import 'nprogress/nprogress.css'; //styles of nprogress
@@ -29,7 +29,7 @@ const SicuroApp = ({Component, pageProps, userProps }) => {
     const Layout = Component.layout || FrontendLayout;
     return (
         <ThemeProvider theme={localTheme}>
-            <AuthProvider loggedIn={userProps.loggedIn}>
+            <AuthProvider loggedIn={userProps.loggedIn} tempPwd={userProps.tempPwd} securityQuestion={userProps.securityQuestion}>
                 <MainLayout>
                     <Head>
                         <title>sicuro.com</title>
@@ -47,32 +47,20 @@ const SicuroApp = ({Component, pageProps, userProps }) => {
     )
 }
 
-
 SicuroApp.getInitialProps = async (appContext) => {
     const pageProps = await App.getInitialProps(appContext)
+    const result = await processToken(appContext)
+    return {pageProps, userProps: {loggedIn:result.active}}
+}
+
+const processToken = async (appContext) => {
     if (appContext.ctx.req) {
         const data = parseCookies(appContext.ctx.req)
-        if (!(Object.keys(data).length === 0 && data.constructor === Object)) {
-            if (data.token !== '' && data.token !== undefined) {
-                const result = await authServiceCheckToken(data.token)
-                if (result.active) {
-                    if (result.refreshToken!==null) {
-                        console.log(result)
-                        appContext.ctx.res.setHeader(
-                            'Set-Cookie',[`token=${result.refreshToken.access_token}; httpOnly; Max-Age=1800; SameSite=Strict; Path:/`])
-                    }
-                } else {
-                    appContext.ctx.res.setHeader(
-                        'Set-Cookie',[`token=; httpOnly; Max-Age:0; SameSite=Strict; Path:/`])
-                }
-                return {
-                    pageProps,
-                    userProps: {loggedIn: result.active}
-                }
-            }
+        if (!(Object.keys(data).length === 0 && data.constructor === Object) && data.token !== '' && data.token !== undefined) {
+            return await authServiceCheckToken(data.token)
         }
     }
-    return {pageProps, userProps: {loggedIn:false, username:''}}
+    return {active: false, exp:0 }
 }
 
 
