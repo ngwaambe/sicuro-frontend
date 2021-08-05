@@ -23,7 +23,7 @@ export interface ResponseStatus {
 }
 
 export interface ResponseData<T>{
-  status:number;
+  success:boolean;
   data?:T
 }
 
@@ -66,6 +66,11 @@ export enum Language {
   it = "language_it"
 }
 
+export enum PaymentType {
+  PAYPAL,
+  BANK
+}
+
 export interface Address {
   id: number,
   street: string,
@@ -82,8 +87,8 @@ export interface Customer {
   id:number,
   customerNumber: string,
   title: Title,
-  firstName: string,
-  lastName: string,
+  firstname: string,
+  lastname: string,
   gender: string,
   email: string,
   language:Language,
@@ -96,8 +101,8 @@ export interface Customer {
 
 export interface UpdateCustomerRequest {
   title: string,
-  firstName: string,
-  lastName: string,
+  firstname: string,
+  lastname: string,
   language: string,
   organisation?: {
     name: string,
@@ -118,6 +123,25 @@ export interface SignupRequest {
     password: string,
     preferredLanguage: string
   }
+}
+
+export interface PaymentAccount {
+  id:number,
+  owner: string,
+  type: PaymentType
+}
+
+export interface PaypalAccount extends  PaymentAccount{
+  email: string
+}
+
+export interface BankAccount extends PaymentAccount{
+  bankName: string,
+  iban: string,
+  swiftBic: string,
+  city: string,
+  postalCode: string,
+  countryIso: string
 }
 
 export interface State {

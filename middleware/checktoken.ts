@@ -16,14 +16,16 @@ export default async (req: Request, mainResponse: Response, next: any) => {
              const result = await refreshToken(serviceBaseUrl, payload)
              if(result.status === 200){
                const access_token = (result.data as any).access_token
-               console.log("refreshed token:"+access_token)
                const ttl = ( (result.data as any).expires_in * 1000) - Date.now();
                memCache.put( tokenRequest.token, result.data, ttl);
+
                const tempPwd = hasTemproraryPwd(access_token)
                const securityQuestion = hasSecurityQuestion(access_token)
                const customerId = getCustomerId(payload.access_token)
+
                return mainResponse.json({
                  active: true,
+                 orphanedToken:false,
                  tempPwd: tempPwd,
                  securityQuestion: securityQuestion,
                  customerId: customerId
@@ -42,6 +44,7 @@ export default async (req: Request, mainResponse: Response, next: any) => {
            const customerId = getCustomerId(payload.access_token)
            return mainResponse.json({
              active: true,
+             orphanedToken:false,
              tempPwd: tempPwd,
              securityQuestion: securityQuestion,
              customerId: customerId
@@ -49,7 +52,7 @@ export default async (req: Request, mainResponse: Response, next: any) => {
          }
        }
   }
-  return mainResponse.json({active:false, exp:0})
+  return mainResponse.json({active:false, orphanedToken:true})
 };
 
 

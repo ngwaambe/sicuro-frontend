@@ -12,19 +12,26 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {ActionButton} from "../../components/CustomMaterialUI";
 import {useTranslation} from "next-i18next";
 import EditPersonaData from "../../components/PersonalDataModal";
-import {Customer, ResponseData, ServiceError} from "../../state";
-import {getCustomer } from "../../service/customerService";
-import { getCustomerSSR} from "../../service/ssrService";
+import {Customer, PaymentAccount, ResponseData, ServiceError} from "../../state";
+import {getCustomer} from "../../service/customerService";
+import {getCustomerSSR} from "../../service/ssrService";
+import EditAdressModal from "../../components/AddressModal";
+import {getCountry} from "../../service/UtilService";
+import EmailModal from "../../components/EmailModal";
+import PasswordModal from "../../components/PasswordModal";
+import PaymentAccounts from "../../components/PaymentAccounts";
+import AddressModal from "../../components/AddressModal";
+
 const useStyle = makeStyles({
   root: {
-    minHeight:"130px",
+    minHeight: "130px",
   },
   title: {
-    fontSize:'1.15rem',
-    fontWeight:500,
+    fontSize: '1.15rem',
+    fontWeight: 500,
   },
   content: {
-    minHeight:"calc(100% - 49px)",
+    minHeight: "calc(100% - 49px)",
   },
   action: {
     borderTop: 'solid',
@@ -32,11 +39,12 @@ const useStyle = makeStyles({
     borderColor: '#0000001E'
   },
   actionItem: {
-    width:'100%',
-    justifyContent:'left'
+    width: '100%',
+    justifyContent: 'left'
   }
 
 })
+
 enum Action {
   DO_NOTHING,
   CHANGE_EMAIL,
@@ -48,25 +56,26 @@ enum Action {
 }
 
 interface Props {
- action: Action,
- customer: Customer,
- counter: number
+  action: Action,
+  customer: Customer,
+  counter: number
 }
 
 
 const AccountPage = ({data}) => {
   const {t} = useTranslation('common')
   const classes = useStyle();
-  const customer:Customer = JSON.parse(data)
-  const[state, setState] = useState<Props>({
-    action:Action.DO_NOTHING,
+  console.log(data + "#############")
+  const customer: Customer = JSON.parse(data)
+  const [state, setState] = useState<Props>({
+    action: Action.DO_NOTHING,
     customer: customer,
     counter: 0,
   })
-
+  const {i18n} = useTranslation()
   const fetchCustomer = async () => {
     const result: ResponseData<Customer> = await getCustomer(customer.id.toString())
-    if (result.status == 200){
+    if (result.success) {
       setState({
         ...state,
         customer: result.data
@@ -74,123 +83,167 @@ const AccountPage = ({data}) => {
     }
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     fetchCustomer()
   }, [state.counter])
 
 
   const changeEmail = () => {
-    setState({...state, action:Action.CHANGE_EMAIL})
+    setState({...state, action: Action.CHANGE_EMAIL})
   }
 
   const changePassword = () => {
-    setState({...state, action:Action.CHANGE_PASSWORD})
+    setState({...state, action: Action.CHANGE_PASSWORD})
   }
 
   const editPersonalData = () => {
-    setState({...state, action:Action.EDIT_PERSONAL_DATA})
+    setState({...state, action: Action.EDIT_PERSONAL_DATA})
+  }
+
+  const editAddress = () => {
+    setState({...state, action: Action.EDIT_ADDRESS})
   }
 
   const closeModal = () => {
     setState({
       ...state,
-      action:Action.DO_NOTHING
+      action: Action.DO_NOTHING
     })
   }
 
-  const saveAndCloseModal = () =>{
+  const saveAndCloseModal = () => {
     setState({
       ...state,
-      action:Action.DO_NOTHING,
+      action: Action.DO_NOTHING,
       counter: state.counter + 1
     })
   }
 
+  const streetExtension = (value: string) => {
+    if (value === undefined || value === '') {
+      return ''
+    } else
+      return (<>{value}<br/></>)
+  }
+
   return (
     <div className="s-space-equal">
-      {state.action === Action.CHANGE_EMAIL && <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
-      {state.action === Action.CHANGE_PASSWORD && <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
-      {state.action === Action.EDIT_PERSONAL_DATA && <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
-      {customer !== undefined  &&
+      {state.action === Action.CHANGE_EMAIL &&
+      <EmailModal onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
+      {state.action === Action.CHANGE_PASSWORD &&
+      <PasswordModal onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
+      {state.action === Action.EDIT_PERSONAL_DATA &&
+      <EditPersonaData onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
+      {state.action === Action.EDIT_ADDRESS &&
+      <AddressModal onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
+      {customer !== undefined &&
       <Container maxWidth="lg">
-        <Grid container justify="center" spacing={3}>
-          <Grid item xs={12} sm={12} md={3}>
-            <ProfileNaviagtionMenu customer={state.customer}/>
-          </Grid>
-          <Grid item xs={12} sm={12} md={9}>
-            <Typography variant="h5" component="h2">{t('UserAccount')}</Typography>
-            <Grid container spacing={3} alignItems="stretch" direction="row">
-               <Grid item xs={12} sm={12} md={4}>
-                 <Card variant="outlined" className={classes.root}>
-                   <CardHeader title={t('emailAddress')} classes={{title:classes.title}}/>
-                   <CardContent>
-                     <Typography align={"left"} component="span">{state.customer.email}</Typography>
-                   </CardContent>
-                   <CardActions className={classes.action}>
-                     <ActionButton
-                       className={classes.actionItem}
-                       startIcon={<EditTwoToneIcon/>}
-                       variant="outlined"
-                       size="medium"
-                       onClick={changeEmail}>
-                       {t('edit-email')}
-                     </ActionButton>
-                   </CardActions>
-                 </Card>
-               </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                 <Card variant="outlined">
-                   <CardHeader title={t('password')} classes={{title:classes.title}}/>
-                   <CardContent>
-                     <Typography align={"left"} component="span">*******</Typography>
-                   </CardContent>
-                   <CardActions className={classes.action}>
-                     <ActionButton
-                       className={classes.actionItem}
-                       startIcon={<EditTwoToneIcon/>}
-                       variant="outlined"
-                       size="medium"
-                       onClick={changePassword}>
-                       {t('change_password_label')}
-                     </ActionButton>
-                   </CardActions>
-                 </Card>
+          <Grid container justify="center" spacing={3}>
+              <Grid item xs={12} sm={12} md={3}>
+                  <ProfileNaviagtionMenu customer={state.customer}/>
               </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                 <Card variant="outlined">
-                   <CardHeader title={t('personalInformation')} classes={{title:classes.title}}/>
-                   <CardContent>
-                     <Typography align={"left"} component="span">{t(state.customer.title)} {state.customer.firstName} {state.customer.lastName}</Typography>
-                   </CardContent>
-                   <CardActions className={classes.action}>
-                     <ActionButton
-                       className={classes.actionItem}
-                       startIcon={<EditTwoToneIcon/>}
-                       variant="outlined"
-                       size="medium"
-                       onClick={editPersonalData}>
-                       {t('person-details-edit')}
-                     </ActionButton>
-                   </CardActions>
-                 </Card>
+              <Grid item xs={12} sm={12} md={9}>
+                  <Typography variant="h5" component="h2">{t('UserAccount')}</Typography>
+                  <Grid container spacing={3} alignItems="stretch" direction="row">
+                      <Grid item xs={12} sm={12} md={6}>
+                          <Card variant="outlined" className={classes.root}>
+                              <CardHeader title={t('email')} classes={{title: classes.title}}/>
+                              <CardContent>
+                                  <Typography align={"left"} component="span">{state.customer.email}</Typography>
+                              </CardContent>
+                              <CardActions className={classes.action}>
+                                  <ActionButton
+                                      className={classes.actionItem}
+                                      startIcon={<EditTwoToneIcon/>}
+                                      variant="outlined"
+                                      size="medium"
+                                      onClick={changeEmail}>
+                                    {t('edit-email')}
+                                  </ActionButton>
+                              </CardActions>
+                          </Card>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                          <Card variant="outlined">
+                              <CardHeader title={t('password')} classes={{title: classes.title}}/>
+                              <CardContent>
+                                  <Typography align={"left"} component="span">*******</Typography>
+                              </CardContent>
+                              <CardActions className={classes.action}>
+                                  <ActionButton
+                                      className={classes.actionItem}
+                                      startIcon={<EditTwoToneIcon/>}
+                                      variant="outlined"
+                                      size="medium"
+                                      onClick={changePassword}>
+                                    {t('change_password_label')}
+                                  </ActionButton>
+                              </CardActions>
+                          </Card>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                          <Card variant="outlined">
+                              <CardHeader title={t('personalInformation')} classes={{title: classes.title}}/>
+                              <CardContent>
+                                  <Typography align={"left"}
+                                              component="span">{t(state.customer.title)} {state.customer.firstname} {state.customer.lastname}</Typography>
+                              </CardContent>
+                              <CardActions className={classes.action}>
+                                  <ActionButton
+                                      className={classes.actionItem}
+                                      startIcon={<EditTwoToneIcon/>}
+                                      variant="outlined"
+                                      size="medium"
+                                      onClick={editPersonalData}>
+                                    {t('person-details-edit')}
+                                  </ActionButton>
+                              </CardActions>
+                          </Card>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                          <Card variant="outlined">
+                              <CardHeader title={t('address')} classes={{title: classes.title}}/>
+                              <CardContent>
+                                {state.customer.address !== null &&
+                                <>
+                                    <Typography align={"left"} component="span">
+                                      {state.customer.address.street} {state.customer.address.houseNumber}
+                                    </Typography>
+                                    <Typography align={"lefte"} component="br"/>
+                                    <Typography align={"left"} component="span">
+                                      {state.customer.address.postalCode} {state.customer.address.city}
+                                    </Typography>
+                                    <Typography component="br"/>
+                                    <Typography align={"left"} component={"span"}>
+                                      {getCountry(state.customer.address.countryIso, i18n.language)}
+                                    </Typography>
+                                </>
+                                }
+                              </CardContent>
+                              <CardActions className={classes.action}>
+                                  <ActionButton
+                                      className={classes.actionItem}
+                                      startIcon={<EditTwoToneIcon/>}
+                                      variant="outlined"
+                                      size="medium"
+                                      onClick={editAddress}>
+                                    {t('person-details-edit')}
+                                  </ActionButton>
+                              </CardActions>
+                          </Card>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={12}>
+                          <Typography variant="h5" component="h2">Payment accounts</Typography>
+                          <PaymentAccounts customerId={state.customer.id}/>
+                      </Grid>
+                  </Grid>
               </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                 <Card variant="outlined">
-                   <Typography align={"left"} variant="h5" component="h1">Address</Typography>
-                 </Card>
-              </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                 <Card variant="outlined">
-                   <Typography align={"left"} variant="h5" component="h1">Payment Accounts</Typography>
-                 </Card>
-              </Grid>
-               </Grid>
-            </Grid>
           </Grid>
       </Container>
       }
     </div>
-)};
+  )
+}
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (ctx.res) {
@@ -198,10 +251,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (!(Object.keys(cookie).length === 0 && cookie.constructor === Object)) {
       if (cookie.token !== '' && cookie.token !== undefined) {
         const result: ResponseData<Customer> = await getCustomerSSR(cookie.token)
-        if (result.status === 200) {
+        if (result.success) {
           return {
             props: {
-              ...await serverSideTranslations(ctx.locale, ["common", "login"]),
+              ...await serverSideTranslations(ctx.locale, ["common"]),
               data: JSON.stringify(result.data)
             }
           }

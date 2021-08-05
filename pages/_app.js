@@ -48,9 +48,35 @@ const SicuroApp = ({Component, pageProps, userProps }) => {
 }
 
 SicuroApp.getInitialProps = async (appContext) => {
+    const { res } = appContext.ctx;
     const pageProps = await App.getInitialProps(appContext)
     const result = await processToken(appContext)
-    return {pageProps, userProps: {loggedIn:result.active}}
+    const isProtectedRoute = appContext.ctx.pathname === '/profile'
+    if (result.active === false) {
+        if (isProtectedRoute){
+            if (res) {
+                res.statusCode = 302
+                res.setHeader("Location", "/authenticate")
+                res.end();
+            } else {
+                await Router.push("/authenticate");
+            }
+        }
+    } else {
+        if (isProtectedRoute) {
+            if (result.tempPwd) {
+                //redirect to password change
+                await Router.push("/reset_password");
+            }
+        }
+        return {
+            pageProps, userProps: {
+                loggedIn: result.active,
+                tempPwd: result.tempPwd,
+                securityQuestion: result.securityQuestion
+            }
+        }
+    }
 }
 
 const processToken = async (appContext) => {

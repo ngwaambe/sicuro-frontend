@@ -3,10 +3,10 @@ import Avatar from "@material-ui/core/Avatar";
 import React from "react";
 import {Customer} from "../state";
 import Link from "next/link";
+import Router from 'next/router';
 import {useTranslation} from "next-i18next";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {deepOrange} from "@material-ui/core/colors";
-import {formatCustomerName} from "../service/customerService";
 
 const useStyles = makeStyles((theme) => ({
   orange: {
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     width: '48px',
     height: '48px'
   }
+
 }));
 
 interface Props{
@@ -28,34 +29,29 @@ const ProfileNaviagtionMenu = ({customer}) => {
   const {t} = useTranslation('common')
 
   const formatName = ():string => {
-    return `${t(customer.title)} ${customer.firstName} ${customer.lastName}`
+    return `${t(customer.title)} ${customer.firstname} ${customer.lastname}`
   }
+
+  const navigateToProfile = () => {
+    Router.push("/profile")
+  }
+
   return (
     <Card variant="outlined">
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.orange}>
-            {customer.lastName.trim().charAt(0)}{customer.firstName.trim().charAt(0)}
+            {customer.lastname.trim().charAt(0)}{customer.firstname.trim().charAt(0)}
           </Avatar>
         }
         title={formatName()}/>
       <CardContent>
         <MenuList>
-          <MenuItem>
-            <Link href="/profile"><a>My Sicuro</a></Link>
-          </MenuItem>
-          <MenuItem>
-            <Link href="/profile"><a>{t('StartTransaction')}</a></Link>
-          </MenuItem>
-          <MenuItem>
-            <Link href="/profile/account"><a>{t('UserAccount')}</a></Link>
-          </MenuItem>
-          <MenuItem>
-            <Link href="/profile"><a>{t('MyTransactions')}</a></Link>
-          </MenuItem>
-          <MenuItem>
-            <Link href="/profile"><a>{t('PaymentDocumentation')}</a></Link>
-          </MenuItem>
+          <MenuItem onClick={ () => {Router.push("/profile")}}>My Sicuro</MenuItem>
+          <MenuItem onClick={ () => {Router.push("/profile")}}>{t('StartTransaction')}</MenuItem>
+          <MenuItem onClick={ () => {Router.push("/profile/account")}}>{t('UserAccount')}</MenuItem>
+          <MenuItem onClick={ () => {Router.push("/profile/account")}}>{t('MyTransactions')}</MenuItem>
+          <MenuItem onClick={ () => {Router.push("/profile/account")}}>{t('PaymentDocumentation')}</MenuItem>
         </MenuList>
       </CardContent>
     </Card>

@@ -111,6 +111,7 @@ p {
 body a {
   color: #666666;
   text-decoration: none;
+  width: 100%;
 }
 a:active,
 a:hover,

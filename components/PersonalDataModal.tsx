@@ -14,7 +14,7 @@ import {Customer, Language, Title} from "../state";
 import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
 import {updateCustomer, useDispatch} from "../service/Auth.context";
-import {updatePersonalData} from "../service/customerService";
+import {updateCustomerPersonalData} from "../service/customerService";
 import {languageToString, titleToString} from "../service/common";
 
 interface Props {
@@ -41,14 +41,14 @@ interface LocalProps {
 
 const EditPersonaData =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
-  const [state, dispatch] = useDispatch()
+  const [, dispatch] = useDispatch()
   const customer = props.customer;
 
   const checkOrganisation = (customer:Customer):boolean => {
     return ( !(customer.organisation === undefined) && customer.organisation !== null )? true: false;
   }
 
-  const [localState, setLocalState] = useState<LocalProps>({
+  const [state, setState] = useState<LocalProps>({
     isOrganistion: checkOrganisation(customer),
     organisationName: customer.organisation,
     organisationNameError: false,
@@ -56,48 +56,48 @@ const EditPersonaData =  (props:Props) => {
     taxNumberError: false,
     title: customer.title,
     titleError: false,
-    firstName: customer.firstName,
+    firstName: customer.firstname,
     firstNameError: false,
-    lastName: customer.lastName,
+    lastName: customer.lastname,
     lastNameError: false,
     language: customer.language,
     languageError:false
   })
 
   const changeIsValid = () =>{
-    return (localState.organisationName  && (localState.taxNumber === null || localState.taxNumber.length === 0) ||
-      localState.firstName === '' ||
-      localState.lastName === '' ||
-      localState.language === Language.SELECT ||
-      localState.title === Title.SELECT);
+    return (state.organisationName  && (state.taxNumber === null || state.taxNumber.length === 0) ||
+      state.firstName === '' ||
+      state.lastName === '' ||
+      state.language === Language.SELECT ||
+      state.title === Title.SELECT);
   }
 
   const update = async () => {
     if (changeIsValid()) {
-      setLocalState({
-        ...localState,
-        titleError: (localState.title === Title.SELECT),
-        firstNameError: (localState.firstName === ''),
-        lastNameError: (localState.lastName === ''),
-        organisationNameError: (localState.isOrganistion && localState.organisationName === ''),
-        taxNumberError: (localState.isOrganistion && localState.taxNumber === ''),
-        languageError: (localState.language === Language.SELECT)
+      setState({
+        ...state,
+        titleError: (state.title === Title.SELECT),
+        firstNameError: (state.firstName === ''),
+        lastNameError: (state.lastName === ''),
+        organisationNameError: (state.isOrganistion && state.organisationName === ''),
+        taxNumberError: (state.isOrganistion && state.taxNumber === ''),
+        languageError: (state.language === Language.SELECT)
       });
       return;
     }
     const request = {
-      title: titleToString(localState.title),
-      firstName: localState.firstName,
-      lastName: localState.lastName,
-      language: languageToString(localState.language),
+      title: titleToString(state.title),
+      firstname: state.firstName,
+      lastname: state.lastName,
+      language: languageToString(state.language),
     }
-    if (localState.isOrganistion) {
+    if (state.isOrganistion) {
       request['organisation'] = {
-        name: localState.organisationName,
-        taxNumber: localState.taxNumber
+        name: state.organisationName,
+        taxNumber: state.taxNumber
       }
     }
-    const result =  await updatePersonalData(customer.id, request)
+    const result =  await updateCustomerPersonalData(customer.id, request)
     if (result.status === 200) {
       updateLocalState();
       updateGlobalState;
@@ -105,24 +105,24 @@ const EditPersonaData =  (props:Props) => {
     }
   }
 
-  const updateLocalState = () => setLocalState({
-    ...localState,
-    title: localState.title,
-    organisationName: localState.organisationName,
-    taxNumber: localState.taxNumber,
-    language: localState.language,
-    firstName: localState.firstName,
-    lastName: localState.lastName
+  const updateLocalState = () => setState({
+    ...state,
+    title: state.title,
+    organisationName: state.organisationName,
+    taxNumber: state.taxNumber,
+    language: state.language,
+    firstName: state.firstName,
+    lastName: state.lastName
   })
 
   const updateGlobalState = () => dispatch(updateCustomer({
     ...customer,
-    title: localState.title,
-    organisation: localState.organisationName,
-    taxNumber: localState.taxNumber,
-    language: localState.language,
-    firstName: localState.firstName,
-    lastName: localState.lastName
+    title: state.title,
+    organisation: state.organisationName,
+    taxNumber: state.taxNumber,
+    language: state.language,
+    firstname: state.firstName,
+    lastname: state.lastName
   }));
 
   const onChange = (propAttr: string, propErrorAttr: string) => (event) => {
@@ -134,8 +134,8 @@ const EditPersonaData =  (props:Props) => {
     } else {
       isError = (event.target.value !== '') ? false : true
     }
-    setLocalState({
-      ...localState,
+    setState({
+      ...state,
       [propAttr]: event.target.value,
       [propErrorAttr]: isError,
     })
@@ -153,83 +153,83 @@ const EditPersonaData =  (props:Props) => {
       </ModalHeader>
       <ModalBody>
         <FormControl className={CommonStyles.formControl}>
-          {localState.isOrganistion &&
+          {state.isOrganistion &&
           <>
               <StyledTextField
                   id="person_organisation"
                   label={t('login:organisation_name_label')}
                   autoFocus={true}
-                  helperText={localState.organisationNameError && t('login:organisation_name_missing')}
+                  helperText={state.organisationNameError && t('login:organisation_name_missing')}
                   type="text"
                   fullWidth={true}
-                  error={localState.organisationNameError}
-                  value={localState.organisationName}
+                  error={state.organisationNameError}
+                  value={state.organisationName}
                   onChange={onChange("organisationName", "organisationNameError")}/>
 
               <StyledTextField
                   id="person_taxnumber"
                   label={t('login:taxnumber_label')}
                   autoFocus={true}
-                  helperText={localState.taxNumberError && t('login:taxnumber_missing')}
+                  helperText={state.taxNumberError && t('login:taxnumber_missing')}
                   type="text"
                   fullWidth={true}
-                  error={localState.taxNumberError}
-                  value={localState.taxNumber} onChange={onChange("taxNumber", "taxNumberError")}/>
+                  error={state.taxNumberError}
+                  value={state.taxNumber} onChange={onChange("taxNumber", "taxNumberError")}/>
           </>
           }
 
-          <StyledFormControls error={localState.titleError}>
+          <StyledFormControls error={state.titleError}>
             <InputLabel>{t('common:title')}</InputLabel>
             <Select
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}
               labelId="title-label"
               id="person_title"
-              value={localState.title}
-              error={localState.titleError}
+              value={state.title}
+              error={state.titleError}
               onChange={onChange("title", "titleError")}>
               {Object.values(Title).map(
                 (item) => (
                   <MenuItem value={item} key={item.valueOf()}>{t('common:' + item.valueOf())}</MenuItem>)
               )}
             </Select>
-            {localState.titleError && <FormHelperText>Error</FormHelperText>}
+            {state.titleError && <FormHelperText>Error</FormHelperText>}
           </StyledFormControls>
 
           <StyledTextField
             id="person_firstname"
             label={t('login:firstname_label')}
             autoFocus={true}
-            helperText={localState.firstNameError && t('login:firstname_missing')}
+            helperText={state.firstNameError && t('login:firstname_missing')}
             type="text"
             fullWidth={true}
-            error={localState.firstNameError}
-            value={localState.firstName} onChange={onChange("firstName", "firstNameError")}/>
+            error={state.firstNameError}
+            value={state.firstName} onChange={onChange("firstName", "firstNameError")}/>
 
           <StyledTextField
             id="person_lastname"
             label={t('login:lastname_label')}
             autoFocus={true}
-            helperText={localState.lastNameError && t('login:lastname_missing')}
+            helperText={state.lastNameError && t('login:lastname_missing')}
             type="text"
             fullWidth={true}
-            error={localState.lastNameError}
-            value={localState.lastName} onChange={onChange("lastName", "lastNameError")}/>
+            error={state.lastNameError}
+            value={state.lastName} onChange={onChange("lastName", "lastNameError")}/>
 
-          <StyledFormControls error={localState.titleError}>
+          <StyledFormControls error={state.titleError}>
             <InputLabel>{t('common:chooseLanguage')}</InputLabel>
             <Select
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}
               labelId="language-label"
               id="person_language"
-              value={localState.language}
-              error={localState.languageError}
+              value={state.language}
+              error={state.languageError}
               onChange={onChange("language", "languageError")}>
               {Object.values(Language).map(
                 lang => (
                   <MenuItem value={lang} key={lang.valueOf()}>{t('common:' + lang.valueOf())}</MenuItem>)
               )}
             </Select>
-            {localState.languageError && <FormHelperText>Error</FormHelperText>}
+            {state.languageError && <FormHelperText>Error</FormHelperText>}
           </StyledFormControls>
 
 

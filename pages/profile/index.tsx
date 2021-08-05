@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (!(Object.keys(data).length === 0 && data.constructor === Object)) {
       if (data.token !== '' && data.token !== undefined) {
         const result: ResponseData<Customer> = await getCustomerSSR(data.token)
-        if (result.status === 200) {
+        if (result.success) {
           return {
             props: {
               ...await serverSideTranslations(ctx.locale, ["common"]),

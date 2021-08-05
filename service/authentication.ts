@@ -14,6 +14,7 @@ export interface GetTokenResponse {
 
 export interface CheckTokenResponse {
   active: boolean;
+  orphanedToken: boolean,
   tempPwd?: boolean,
   securityQuestion?: boolean,
   error?: string;
@@ -37,6 +38,7 @@ export const checkTokenResponse = (response: any, error: boolean):CheckTokenResp
   active: (!error)? response.active : false,
   tempPwd: (!error)? response.tempPwd : false,
   securityQuestion: (!error)? response.securityQuestion : false,
+  orphanedToken: (!error)? response.orphanedToken: false,
   error: (error) ? response.error : null,
   error_description: (error) ? response.error_description : null
 });

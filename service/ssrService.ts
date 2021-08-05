@@ -14,8 +14,8 @@ export const getCustomerSSR = (token:string): Promise<ResponseData<Customer>> =>
       },
       method: 'GET'
     }).then(checkStatus({
-      success: (data, resp) => toResponseData(resp.status, toCustomer(data)),
-      error: (data, resp) => toResponseData(resp.status, null)
+      success: (data, resp) => toResponseData(true, toCustomer(data)),
+      error: (data, resp) => toResponseData(false, null)
     }))
   }
   // @ts-ignore

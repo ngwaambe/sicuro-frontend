@@ -55,19 +55,19 @@ const ResetPasswordModal = (props:ActivationProps) => {
         </ModalHeader>
         <ModalBody>
           {props.status === ActivationStatus.SUCCESS &&
-            <StyledFormTypography>{t('reset_password_text')}</StyledFormTypography>
+          <StyledFormTypography>{t('reset_password_text')}</StyledFormTypography>
           }
           {props.status === ActivationStatus.FAILED &&
           <StyledFormTypography><Trans>{t('reset_password_success_text')}</Trans></StyledFormTypography>
           }
-                  </ModalBody>
+        </ModalBody>
         <ModalFooter divider={true} confirm={true}>
           <ActionButton
-              variant="contained"
-              color="primary"
-              disableElevation={true}
-              size="large"
-              onClick={props.onClose}>
+            variant="contained"
+            color="primary"
+            disableElevation={true}
+            size="large"
+            onClick={props.onClose}>
             {t('common:close_label')}
           </ActionButton>
         </ModalFooter>
@@ -76,7 +76,7 @@ const ResetPasswordModal = (props:ActivationProps) => {
   )
 }
 
-const LoginPage = (props) => {
+const UpdatePasswordPage = (props) => {
   const[_,dispatch] = useDispatch();
 
   const [state, setState] = useState<LocalState>({
@@ -120,7 +120,7 @@ const LoginPage = (props) => {
         <div>
           <div className={styleName}>
             { (state.activationStatus !== undefined && state.activationStatus != ActivationStatus.EXPIRED) &&
-              <ResetPasswordModal onClose={doLogin} status={state.activationStatus}/>
+            <ResetPasswordModal onClose={doLogin} status={state.activationStatus}/>
             }
             {state.action ===  Action.RESET_PASSWORD && <ResetPasswordForm onClose={doLogin} /> }
             {(state.action === Action.LOGIN || state.action === Action.RESET_PASSWORD)  && <LoginForm resetPassword={resetPassword}/>}
@@ -141,7 +141,7 @@ export const  getServerSideProps = async(ctx) => {
   const token = cookies.get('token')
   if (token !== '' && token !== undefined) {
     const result =  await authServiceCheckToken(token)
-    if (result.active && !result.orphanedToken) {
+    if (result.active && !result.orphanedToken && result.tempPwd) {
       return {
         redirect: {
           permanent: false,
@@ -151,16 +151,6 @@ export const  getServerSideProps = async(ctx) => {
     }
   }
 
-  const  code = ctx.query.code
-  if (code !== undefined) {
-    const result = await activateAccount(code as string)
-    return {
-      props: {
-        ...await serverSideTranslations(ctx.locale, ["login", "common"]),
-        activationStatus: (result.success) ? ActivationStatus.SUCCESS : ActivationStatus.FAILED,
-      }
-    }
-  }
   return {
     props: {
       ...await serverSideTranslations(ctx.locale, ["login", "common"])
@@ -168,6 +158,6 @@ export const  getServerSideProps = async(ctx) => {
   }
 }
 
-LoginPage.layout = LoginLayout
+UpdatePasswordPage.layout = LoginLayout
 
-export default  LoginPage
+export default  UpdatePasswordPage

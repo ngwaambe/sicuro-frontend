@@ -29,8 +29,8 @@ module.exports = {
 
     },
     react: {
-        useSuspense: true,
-        wait: false,
+        useSuspense: false,
+        wait: true,
         transKeepBasicHtmlNodesFor: ['p','br', 'strong', 'i'],
         transSupportBasicHtmlNodes: true,
         bindI18n: 'languageChanged',

@@ -1,4 +1,13 @@
-import {ServiceError, FetchTimeoutError, Title, Language, Address, Customer, ResponseData} from '../state';
+import {
+  ServiceError,
+  FetchTimeoutError,
+  Title,
+  Language,
+  Address,
+  Customer,
+  ResponseData,
+  PaypalAccount, PaymentAccount, PaymentType
+} from '../state';
 import cookie from "cookie"
 import jwt_decode from "jwt-decode";
 
@@ -113,8 +122,8 @@ export const toCustomer = (customer: any): Customer =>({
   id: customer.id,
   customerNumber: customer.customerNumber,
   title: Title[customer.title],
-  firstName: customer.firstName,
-  lastName: customer.lastName,
+  firstname: customer.firstname,
+  lastname: customer.lastname,
   gender: customer.gender,
   email: customer.email,
   language:Language[customer.language]?? Language.SELECT,
@@ -127,13 +136,24 @@ export const toCustomer = (customer: any): Customer =>({
 })
 
 export const formatCustomerName = (customer:Customer): string =>{
-  return `${customer.title} ${customer.firstName} ${customer.lastName}`
+  return `${customer.title} ${customer.firstname} ${customer.lastname}`
 }
 
-export const toResponseData = <T>(status:number, data?:T): ResponseData<T>=>({
-  status:status,
+export const toResponseData = <T>(success:boolean, data?:T): ResponseData<T>=>({
+  success:success,
   data:data
 })
+
+export const toPaypalAccount = (account: any): PaypalAccount => ({
+  id: account.id,
+  type: account.type,
+  owner: account.owner,
+  email: account.email
+})
+
+export const toPaymentAccounts = (accounts: any[]): PaymentAccount[] => {
+  return accounts.map(it => (it.type === PaymentType.PAYPAL? toPaypalAccount(it): toPaypalAccount(it)))
+}
 
 export const titleToString = (title:Title): string => Object.keys(Title).filter(k => Title[k] == title).pop()
 
