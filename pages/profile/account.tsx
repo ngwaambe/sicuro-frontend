@@ -65,7 +65,6 @@ interface Props {
 const AccountPage = ({data}) => {
   const {t} = useTranslation('common')
   const classes = useStyle();
-  console.log(data + "#############")
   const customer: Customer = JSON.parse(data)
   const [state, setState] = useState<Props>({
     action: Action.DO_NOTHING,
@@ -84,8 +83,9 @@ const AccountPage = ({data}) => {
   }
 
   useEffect(() => {
+    console.log("use effect<"+JSON.stringify(state.counter)+">")
     fetchCustomer()
-  }, [state.counter])
+  }, [state.counter>0])
 
 
   const changeEmail = () => {
@@ -246,6 +246,7 @@ const AccountPage = ({data}) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log("_PROFILE_ACCOUNT_PAGE")
   if (ctx.res) {
     const cookie = parseCookies(ctx.req)
     if (!(Object.keys(cookie).length === 0 && cookie.constructor === Object)) {

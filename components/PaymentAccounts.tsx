@@ -83,7 +83,7 @@ const PaymentAccounts =  (props:Props) => {
       {!state.loading && state.accounts.length >= 0 &&
       <Grid container spacing={3} alignItems="stretch" direction="row">
         {state.accounts.map((item) => (
-          <Grid item xs={12} sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={6} key={item.id}>
             <Card variant="outlined">
               <CardContent>
                 <Typography align={"center"} component={"span"}>

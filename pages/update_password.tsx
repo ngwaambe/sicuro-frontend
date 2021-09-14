@@ -84,10 +84,9 @@ const UpdatePasswordPage = (props) => {
     activationStatus: props.activationStatus
   });
 
-  useEffect( () => {
-    clearToken();
-    dispatch(updateUser({loggedIn: false, customerId:undefined}));
-  }, []);
+  // useEffect( () => {
+  //   dispatch(updateUser({loggedIn: false, customerId:undefined}));
+  // }, []);
 
 
   const doRegistration = () => {
@@ -141,7 +140,7 @@ export const  getServerSideProps = async(ctx) => {
   const token = cookies.get('token')
   if (token !== '' && token !== undefined) {
     const result =  await authServiceCheckToken(token)
-    if (result.active && !result.orphanedToken && result.tempPwd) {
+    if (result.active && result.orphanedToken===false && result.tempPwd===false) {
       return {
         redirect: {
           permanent: false,

@@ -31,6 +31,7 @@ const ProfilePage = ({data}) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log("_PROFILE_INDEX_PAGE")
   if (ctx.res) {
     const data = parseCookies(ctx.req)
     if (!(Object.keys(data).length === 0 && data.constructor === Object)) {

@@ -98,7 +98,7 @@ const EditPersonaData =  (props:Props) => {
       }
     }
     const result =  await updateCustomerPersonalData(customer.id, request)
-    if (result.status === 200) {
+    if (result.success) {
       updateLocalState();
       updateGlobalState;
       props.onSave();

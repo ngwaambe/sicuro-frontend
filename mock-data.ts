@@ -51,13 +51,12 @@ export const paymentAccounts: any = [
     },
 ]
 
-router.post('/auth/check_token', (req, res) => {
+    router.post('/auth/check_token', (req, res) => {
     console.log("------> mock -------->"+req.url+"<mem>"+MEM.expireDate+"<mem>")
-    console.log("body:"+JSON.stringify(req.body))
     return res.json({
         active: memCache.get(req.body.token) !== null,
         orphanedToken: memCache.get(req.body.token) === null,
-        tempPwd: false,
+        tempPwd: true,
         securityQuestion: true,
         customerId: 1
     })

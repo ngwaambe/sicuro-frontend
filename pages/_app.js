@@ -48,35 +48,43 @@ const SicuroApp = ({Component, pageProps, userProps }) => {
 }
 
 SicuroApp.getInitialProps = async (appContext) => {
+    console.log("_APP_PAGE")
     const { res } = appContext.ctx;
     const pageProps = await App.getInitialProps(appContext)
     const result = await processToken(appContext)
     const isProtectedRoute = appContext.ctx.pathname === '/profile'
-    if (result.active === false) {
-        if (isProtectedRoute){
+
+    if (isProtectedRoute) {
+        if(result.active === false) {
             if (res) {
+                console.log("redirect_server_side")
                 res.statusCode = 302
                 res.setHeader("Location", "/authenticate")
                 res.end();
             } else {
+                console.log("redirect_client_side")
                 await Router.push("/authenticate");
             }
-        }
-    } else {
-        if (isProtectedRoute) {
-            if (result.tempPwd) {
-                //redirect to password change
-                await Router.push("/reset_password");
-            }
-        }
-        return {
-            pageProps, userProps: {
-                loggedIn: result.active,
-                tempPwd: result.tempPwd,
-                securityQuestion: result.securityQuestion
+        } else if (result.active === true && result.tempPwd) {
+            if (res) {
+                console.log("redirect_server_side")
+                res.statusCode = 302
+                res.setHeader("Location", "/update_password")
+                res.end();
+            } else {
+                console.log("redirect_client_side")
+                await Router.push("/update_password");
             }
         }
     }
+    return {
+        pageProps, userProps: {
+            loggedIn: result.active,
+            tempPwd: result.tempPwd,
+            securityQuestion: result.securityQuestion
+        }
+    }
+
 }
 
 const processToken = async (appContext) => {
