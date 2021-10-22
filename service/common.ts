@@ -97,12 +97,13 @@ export const getTokenExpirationDate = (token: string):number =>{
 
 export const hasTemproraryPwd = (token: string): boolean => {
   const decodedtoken = jwt_decode(token)
+  console.log(JSON.stringify(decodedtoken))
   return decodedtoken['tempPwd'];
 }
 
-export const hasSecurityQuestion = (token: string): boolean => {
+export const completeRegistration = (token: string): boolean => {
   const decodedtoken = jwt_decode(token)
-  return decodedtoken['securityQuestion'];
+  return decodedtoken['completeRegistration'];
 }
 
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import {SERVICE_BASE_URL} from './../config';
-import{ getCustomerId, getTokenExpirationDate, hasTemproraryPwd, hasSecurityQuestion } from "../service/common"
+import{ getCustomerId, getTokenExpirationDate, hasTemproraryPwd, completeRegistration } from "../service/common"
 const memCache = require('memory-cache');
 
 
@@ -20,14 +20,14 @@ export default async (req: Request, mainResponse: Response, next: any) => {
                memCache.put( tokenRequest.token, result.data, ttl);
 
                const tempPwd = hasTemproraryPwd(access_token)
-               const securityQuestion = hasSecurityQuestion(access_token)
+               const registrationNotCompleted = completeRegistration(access_token)
                const customerId = getCustomerId(payload.access_token)
 
                return mainResponse.json({
                  active: true,
                  orphanedToken:false,
                  tempPwd: tempPwd,
-                 securityQuestion: securityQuestion,
+                 completeRegistration: registrationNotCompleted,
                  customerId: customerId
                })
              }
@@ -40,13 +40,13 @@ export default async (req: Request, mainResponse: Response, next: any) => {
            }
          } else {
            const tempPwd = hasTemproraryPwd(payload.access_token)
-           const securityQuestion = hasSecurityQuestion(payload.access_token)
+           const registrationNotCompleted = completeRegistration(payload.access_token)
            const customerId = getCustomerId(payload.access_token)
            return mainResponse.json({
              active: true,
              orphanedToken:false,
              tempPwd: tempPwd,
-             securityQuestion: securityQuestion,
+             completeRegistration: registrationNotCompleted,
              customerId: customerId
            })
          }
@@ -70,6 +70,7 @@ const refreshToken = async (url: string, payload: any):Promise<any> =>{
   try {
     data = await response.text();
     data = JSON.parse(data);
+    console.log("access_tkeon:"+JSON.stringify(data))
   } catch (err) { /* ignore */
   }
   return {status:response.status, data};

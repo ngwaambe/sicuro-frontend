@@ -85,7 +85,7 @@ const ServiceIndexPage = () => {
               </div>
             </Grid>
           </Grid>
-          <Grid container justify="space-between">
+          <Grid container justifyContent="space-between">
             <Grid item xs={12} sm={12} md={4}>
               <div className="media mb-30">
                 <div className="aligneImage"><img src="/img/ico-001.png"/></div>

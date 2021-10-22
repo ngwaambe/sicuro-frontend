@@ -4,7 +4,7 @@ import CommonStyles from './common.module.css'
 import {authenticate} from '../service/authentication'
 import {
   Card,
-  CardContent,
+  CardContent, CircularProgress,
   Link
 } from '@material-ui/core';
 import {StyledCardActions, StyledTextField, ActionButton} from "./CustomMaterialUI";
@@ -30,6 +30,7 @@ interface UserState {
 const LoginForm : React.FC<Props> = (props) => {
   const {t} = useTranslation(['login','common']);
   const [ _ , dispatch] = useDispatch();
+  const [loading, setLoadingState] = useState(false)
   const [userState, setUserState] = useState<UserState>({
     username: '',
     usernameError: false,
@@ -62,6 +63,7 @@ const LoginForm : React.FC<Props> = (props) => {
       })
       return;
     }
+    setLoadingState(true);
     authenticate(userState.username, userState.password)
       .then(res => {
         if (!res.success) {
@@ -74,10 +76,16 @@ const LoginForm : React.FC<Props> = (props) => {
         }
       })
       .catch(error => {
-         setUserState({...userState, error: true})
-         console.log(+error.message);
-      });
+        setUserState({...userState, error: true})
+      }).finally(() => {
+        setLoadingState(false);
+      })
   };
+
+  const registration = (): void => {
+    router.push('/registration')
+  }
+
 
   return (
     <>
@@ -85,7 +93,7 @@ const LoginForm : React.FC<Props> = (props) => {
         <Card className={CommonStyles.cardForm}>
           <CardContent className={CommonStyles.cardFormContent}>
             <h2 className={Styles.loginHeader}><Trans>{t('login_header')}</Trans></h2>
-            {userState.error && <p className={Styles.loginError}>Wrong Credentials</p>}
+            {userState.error && <p className={Styles.loginError}>{t('login_error')}</p>}
             <div className={Styles.inputField}>
               <StyledTextField
                 id="username_id"
@@ -94,6 +102,7 @@ const LoginForm : React.FC<Props> = (props) => {
                 helperText={userState.usernameError && t('email_missing')}
                 type="text"
                 fullWidth={true}
+                disabled={loading}
                 error={userState.usernameError}
                 value={userState.username} onChange={onChange("username", "usernameError")}/>
             </div>
@@ -103,6 +112,7 @@ const LoginForm : React.FC<Props> = (props) => {
                 label={t('password_label')}
                 type="password"
                 fullWidth={true}
+                disabled={loading}
                 helperText={userState.passwordError && t('password_missing')}
                 error={userState.passwordError}
                 value={userState.password} onChange={onChange("password", "passwordError")}/>
@@ -118,7 +128,25 @@ const LoginForm : React.FC<Props> = (props) => {
               size={"large"}
               color="primary"
               disableElevation={true}
-              onClick={onLogin}>Sign in</ActionButton>
+              disabled={loading}
+              onClick={onLogin}>
+              { loading && <CircularProgress color="primary"  size={30} thickness={4}/>}
+              Sign in</ActionButton>
+          </StyledCardActions>
+          <CardContent>
+            <h2>{t('signup_header')}</h2>
+          </CardContent>
+          <StyledCardActions>
+            <ActionButton
+              variant="contained"
+              size="large"
+
+              fullWidth={true}
+              className={Styles.inputField}
+              disableElevation={true}
+              onClick={registration}>
+             {t('signup_button')}
+              </ActionButton>
           </StyledCardActions>
         </Card>
       </form>

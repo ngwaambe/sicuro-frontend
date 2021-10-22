@@ -206,6 +206,9 @@
   "newTransactions": "New transactions",
   "noRecordsFound": "No records found",
   "nothingTodo": "No action required.",
+  "new_password": "New password",
+  "repeat_new_password": "Repeat new password",
+  "password_not_match": "Password should match with confirmation password",
   "Objects": "Objects",
   "options": "Options",
   "organisation": "Organisation",
@@ -349,6 +352,7 @@
   "securityQuestion-resetpassword-success": "Password reset successful",
   "securityQuestion-resetpassword-text": "You requested a reset of your password. So that we can be sure you are the owner of this account, please answer the security question below.",
   "securityQuestion-selectQuestion": "Please select a security question",
+  "select": "Select",
   "seller-bank-payment-conditions": "Wire transfers with IBAN code to SEPA Countries have no additional costs. Wire transfers outside of SEPA countries carry additonal costs of 25 Euros.",
   "seller-confirmGoodsReception-info": "<p>You must confirm the reception of domain(s).</p><p>Please make sure that you are in full possession the domain(s) in question.</p><p>If you confirm the reception of domain(s), the inspection period will commence.</p>",
   "seller-paypal-payment-conditions": "This payment method has no addtional costs.",
@@ -624,5 +628,6 @@
   "language_en":"English",
   "language_it":"Italian",
   "language_es":"Spanish",
+  "language_required": "Language is required",
   "chooseAccountType": "Are you a company or an organization?"
 }

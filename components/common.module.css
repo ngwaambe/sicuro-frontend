@@ -146,8 +146,8 @@
 }
 
 .cardForm {
-  min-height: 360px;
-  max-height: 360px;
+  min-height: 380px;
+
   vertical-align: center;
   display: flex;
   flex: 2 1;

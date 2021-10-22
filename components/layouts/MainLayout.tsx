@@ -21,7 +21,7 @@ const MainLayout = (props: Props) => {
               <div className="footer-area-top">
                   <Container maxWidth="lg">
 
-                      <Grid container justify="space-evenly" spacing={4}>
+                      <Grid container justifyContent="space-evenly" spacing={4}>
                           <Grid item xs={12} sm={6} md={3} className="footerMenu">
                               <div className="footer-box">
                                   <h3 className="title-bar-footer">{t('menu-about_us')}</h3>
@@ -106,7 +106,7 @@ const MainLayout = (props: Props) => {
               </div>
               <div className="footer-area-bottom">
                   <Container maxWidth="lg">
-                      <Grid container justify="space-between">
+                      <Grid container justifyContent="space-between">
                           <Grid item xs={12} sm={6} md={10}>
                               <p>&copy; 2017 SICURO.COM - All rights reserved.</p>
                           </Grid>

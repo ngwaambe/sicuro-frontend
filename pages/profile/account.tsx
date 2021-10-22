@@ -72,14 +72,17 @@ const AccountPage = ({data}) => {
     counter: 0,
   })
   const {i18n} = useTranslation()
-  const fetchCustomer = async () => {
-    const result: ResponseData<Customer> = await getCustomer(customer.id.toString())
-    if (result.success) {
-      setState({
-        ...state,
-        customer: result.data
-      })
-    }
+
+  const fetchCustomer = () => {
+    getCustomer(customer.id.toString()).then( (result) => {
+      if (result.success) {
+        setState({
+          ...state,
+          customer: result.data
+        })
+      }
+      }
+    )
   }
 
   useEffect(() => {
@@ -138,7 +141,7 @@ const AccountPage = ({data}) => {
       <AddressModal onClose={closeModal} onSave={saveAndCloseModal} customer={state.customer}/>}
       {customer !== undefined &&
       <Container maxWidth="lg">
-          <Grid container justify="center" spacing={3}>
+          <Grid container justifyContent="center" spacing={3}>
               <Grid item xs={12} sm={12} md={3}>
                   <ProfileNaviagtionMenu customer={state.customer}/>
               </Grid>
@@ -209,7 +212,7 @@ const AccountPage = ({data}) => {
                                     <Typography align={"left"} component="span">
                                       {state.customer.address.street} {state.customer.address.houseNumber}
                                     </Typography>
-                                    <Typography align={"lefte"} component="br"/>
+                                    <Typography align={"left"} component="br"/>
                                     <Typography align={"left"} component="span">
                                       {state.customer.address.postalCode} {state.customer.address.city}
                                     </Typography>

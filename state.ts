@@ -50,7 +50,7 @@ export interface User {
 }
 
 export enum Title {
-  SELECT = "Select",
+  SELECT = "select",
   Mr = "title-Mr",
   Ms = "title-Ms",
   Mr_Dr = "title-Mr_Dr",
@@ -60,7 +60,7 @@ export enum Title {
 }
 
 export enum Language {
-  SELECT = "Select",
+  SELECT = "select",
   en = "language_en",
   es = "language_es",
   it = "language_it"
@@ -99,6 +99,15 @@ export interface Customer {
   identityNumber?:string
 }
 
+export enum SecurityQuestion {
+  DEFAULT_SELECT="choose_security_question",
+  GRAND_MOTHERS_MAIDEN_NAME="security_question_1",
+  CHILD_HOOD_NICNAME="security_question_2",
+  PLACE_FIRST_KISS="security_question_3",
+  PLACE_MOTHER_FATHER_MEET="security_question_4",
+  DAD_LICENCE_PLATE_FIRST_CAR="security_question_5",
+}
+
 export interface UpdateCustomerRequest {
   title: string,
   firstname: string,
@@ -113,16 +122,36 @@ export interface UpdateCustomerRequest {
 export interface SignupRequest {
   organisation?: {
     name: string,
-    taxnumber: string
+    taxNumber: string
   },
   contact: {
     title: string,
-    firstName: string,
-    lastName: string,
+    firstname: string,
+    lastname: string,
     email: string,
     password: string,
-    preferredLanguage: string
+    language: string
   }
+}
+
+export interface CompleteSignupRequest {
+  address: {
+    street: string,
+    streetExtension: string,
+    houseNumber: string,
+    postalCode: string,
+    city: string,
+    countryIso: string,
+    phoneNumber: string,
+  },
+  securityQuestion:{
+    question:SecurityQuestion,
+    answer: string
+  }
+}
+
+export interface ChangePasswordRequest {
+  password: string;
 }
 
 export interface PaymentAccount {

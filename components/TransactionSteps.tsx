@@ -30,7 +30,7 @@ const TransactionSteps = (props) => {
         <>
             <section className="container">
                 <div className={styles.transactionStepsContainer}>
-                    <Grid container spacing={4} justify="center">
+                    <Grid container spacing={4} justifyContent="center">
                         <Grid item xs={12}>
                             <h1 className={styles.transactionStepHeader}>
                                 <Trans>{t('slider-lead')}</Trans>

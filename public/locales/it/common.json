@@ -205,6 +205,9 @@
   "newTransactions": "Nuove transazioni",
   "noRecordsFound": "Nessun risultato",
   "nothingTodo": "Nessun'azione richiesta.",
+  "new_password": "Nuova password",
+  "repeat_new_password": "Conferma la nuova password",
+  "password_not_match": "La password di conferma non coincide",
   "Objects": "Oggetti",
   "options": "Opzioni",
   "organisation": "Organizzazione/Azienda",
@@ -346,6 +349,7 @@
   "securityQuestion-resetpassword-success": "La password è stata reimpostata con successo",
   "securityQuestion-resetpassword-text": "Hai richiesto di reimpostare la password. Per essere sicuri che tu sia il proprietario dell'account, rispondi alla seguente domanda di sicurezza.",
   "securityQuestion-selectQuestion": "Seleziona una domanda di sicurezza",
+  "select": "Selezionare",
   "seller-bank-payment-conditions": "I trasferimenti in paesi SEPA non prevedono costi aggiuntivi. I trasferimenti negli altri paesi hanno un costo aggiuntivo di 25 €.",
   "seller-confirmGoodsReception-info": "Ti preghiamo di confermare la ricezione del dominio(i). Verifica di essere realmente in possesso del dominio(i) in oggetto. Ricorda che se confermi di averlo ricevuto, inizierà il periodo di ispezione.",
   "seller-paypal-payment-conditions": "Questa modalità non prevede costi aggiuntivi.",
@@ -607,5 +611,6 @@
   "language_en":"Inglese",
   "language_it":"Italiano",
   "language_es":"Spagnolo",
+  "language_required": "La lingua è obbligatoria",
   "chooseAccountType": "Sei un'azienda o un'organizzazione ?"
 }

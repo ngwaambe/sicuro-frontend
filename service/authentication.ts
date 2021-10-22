@@ -16,7 +16,7 @@ export interface CheckTokenResponse {
   active: boolean;
   orphanedToken: boolean,
   tempPwd?: boolean,
-  securityQuestion?: boolean,
+  completeRegistration?: boolean,
   error?: string;
   error_description?: string;
 }
@@ -37,7 +37,7 @@ const toTokenResponse = (tokenResponse: any, error: boolean):GetTokenResponse =>
 export const checkTokenResponse = (response: any, error: boolean):CheckTokenResponse => ({
   active: (!error)? response.active : false,
   tempPwd: (!error)? response.tempPwd : false,
-  securityQuestion: (!error)? response.securityQuestion : false,
+  completeRegistration: (!error)? response.completeRegistration : false,
   orphanedToken: (!error)? response.orphanedToken: false,
   error: (error) ? response.error : null,
   error_description: (error) ? response.error_description : null
@@ -91,6 +91,7 @@ export const clearToken = (): Promise<ResponseStatus> => {
     }
   }));
 }
+
 export const resetPassword = (email: string): Promise<ResponseStatus> =>
   fetch(`${APP_BASE_URL()}/api/auth/reset_password/`, {
     body: `{email:${email}}`,

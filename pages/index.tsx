@@ -27,7 +27,7 @@ const IndexPage = () => {
       <TransactionSteps/>
       <section className="s-space-default">
         <div className="container">
-          <Grid spacing={4} container justify="center">
+          <Grid spacing={4} container justifyContent="center">
             <Grid item xs={12} sm={6}>
               <div style={marginStyle2}><img src="/img/img-004.jpg"/></div>
             </Grid>

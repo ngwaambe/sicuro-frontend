@@ -1,5 +1,5 @@
 import {
-  Address,
+  Address, ChangePasswordRequest,
   Customer,
   Language, PaymentAccount, PaypalAccount,
   ResponseData, ResponseStatus,
@@ -84,8 +84,9 @@ export const updateCustomerEmail = (customerId: number, request: any): Promise<R
   }))
 }
 
-export const updateCustomerPassword = (customerId: number, request: any): Promise<ResponseStatus> => {
+export const updateCustomerPassword = (customerId: number, request: ChangePasswordRequest): Promise<ResponseStatus> => {
   return fetch(`${APP_BASE_URL()}/api/customers/${customerId}/change_password`, {
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     },

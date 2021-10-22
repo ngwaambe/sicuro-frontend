@@ -52,7 +52,6 @@ const ResetPasswordForm:React.FC<Props>=(props) => {
       });
       return;
     } else if (!validateEmail(state.email)) {
-
       setState({
         ...state,
         isEmailError: true,

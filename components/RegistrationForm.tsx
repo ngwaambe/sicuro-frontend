@@ -4,23 +4,20 @@ import CommonStyles from './common.module.css'
 import {
   Card,
   CardContent,
-  Select,
   MenuItem,
   FormControl,
-  InputLabel,
   FormHelperText,
   FormControlLabel,
   Checkbox,
-  ThemeProvider,
-  CircularProgress,
-  Backdrop, Button
+  CircularProgress, Link as MuiLink, Divider,
 } from '@material-ui/core';
 import {
   StyledCardActions,
   StyledFormTypography,
   StyledTextField,
+  StyledSelect,
   ActionButton,
-  StyledFormControls
+  StyledFormControls, StyledSelectLabel
 } from "./CustomMaterialUI";
 import {Title, SignupRequest, Language} from "../state";
 import {createAccount} from "../service/createAccount";
@@ -29,21 +26,10 @@ import styles from "./ResetPasswordForm.module.css";
 import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
 import {getEnumKey, validateEmail, sleep} from "../service/UtilService";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-  backdrop: {
-    position: "absolute",
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-}));
-
-const paddingStyles = {
-  paddingLeft:"4px;"
-}
+import {useRouter} from "next/router";
+import Link  from "next/link";
 
 export enum RegistrationStep {
-  signup,
   register,
   done,
   failed
@@ -71,8 +57,14 @@ interface RegistrationInfo {
   emailErrorText: string,
   password: string,
   passwordError: boolean,
+  confirmPassword: string,
+  confirmPasswordError: boolean,
   language: Language,
   languageError: boolean
+}
+
+function LinkText({ href, children }) {
+  return <MuiLink href={href || ''}  target="_blank" rel="noopener">{children}</MuiLink>;
 }
 
 const RegistrationForm: React.FC<Props> = (props) => {
@@ -94,13 +86,14 @@ const RegistrationForm: React.FC<Props> = (props) => {
     emailErrorText: t('email_missing'),
     password: '',
     passwordError: false,
+    confirmPassword: '',
+    confirmPasswordError: false,
     language: Language.SELECT,
     languageError: false
   })
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<RegistrationStep>(RegistrationStep.signup)
-  const classes = useStyles();
-
+  const [step, setStep] = useState<RegistrationStep>(RegistrationStep.register)
+  const router = useRouter()
   const checkBoxOnChnage = (event) => {
     setState({
       ...state,
@@ -115,11 +108,6 @@ const RegistrationForm: React.FC<Props> = (props) => {
       [propErrorAttr]: (event.target.value !== '') ? false : state[propErrorAttr],
     })
   }
-
-  const register = (): void => {
-    setStep(RegistrationStep.register)
-    props.register()
-  };
 
   const resetRegistrationform = () => {
     setState({
@@ -139,32 +127,47 @@ const RegistrationForm: React.FC<Props> = (props) => {
       emailError: false,
       password: '',
       passwordError: false,
+      confirmPassword: '',
+      confirmPasswordError: false,
       language: Language.SELECT,
       languageError: false
     })
   }
 
   const cancelRegistration = (): void => {
-    resetRegistrationform();
-    setStep(RegistrationStep.signup);
-    props.onClose()
+     router.push('/authenticate')
   }
 
   const toSignupRequest = (): SignupRequest => ({
-    organisation: (state.isOrganistion) ?
-      {
-        name: state.organisationName,
-        taxnumber: state.taxNumber
-      } : null,
+    organisation: (state.isOrganistion) ? {
+      name: state.organisationName,
+      taxNumber: state.taxNumber
+    } : null,
     contact: {
       title: getEnumKey(Title, state.title),
-      firstName: state.firstName,
-      lastName: state.lastName,
+      firstname: state.firstName,
+      lastname: state.lastName,
       email: state.email,
       password: state.password,
-      preferredLanguage: getEnumKey(Language, state.language)
+      language: getEnumKey(Language, state.language)
     }
   });
+
+  const evaluatePasswordError = ():string => {
+    if (state.password === ''){
+      return'password_missing';
+    } else if (state.password.length < 8){
+      return 'password_min_length';
+    }
+    return '';
+  }
+
+  const evaluateConfirmPasswordError = ():string => {
+    if (state.password!=='' && state.password !== state.confirmPassword) {
+      return 'confirm_password_equal_password';
+    }
+   return ''
+  }
 
   const save = () => {
     if (state.title === Title.SELECT ||
@@ -173,6 +176,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
       state.email === '' ||
       !validateEmail(state.email) ||
       state.password === '' ||
+      state.password !== state.confirmPassword ||
       state.language === Language.SELECT ||
       (state.isOrganistion && (state.organisationName === '' || state.taxNumber === ''))) {
       setState({
@@ -182,11 +186,13 @@ const RegistrationForm: React.FC<Props> = (props) => {
         lastNameError: (state.lastName === ''),
         emailError: ((state.email === '') || !validateEmail(state.email)),
         emailErrorText: (state.email === '') ? t('email_missing') : t('invalid_email_text'),
-        passwordError: (state.password === ''),
+        passwordError: (state.password === '')  || (state.password.length < 8 ),
+        confirmPasswordError: (state.password !== '') && (state.password !== state.confirmPassword),
         organisationNameError: (state.isOrganistion && state.organisationName === ''),
         taxNumberError: (state.isOrganistion && state.taxNumber === ''),
         languageError: (state.language === Language.SELECT)
       });
+
       return;
     }
 
@@ -196,17 +202,16 @@ const RegistrationForm: React.FC<Props> = (props) => {
         console.log(JSON.stringify(res))
         if (res.success) {
           setStep(RegistrationStep.done)
-          resetRegistrationform()
           setOpen(false)
         } else {
           setOpen(false)
           setStep(RegistrationStep.failed)
-          resetRegistrationform()
         }
       }
     ).catch(error => {
       setOpen(false)
       setStep(RegistrationStep.failed)
+    }).finally(() => {
       resetRegistrationform()
     });
   }
@@ -214,32 +219,6 @@ const RegistrationForm: React.FC<Props> = (props) => {
   return (
     <React.Fragment>
       <form>
-
-        {/*<div>
-          <Backdrop open={open} className={classes.backdrop}>
-            <CircularProgress color="inherit"  size={200} thickness={10}/>
-          </Backdrop>
-        </div>*/}
-
-        {step === RegistrationStep.signup &&
-        <Card className={CommonStyles.cardForm}>
-            <CardContent className={CommonStyles.cardFormContent}>
-                <h2>{t('signup_header')}</h2>
-                <StyledFormTypography variant="body2" color="textSecondary">
-                  {t('signup_text')}
-                </StyledFormTypography>
-            </CardContent>
-            <StyledCardActions>
-                <ActionButton
-                    variant="contained"
-                    size="large"
-                    className={Styles.inputField}
-                    disableElevation={true}
-                    onClick={register}>{t('signup_button')}</ActionButton>
-            </StyledCardActions>
-        </Card>
-        }
-
         {step === RegistrationStep.register &&
         <Card className={CommonStyles.cardFormMiduim}>
             <CardContent className={CommonStyles.cardFormContent}>
@@ -260,6 +239,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
                           helperText={state.organisationNameError && t('organisation_name_missing')}
                           type="text"
                           fullWidth={true}
+                          disabled={open}
                           error={state.organisationNameError}
                           value={state.organisationName}
                           onChange={onChange("organisationName", "organisationNameError")}/>
@@ -271,26 +251,28 @@ const RegistrationForm: React.FC<Props> = (props) => {
                           helperText={state.taxNumberError && t('taxnumber_missing')}
                           type="text"
                           fullWidth={true}
+                          disabled={open}
                           error={state.taxNumberError}
                           value={state.taxNumber} onChange={onChange("taxNumber", "taxNumberError")}/>
                   </>
                   }
 
                     <StyledFormControls error={state.titleError}>
-                        <InputLabel>{t('common:title')}</InputLabel>
-                        <Select
-                            MenuProps={{ disableScrollLock: true }}
+                        <StyledSelectLabel>{t('common:title')}</StyledSelectLabel>
+                        <StyledSelect
+                            MenuProps={{disableScrollLock: true}}
                             labelId="title-label"
                             id="title-label-id"
                             value={state.title}
-                            error={state.titleError}
+                            disabled={open}
+                            disableUnderline
                             onChange={onChange("title", "titleError")}>
                           {Object.values(Title).map(
                             (item) => (
                               <MenuItem value={item} key={item.valueOf()}>{t('common:' + item.valueOf())}</MenuItem>)
                           )}
-                        </Select>
-                      {state.titleError && <FormHelperText>Error</FormHelperText>}
+                        </StyledSelect>
+                      {state.titleError && <FormHelperText>{t('common:title-required')}</FormHelperText>}
                     </StyledFormControls>
 
                     <StyledTextField
@@ -299,7 +281,9 @@ const RegistrationForm: React.FC<Props> = (props) => {
                         autoFocus={true}
                         helperText={state.firstNameError && t('firstname_missing')}
                         type="text"
+                        required={true}
                         fullWidth={true}
+                        disabled={open}
                         error={state.firstNameError}
                         value={state.firstName} onChange={onChange("firstName", "firstNameError")}/>
 
@@ -310,24 +294,28 @@ const RegistrationForm: React.FC<Props> = (props) => {
                         helperText={state.lastNameError && t('lastname_missing')}
                         type="text"
                         fullWidth={true}
+                        disabled={open}
                         error={state.lastNameError}
                         value={state.lastName} onChange={onChange("lastName", "lastNameError")}/>
 
                     <StyledFormControls error={state.titleError}>
-                        <InputLabel>{t('common:chooseLanguage')}</InputLabel>
-                        <Select
-                            MenuProps={{ disableScrollLock: true }}
+                        <StyledSelectLabel>{t('common:chooseLanguage')}</StyledSelectLabel>
+                        <StyledSelect
+                            MenuProps={{disableScrollLock: true}}
                             labelId="language-label"
                             id="language-label-id"
+                            variant="standard"
                             value={state.language}
                             error={state.languageError}
+                            disabled={open}
+                            disableUnderline
                             onChange={onChange("language", "languageError")}>
                           {Object.values(Language).map(
                             lang => (
                               <MenuItem value={lang} key={lang.valueOf()}>{t('common:' + lang.valueOf())}</MenuItem>)
                           )}
-                        </Select>
-                      {state.languageError && <FormHelperText>Error</FormHelperText>}
+                        </StyledSelect>
+                      {state.languageError && <FormHelperText>{t('common:language_required')}</FormHelperText>}
                     </StyledFormControls>
 
                     <StyledTextField
@@ -337,6 +325,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
                         helperText={state.emailError && state.emailErrorText}
                         type="text"
                         fullWidth={true}
+                        disabled={open}
                         error={state.emailError}
                         value={state.email} onChange={onChange("email", "emailError")}/>
 
@@ -344,22 +333,24 @@ const RegistrationForm: React.FC<Props> = (props) => {
                         id="filled-basic"
                         label={t('password_label')}
                         autoFocus={true}
-                        helperText={state.passwordError && t('password_missing')}
+                        helperText={state.passwordError && t(evaluatePasswordError())}
                         type="password"
                         fullWidth={true}
                         error={state.passwordError}
                         value={state.password} onChange={onChange("password", "passwordError")}/>
+                    <StyledTextField
+                        id="filled-basic"
+                        label={t('confirm_password_label')}
+                        autoFocus={true}
+                        helperText={state.confirmPasswordError && t(evaluateConfirmPasswordError())}
+                        type="password"
+                        fullWidth={true}
+                        error={state.confirmPasswordError}
+                        value={state.confirmPassword} onChange={onChange("confirmPassword", "confirmPasswordError")}/>
                 </FormControl>
-
             </CardContent>
+            <p className={Styles.terms_conditions}><Trans i18nKey="term_and_conditions" t={t} components={[<LinkText href="/legal/terms"/>]}/></p>
             <StyledCardActions>
-                <ActionButton
-                    variant="contained"
-                    size="large"
-                    className={Styles.inputField}
-                    disableElevation={true}
-                    disabled={open}
-                    onClick={cancelRegistration}>{t('common:cancel_label')}</ActionButton>
                 <ActionButton
                     variant="contained"
                     size="large"
@@ -368,18 +359,24 @@ const RegistrationForm: React.FC<Props> = (props) => {
                     color="primary"
                     disabled={open}
                     onClick={save}>
-                  { open && <CircularProgress color="primary"  size={20} thickness={4}/>}
+                  {open && <CircularProgress color="primary" size={20} thickness={4}/>}
                   {t('signup_button')}
                 </ActionButton>
             </StyledCardActions>
-
+            <Divider className={Styles.divider}/>
+                <h3 className={Styles.login_headline}>Already a sicuro customer?</h3>
+            <h3 className={Styles.login_headline}>
+                <Link href="/authenticate">
+                    <a>{t('login_button')}</a>
+                </Link>
+            </h3>
         </Card>
         }
 
         {step === RegistrationStep.done &&
         <Card className={CommonStyles.cardFormMiduim}>
             <CardContent className={CommonStyles.cardFormContent}>
-                <h3>You have successfully created your sicuro account</h3>
+                <h1 className="cardTitle">{t('signup_success_title')}</h1>
                 <StyledFormTypography variant="body2" color="textSecondary">
                     <Trans>{t('signup_success_text')}</Trans>
                 </StyledFormTypography>

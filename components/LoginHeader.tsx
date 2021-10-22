@@ -32,56 +32,56 @@ const LoginHeader = () => {
       <Container maxWidth="lg">
         <div className={styles.flexCotainer}>
           <div className={styles.Header}>
-               <PhoneTwoToneIcon fontSize="default"/>
+               <PhoneTwoToneIcon fontSize="medium"/>
                <span className={styles.menuText}>+49 (0) 228 38759255</span>
 
               <a href="mailto:contact@sicuro.com">
-                <EmailTwoToneIcon fontSize="default"/>
+                <EmailTwoToneIcon fontSize="medium"/>
                 <span className={styles.menuText}>contact[at]sicuro.com</span>
               </a>
           </div>
           <div className={styles.TextAlignRightMobile}>
             <BaseLink href="/">
               <a>
-              <HomceIcon fontSize="default"/>
+              <HomceIcon fontSize="medium"/>
               <span className={styles.menuText}>Sicuro</span>
               </a>
             </BaseLink>
             { (state?.user===undefined || !state?.user.loggedIn) &&
               <BaseLink href="/authenticate">
                 <a className={styles.space}>
-                    <PersonIcon fontSize="default"/>
+                    <PersonIcon fontSize="medium"/>
                     <span className={styles.menuText}>Login</span>
                 </a>
               </BaseLink>
             }
             { (state?.user !==undefined && state?.user.loggedIn)  &&
              <>
-             <BaseLink href="/profile/">
+             <BaseLink href="/profile">
                   <a>
-                      <PersonIcon fontSize="default"/>
+                      <PersonIcon fontSize="medium"/>
                       <span className={styles.menuText}>My sicuro</span>
                   </a>
               </BaseLink>
               <BaseLink href="#">
                      <a onClick={logout}>
-                         <ExitToAppIcon fontSize="default"/>
+                         <ExitToAppIcon fontSize="medium"/>
                          <span className={styles.menuText}>Logout</span>
                      </a>
               </BaseLink>
              </>
             }
-            <BaseLink href="" locale="it">
+            <BaseLink href="#" locale="it">
               <a onClick={() => changeLanguage('it')}>
                 <img src="/img/it.png"/>
               </a>
             </BaseLink>
-            <BaseLink href="" locale="en">
+            <BaseLink href="#" locale="en">
               <a onClick={() => changeLanguage('en')}>
                 <img src="/img/en.png"/>
               </a>
             </BaseLink>
-            <BaseLink href="" locale="es">
+            <BaseLink href="#" locale="es">
               <a onClick={() => changeLanguage('es')}>
                 <img src="/img/es.png"/>
               </a>

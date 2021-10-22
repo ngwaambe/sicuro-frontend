@@ -10,6 +10,7 @@ import executeTokenCheck from "./middleware/checktoken"
 import {parseCookies} from "./service/common";
 import setToken from "./middleware/setToken";
 import cookie from "cookie";
+import executeAction from "./middleware/executeAction";
 
 const port = process.env.PORT || 3000
 const app = next({ dev: process.env.NODE_ENV !== 'production' })
@@ -22,11 +23,20 @@ const handle = app.getRequestHandler();
     const serviceBaseUrl = SERVICE_BASE_URL()
     server.use('/api', setToken);
     if (isDev(process.env)) {
+      server.use('/api/auth/complete_signup', executeAction)
       console.log(`>=> mock `)
       server.use('/api', mockRouter)
     } else {
       console.log(`>=> int/pre/prod `)
-      server.use('/api', createProxyMiddleware(['/api/**', '!/api/login', '!/api/logout','!/api/auth/token', '!/api/auth/check_token'],{
+      server.use('/api/auth/complete_signup', executeAction)
+      server.use('/api/auth/update_password', executeAction)
+      server.use('/api', createProxyMiddleware([
+        '/api/**',
+        '!/api/logout',
+        '!/api/auth/activate_account',
+        '!/api/auth/refresh_token',
+        '!/api/auth/token',
+        '!/api/auth/check_token'],{
         target: `${serviceBaseUrl}`,
         changeOrigin: false,
         //onProxyReq:onProxyReq,
@@ -43,7 +53,8 @@ const handle = app.getRequestHandler();
       .listen(port, (err?: any) => {
         if (err) throw err;
         console.log(`> Ready on localhost:${port} - env ${process.env.NODE_ENV} - api ${serviceBaseUrl}`);
-      });
+      }).timeout = 0;
+
   } catch (e) {
     console.error(e);
     process.exit(1);

@@ -22,3 +22,14 @@
 .fillContent {
     flex-grow: 2;
 }
+
+.terms_conditions{
+    margin: 24px 10px;
+}
+
+.divider {
+    margin: 24px 10px !important;
+}
+.login_headline {
+    text-align: center;
+}

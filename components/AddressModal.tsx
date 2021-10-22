@@ -8,7 +8,12 @@ import {
   Select
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {ActionButton, StyledFormControls, StyledTextField} from "./CustomMaterialUI";
+import {
+  ActionButton,
+  StyledFormControls,
+  StyledTextField,
+  StyledSelectLabel,
+  StyledSelect } from "./CustomMaterialUI";
 import React, {useState} from "react";
 import {Address, Customer, Language, Title} from "../state";
 import {useTranslation} from "next-i18next";
@@ -201,20 +206,21 @@ const EditAdressModal =  (props:Props) => {
             value={state.city} onChange={onChange("city")}/>
 
           <StyledFormControls error={state.countryIsoError}>
-            <InputLabel>{t('common:country')}</InputLabel>
-            <Select
+            <StyledSelectLabel>{t('common:country')}</StyledSelectLabel>
+            <StyledSelect
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}
               labelId="country-label"
               autoFocus={false}
               id="address_country"
               value={state.countryIso.toUpperCase()}
               error={state.countryIsoError}
-              onChange={onChange("countryIso")}>
+              onChange={onChange("countryIso")}
+              disableUnderline>
               {
                 Object.keys(countries).map(
                   (key) => (<MenuItem value={key} key={key}>{countries[key]}</MenuItem>))
               }
-            </Select>
+            </StyledSelect>
             {state.countryIsoError && <FormHelperText>{t('country_required')}</FormHelperText>}
           </StyledFormControls>
         </FormControl>

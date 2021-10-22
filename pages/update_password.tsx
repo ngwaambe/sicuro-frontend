@@ -1,133 +1,33 @@
 import React, {useEffect, useState} from "react";
 import {Trans, useTranslation} from "next-i18next";
 import LoginLayout from "../components/layouts/LoginLayout";
-import LoginForm from "../components/LoginForm";
-import RegistrationForm from "../components/RegistrationForm";
-import ResetPasswordForm from "../components/ResetPasswordForm"
 import Cookies from "universal-cookie";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {activateAccount} from "../service/createAccount";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "../components/Modal";
 import {FormControl, IconButton} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import {ActionButton, StyledFormTypography, StyledTextField} from "../components/CustomMaterialUI";
 import CommonStyles from "../components/common.module.css";
 import styles from "../components/ResetPasswordForm.module.css";
-import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
 import {updateUser, useDispatch} from "../service/Auth.context";
 import {authServiceCheckToken, clearToken} from "../service/authentication";
+import UpdatePasswordForm from "../components/UpdatePasswordForm";
+import {Customer, ResponseData} from "../state";
+import {getCustomerSSR} from "../service/ssrService";
 
-enum Action {
-  LOGIN,
-  REGISTRATION,
-  RESET_PASSWORD,
-  ACCOUNT_ACTIVATION
-}
 
-enum ActivationStatus{
-  SUCCESS,
-  EXPIRED,
-  FAILED
-}
-
-interface ActivationProps{
-  onClose: () => void,
-  status: ActivationStatus
-}
-
-interface LocalState {
-  action: Action;
-  activationStatus: ActivationStatus;
-}
-
-const ResetPasswordModal = (props:ActivationProps) => {
-  const {t} = useTranslation(["login", "common"])
-  return (
-    <>
-      <Modal onEsc={props.onClose} onBackgroundClick={props.onClose}>
-        <ModalHeader>
-          <h3>{t('reset_password_label')}</h3>
-          <IconButton
-            onClick={props.onClose}
-            data-testid="modal-close" >
-            <CloseIcon  />
-          </IconButton>
-        </ModalHeader>
-        <ModalBody>
-          {props.status === ActivationStatus.SUCCESS &&
-          <StyledFormTypography>{t('reset_password_text')}</StyledFormTypography>
-          }
-          {props.status === ActivationStatus.FAILED &&
-          <StyledFormTypography><Trans>{t('reset_password_success_text')}</Trans></StyledFormTypography>
-          }
-        </ModalBody>
-        <ModalFooter divider={true} confirm={true}>
-          <ActionButton
-            variant="contained"
-            color="primary"
-            disableElevation={true}
-            size="large"
-            onClick={props.onClose}>
-            {t('common:close_label')}
-          </ActionButton>
-        </ModalFooter>
-      </Modal>
-    </>
-  )
-}
-
-const UpdatePasswordPage = (props) => {
+const UpdatePasswordPage = ({data}) => {
   const[_,dispatch] = useDispatch();
 
-  const [state, setState] = useState<LocalState>({
-    action: Action.LOGIN,
-    activationStatus: props.activationStatus
-  });
+  const customer: Customer = JSON.parse(data)
 
-  // useEffect( () => {
-  //   dispatch(updateUser({loggedIn: false, customerId:undefined}));
-  // }, []);
-
-
-  const doRegistration = () => {
-    setState({
-      ...state,
-      action: Action.REGISTRATION
-    });
-  };
-
-  const doLogin = () => {
-    setState({
-      ...state,
-      action: Action.LOGIN,
-      activationStatus: undefined
-    });
-  };
-
-  const resetPassword = () => {
-    setState({
-      ...state,
-      action: Action.RESET_PASSWORD,
-      activationStatus: undefined
-    });
-  }
-
-  const styleName = state.action  === Action.REGISTRATION ? "s-inner-space-registration": "s-inner-space-login";
+  const styleName = "s-inner-space-login";
   return (
     <React.Fragment>
       <div className="s-space-login">
         <div>
           <div className={styleName}>
-            { (state.activationStatus !== undefined && state.activationStatus != ActivationStatus.EXPIRED) &&
-            <ResetPasswordModal onClose={doLogin} status={state.activationStatus}/>
-            }
-            {state.action ===  Action.RESET_PASSWORD && <ResetPasswordForm onClose={doLogin} /> }
-            {(state.action === Action.LOGIN || state.action === Action.RESET_PASSWORD)  && <LoginForm resetPassword={resetPassword}/>}
-            {(state.action === Action.REGISTRATION || state.action === Action.LOGIN || state.action === Action.RESET_PASSWORD) &&
-            <RegistrationForm
-                onClose={() => doLogin()}
-                register={() => doRegistration()}/>
-            }
+            <UpdatePasswordForm customer={customer} />
           </div>
         </div>
       </div>
@@ -148,11 +48,21 @@ export const  getServerSideProps = async(ctx) => {
         }
       }
     }
+    const response: ResponseData<Customer> = await getCustomerSSR(token)
+    if (response.success) {
+      return {
+        props: {
+          ...await serverSideTranslations(ctx.locale, ["login", "common"]),
+          data: JSON.stringify(response.data)
+        }
+      }
+    }
   }
 
   return {
-    props: {
-      ...await serverSideTranslations(ctx.locale, ["login", "common"])
+    redirect: {
+      permanent: false,
+      destination: "/authenticate"
     }
   }
 }
