@@ -33,14 +33,14 @@ export const MyTheme = createTheme({
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
-    ].join(','),
-    fontSize: 14
+    ].join(',')
   },
   overrides: {
     MuiButton: { // Name of the component ⚛️ / style sheet
       text: { // Name of the rule
         textTransform: 'none', // Some CSS
       },
+
     },
   },
 
@@ -50,14 +50,26 @@ export const StyledCardActions = withStyles({
   root: {
     display: 'flex',
     alignItems: 'center',
-    padding: '8px',
+    padding: '16px',
+    "& .MuiButton-outlined": {
+      outline:"1px solid #8c8c8c",
+      border: "2px solid transparent",
+    },
+
+    "& .MuiButton-outlined:hover": {
+      border:"2px solid #8c8c8c",
+      outline:"1px solid transparent",
+    }
+
+
   }
 })(CardActions)
 
 export const StyledFormTypography = withStyles({
   root: {
     marginBottom: '20px',
-    fontSize: '16px'
+    fontSize: 14,
+    fontWeight: 500
   }
 })(Typography)
 
@@ -133,9 +145,13 @@ export const StyledSelect = withStyles({
     height: "34px",
     lineHeight: "46px",
     paddingLeft: "6px",
-    "& .MuiInput-underline.Mui-error:after": {
-      borderColor: "#f44336"
-    },
+    "& .MuiOutlinedInput-input": {
+      padding:"6px 0 7px"
+    }
+  },
+
+  outlined: {
+    padding: "6px 0 7px"
   },
 
   select: {
@@ -144,10 +160,8 @@ export const StyledSelect = withStyles({
       borderRadius: "2px",
       border: "2px solid #8c8c8c",
     },
-    '&.Mui-error': {
-      '& .MuiOutlinedInput-notchedOutline': {
-        border: '1px solid #cc071e!important'
-      },
+    "& .MuiOutlinedInput-input": {
+      padding:"6px 0 7px"
     }
   }
 
@@ -162,7 +176,6 @@ export const StyledSelectLabel = withStyles({
 
 export const ActionButton = withStyles({
   root: {
-    border: '2px',
     borderRadius: '2px',
     fontSize: '1.01rem',
     textTransform: 'none'
@@ -174,6 +187,11 @@ export const StyledFormControls = withStyles({
   root: {
     margin: '4px 0px 4px 0px',
     width: '100%',
+    "& .Mui-error": {
+     '& .MuiSelect-root': {
+       outlineColor: "#cc071e !important",
+     }
+    },
   }
 })(FormControl)
 

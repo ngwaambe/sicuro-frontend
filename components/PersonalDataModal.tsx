@@ -8,7 +8,7 @@ import {
   Select
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {ActionButton, StyledFormControls, StyledTextField} from "./CustomMaterialUI";
+import {ActionButton, StyledFormControls, StyledSelect, StyledSelectLabel, StyledTextField} from "./CustomMaterialUI";
 import React, {useState} from "react";
 import {Customer, Language, Title} from "../state";
 import {useTranslation} from "next-i18next";
@@ -179,19 +179,20 @@ const EditPersonaData =  (props:Props) => {
           }
 
           <StyledFormControls error={state.titleError}>
-            <InputLabel>{t('common:title')}</InputLabel>
-            <Select
+            <StyledSelect>{t('common:title')}</StyledSelect>
+            <StyledSelect
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}
               labelId="title-label"
               id="person_title"
               value={state.title}
               error={state.titleError}
+              disableUnderline
               onChange={onChange("title", "titleError")}>
               {Object.values(Title).map(
                 (item) => (
                   <MenuItem value={item} key={item.valueOf()}>{t('common:' + item.valueOf())}</MenuItem>)
               )}
-            </Select>
+            </StyledSelect>
             {state.titleError && <FormHelperText>Error</FormHelperText>}
           </StyledFormControls>
 
@@ -216,19 +217,20 @@ const EditPersonaData =  (props:Props) => {
             value={state.lastName} onChange={onChange("lastName", "lastNameError")}/>
 
           <StyledFormControls error={state.titleError}>
-            <InputLabel>{t('common:chooseLanguage')}</InputLabel>
-            <Select
+            <StyledSelectLabel>{t('common:chooseLanguage')}</StyledSelectLabel>
+            <StyledSelect
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}
               labelId="language-label"
               id="person_language"
               value={state.language}
               error={state.languageError}
+              disableUnderline
               onChange={onChange("language", "languageError")}>
               {Object.values(Language).map(
                 lang => (
                   <MenuItem value={lang} key={lang.valueOf()}>{t('common:' + lang.valueOf())}</MenuItem>)
               )}
-            </Select>
+            </StyledSelect>
             {state.languageError && <FormHelperText>Error</FormHelperText>}
           </StyledFormControls>
 

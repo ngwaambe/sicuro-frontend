@@ -9,7 +9,7 @@ import {
   FormHelperText,
   FormControlLabel,
   Checkbox,
-  CircularProgress, Link as MuiLink, Divider,
+  CircularProgress, Link as MuiLink, Divider, InputLabel, Select,
 } from '@material-ui/core';
 import {
   StyledCardActions,
@@ -24,8 +24,7 @@ import {createAccount} from "../service/createAccount";
 import {useTranslation, Trans} from "next-i18next";
 import styles from "./ResetPasswordForm.module.css";
 import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
-import {getEnumKey, validateEmail, sleep} from "../service/UtilService";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import {getEnumKey, validateEmail} from "../service/UtilService";
 import {useRouter} from "next/router";
 import Link  from "next/link";
 
@@ -57,8 +56,10 @@ interface RegistrationInfo {
   emailErrorText: string,
   password: string,
   passwordError: boolean,
+  passwordErrorText: string
   confirmPassword: string,
   confirmPasswordError: boolean,
+  confirmPasswordErrorText: string,
   language: Language,
   languageError: boolean
 }
@@ -86,8 +87,10 @@ const RegistrationForm: React.FC<Props> = (props) => {
     emailErrorText: t('email_missing'),
     password: '',
     passwordError: false,
+    passwordErrorText: '',
     confirmPassword: '',
     confirmPasswordError: false,
+    confirmPasswordErrorText:'',
     language: Language.SELECT,
     languageError: false
   })
@@ -169,6 +172,15 @@ const RegistrationForm: React.FC<Props> = (props) => {
    return ''
   }
 
+  const evaluateEmailErrorText = (): string => {
+    if (state.email === '') {
+       return t('email_missing')
+    } else if (!validateEmail(state.email)) {
+       return t('invalid_email_text')
+    } else
+      return ''
+  }
+
   const save = () => {
     if (state.title === Title.SELECT ||
       state.firstName === '' ||
@@ -181,16 +193,20 @@ const RegistrationForm: React.FC<Props> = (props) => {
       (state.isOrganistion && (state.organisationName === '' || state.taxNumber === ''))) {
       setState({
         ...state,
+        emailError: ((state.email === '') || !validateEmail(state.email)),
+        emailErrorText: evaluateEmailErrorText(),
+        passwordError: (state.password === '')  || (state.password.length < 8 ),
+        passwordErrorText: evaluatePasswordError(),
+        confirmPasswordError: (state.password !== '') && (state.password !== state.confirmPassword),
+        confirmPasswordErrorText: evaluateConfirmPasswordError(),
         titleError: (state.title === Title.SELECT),
         firstNameError: (state.firstName === ''),
         lastNameError: (state.lastName === ''),
-        emailError: ((state.email === '') || !validateEmail(state.email)),
-        emailErrorText: (state.email === '') ? t('email_missing') : t('invalid_email_text'),
-        passwordError: (state.password === '')  || (state.password.length < 8 ),
-        confirmPasswordError: (state.password !== '') && (state.password !== state.confirmPassword),
         organisationNameError: (state.isOrganistion && state.organisationName === ''),
         taxNumberError: (state.isOrganistion && state.taxNumber === ''),
-        languageError: (state.language === Language.SELECT)
+        languageError: (state.language === Language.SELECT),
+        password: '',
+        confirmPassword: ''
       });
 
       return;
@@ -201,18 +217,28 @@ const RegistrationForm: React.FC<Props> = (props) => {
       (res) => {
         console.log(JSON.stringify(res))
         if (res.success) {
-          setStep(RegistrationStep.done)
-          setOpen(false)
+          setStep(RegistrationStep.done);
+          setOpen(false);
         } else {
-          setOpen(false)
-          setStep(RegistrationStep.failed)
+          if (res.data.status == 409) {
+            setState({
+              ...state,
+              emailError: true,
+              emailErrorText: t('email_not_unique'),
+              password: '',
+              confirmPassword: ''
+            });
+          } else {
+            setOpen(false);
+            setStep(RegistrationStep.failed);
+          }
         }
       }
     ).catch(error => {
       setOpen(false)
       setStep(RegistrationStep.failed)
     }).finally(() => {
-      resetRegistrationform()
+      setOpen(false)
     });
   }
 
@@ -222,7 +248,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
         {step === RegistrationStep.register &&
         <Card className={CommonStyles.cardFormMiduim}>
             <CardContent className={CommonStyles.cardFormContent}>
-                <h2>{t('signup_header')}</h2>
+                <h3 className={Styles.registerHeader}>{t('signup_header')}</h3>
                 <StyledFormTypography variant="body2" color="textSecondary">
                   {t('signup_text')}
                 </StyledFormTypography>
@@ -333,7 +359,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
                         id="filled-basic"
                         label={t('password_label')}
                         autoFocus={true}
-                        helperText={state.passwordError && t(evaluatePasswordError())}
+                        helperText={state.passwordError && t(state.passwordErrorText)}
                         type="password"
                         fullWidth={true}
                         error={state.passwordError}
@@ -342,14 +368,18 @@ const RegistrationForm: React.FC<Props> = (props) => {
                         id="filled-basic"
                         label={t('confirm_password_label')}
                         autoFocus={true}
-                        helperText={state.confirmPasswordError && t(evaluateConfirmPasswordError())}
+                        helperText={state.confirmPasswordError && t(state.confirmPasswordErrorText)}
                         type="password"
                         fullWidth={true}
                         error={state.confirmPasswordError}
                         value={state.confirmPassword} onChange={onChange("confirmPassword", "confirmPasswordError")}/>
                 </FormControl>
+
+                <StyledFormTypography variant="body2" color="textSecondary" className={Styles.terms_conditions}>
+                    <Trans i18nKey="term_and_conditions" t={t} components={[<LinkText href="/legal/terms"/>]}/>
+                </StyledFormTypography>
             </CardContent>
-            <p className={Styles.terms_conditions}><Trans i18nKey="term_and_conditions" t={t} components={[<LinkText href="/legal/terms"/>]}/></p>
+
             <StyledCardActions>
                 <ActionButton
                     variant="contained"
@@ -364,12 +394,19 @@ const RegistrationForm: React.FC<Props> = (props) => {
                 </ActionButton>
             </StyledCardActions>
             <Divider className={Styles.divider}/>
-                <h3 className={Styles.login_headline}>Already a sicuro customer?</h3>
-            <h3 className={Styles.login_headline}>
-                <Link href="/authenticate">
-                    <a>{t('login_button')}</a>
-                </Link>
-            </h3>
+                <h3 className={Styles.registerHeader}>Already a sicuro customer?</h3>
+
+            <StyledCardActions>
+                <ActionButton
+                    variant="outlined"
+                    size="large"
+                    fullWidth={true}
+                    className={Styles.inputField}
+                    disableElevation={true}
+                    onClick={cancelRegistration}>
+                  {t('login_button')}
+                </ActionButton>
+            </StyledCardActions>
         </Card>
         }
 

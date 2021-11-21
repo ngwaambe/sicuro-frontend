@@ -10,7 +10,7 @@ const MEM: any = {expireDate: Date.now() + DIFF}
 const router = express.Router();
 const Action = {
   tempPwd: false,
-  completeRegistration: true
+  completeRegistration: false
 }
 router.use(express.json());
 
@@ -88,7 +88,7 @@ router.post('/auth/token', (req, res) => {
     "refresh_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjQ2ODMwODUsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTYyNDY4MzU2NSwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsInNlY3VyaXR5UXVlc3Rpb24iOnRydWV9.fDaa4FkbNkkJiYVUhys8dqq_IRkKviyczjPqX2eKz08mJUAyDBLRdLQF_DW3og7sYQQLtuNFMCYOpHlhsOuEEA"
   };
   memCache.put(sessionId, data);
-  console.log("-setting-payload:" + JSON.stringify(memCache.get(sessionId)) + " token:" + sessionId)
+  //console.log("-setting-payload:" + JSON.stringify(memCache.get(sessionId)) + " token:" + sessionId)
   res.cookie("token", sessionId, {
     httpOnly: true,
     maxAge: 3600 * 1000,
@@ -96,15 +96,15 @@ router.post('/auth/token', (req, res) => {
     path: "/",
   });
 
-  setTimeout(() => { res.status(401).json({loggedIn: false}); }, 1000)
+  setTimeout(() => { res.status(200).json({loggedIn: false}); }, 1000)
 });
 
 router.post('/auth/signup', (req, res) => {
   console.log("1------ mock --------" + req.url)
   setTimeout(() => {
     console.log('----something is not cool here');
-    res.status(201).send()
-  }, 1000);
+    res.status(409).send()
+  }, 200);
 });
 
 router.put('/auth/complete_signup', (req, res) => {

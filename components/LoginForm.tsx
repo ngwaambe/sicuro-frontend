@@ -3,8 +3,9 @@ import Styles from './LoginForm.module.css';
 import CommonStyles from './common.module.css'
 import {authenticate} from '../service/authentication'
 import {
+  Button,
   Card,
-  CardContent, CircularProgress,
+  CardContent, CircularProgress, Divider,
   Link
 } from '@material-ui/core';
 import {StyledCardActions, StyledTextField, ActionButton} from "./CustomMaterialUI";
@@ -133,12 +134,11 @@ const LoginForm : React.FC<Props> = (props) => {
               { loading && <CircularProgress color="primary"  size={30} thickness={4}/>}
               Sign in</ActionButton>
           </StyledCardActions>
-          <CardContent>
-            <h2>{t('signup_header')}</h2>
-          </CardContent>
+          <Divider className={Styles.divider}/>
+          <h3 className={Styles.registerHeader}>{t('signup_header')}</h3>
           <StyledCardActions>
             <ActionButton
-              variant="contained"
+              variant="outlined"
               size="large"
 
               fullWidth={true}
