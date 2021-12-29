@@ -1,4 +1,7 @@
 {
+  "account_activation_success": "Il tuo account è stato attivato con successo. Procedi con l'accesso a sicuro",
+  "account_activation_failure":"Il tuo account non può essere attivato",
+  "account_activation_failure_text":"Questo link di attivazione non è valido o è già stato utilizzato. Assicurati di usare il link che ti è stato inviato per e-mail dopo la tua registrazione. In caso contrario, si prega di contattare il nostro team di supporto",
   "login_header": "Accedi a sicuro",
   "login_error": "Indirizzo e-mail o password errati.",
   "email_label": "Indirizzo email",
@@ -10,6 +13,9 @@
   "confirm_password_equal_password": "Le password non sono uguali",
   "confirm_password_label": "Conferma password",
   "login_button": "Registrati",
+  "current_password": "Password corrente",
+  "password_should_not_be_equal": "La nuova password non deve essere la stessa della tua password attuale",
+  "current_password_not_correct": "Questa non sembra essere la tua vecchia password. Prova di nuovo.",
   "forgotten_password": "Hai dimenticato la tua password?",
   "signup_header": "Crea un nuovo account sicuro",
   "signup_text": "Crea subito il tuo account sicuro.com e utilizza il nostro servizio di deposito a garanzia per proteggere le tue transazioni online.",

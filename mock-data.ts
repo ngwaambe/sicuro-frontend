@@ -1,7 +1,7 @@
 import express from 'express';
 import {parseCookies} from "./service/common";
 import {v4 as uuidv4} from 'uuid';
-import {CompleteSignupRequest} from "./state";
+import {CompleteSignupRequest, Customer} from "./state";
 
 const memCache = require('memory-cache');
 
@@ -36,26 +36,28 @@ export const customer: any = {
   email: "ngwaambe@hotmail.com",
   language: "en",
   applyVat: false,
-  //organisation:"",
-  //address: address,
-  //taxNumber:"",
+  organisation:"Sicuro GmbH",
+  address: address,
+  taxNumber:"321321321",
   identityNumber: "2132132132321"
 }
 
 export const paymentAccounts: any = [
   {
     id: 1,
-    type: "PAYPAL",
+    paymentType: "PAYPAL",
     owner: "Ngwa Ambe ELvis",
-    email: "e.test@paypal.com"
+    paypalAccount: "e.test@paypal.com"
   },
   {
     id: 2,
-    type: "PAYPAL",
+    paymentType: "PAYPAL",
     owner: "Ngwa Rogers",
-    email: "e.test2@paypal.com"
+    paypalAccount: "e.test2@paypal.com"
   },
 ]
+
+  //export const paymentAccounts: any = []
 
 router.post('/auth/check_token', (req, res) => {
   console.log("------> mock -------->" + req.url + "<mem>" + MEM.expireDate + "<mem>")
@@ -128,13 +130,14 @@ router.post('/auth/reset_password', (req, res) => {
   res.status(201).send();
 });
 
-router.put('/auth/activate_account/', (req, res) => {
-  console.log("3------ mock --------" + req.url)
+router.get('/auth/activate_account/:activationCode', (req, res) => {
+  console.log("3#####------ mock --------" + req.url)
   res.status(404).send()
 });
 
 router.get("/customers/:customerId", (req, res) => {
   console.log("2------ mock --------" + req.url)
+
   setTimeout(() => {
     res.json(customer)
   }, 2);
@@ -146,8 +149,8 @@ router.put("/customers/:customerId", (req, res) => {
   customer.firstname = req.body.firstname
   customer.lastname = req.body.lastname
   customer.title = req.body.title
-  customer.organisation = req.body.organisation
-  customer.taxNumber = req.body.taxNumber
+  customer.organisation = req.body.organisation.name
+  customer.taxNumber = req.body.organisation.taxNumber
   customer.language = req.body.language
   setTimeout(() => {
     res.json(customer)
@@ -184,7 +187,7 @@ router.put("/customers/:customerId/change_password", (req, res) => {
   console.log("1------ mock --------" + req.url + " <" + JSON.stringify(req.body) + ">")
   setTimeout(() => {
     Action.tempPwd = false;
-    res.status(200).send();
+    res.status(409).send();
   }, 2)
 })
 
@@ -193,6 +196,56 @@ router.get("/customers/:customerId/payment_accounts", (req, res) => {
     res.status(200).json(paymentAccounts);
   }, 2)
 })
+
+router.post("/customers/:customerId/paypal_accounts",  ( req, res ) => {
+  const account = req.body
+  account.id = paymentAccounts.length + 1
+  paymentAccounts.push(account)
+  console.log(JSON.stringify(paymentAccounts))
+  setTimeout(() => {
+    res.status(200).send();
+  }, 2)
+});
+
+router.put("/customers/:customerId/paypal_accounts/:paypalId",  ( req, res ) => {
+  const index = paymentAccounts.findIndex(it => it.id === req.body.id)
+  paymentAccounts[index] = req.body
+  console.log(JSON.stringify(paymentAccounts))
+  setTimeout(() => {
+    res.status(200).send();
+  }, 2)
+});
+
+router.post("/customers/:customerId/payment_accounts",  ( req, res ) => {
+  const account = req.body
+  account.id = paymentAccounts.length + 1
+  paymentAccounts.push(account)
+  console.log(JSON.stringify(paymentAccounts))
+  setTimeout(() => {
+    res.status(200).send();
+  }, 2)
+});
+
+router.put("/customers/:customerId/payment_accounts",  ( req, res ) => {
+  const index = paymentAccounts.findIndex(it => it.id === req.body.id)
+  paymentAccounts[index] = req.body
+  console.log(JSON.stringify(paymentAccounts))
+  setTimeout(() => {
+    res.status(200).send();
+  }, 2)
+});
+
+router.delete("/customers/:customerId/payment_accounts/:paymentAccountId",  ( req, res ) => {
+  const index = paymentAccounts.findIndex(it => it.id === parseInt(req.params.paymentAccountId))
+  console.log("<<<"+index+">>><<<"+req.params.paymentAccountId+">>")
+  if (index !== -1) {
+    paymentAccounts.splice(index, 1)
+  }
+  console.log("<<"+JSON.stringify(paymentAccounts)+">>")
+  setTimeout(() => {
+    res.status(200).send();
+  }, 2)
+});
 
 
 export default router;

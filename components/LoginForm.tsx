@@ -140,7 +140,7 @@ const LoginForm : React.FC<Props> = (props) => {
             <ActionButton
               variant="outlined"
               size="large"
-
+              type="submit"
               fullWidth={true}
               className={Styles.inputField}
               disableElevation={true}

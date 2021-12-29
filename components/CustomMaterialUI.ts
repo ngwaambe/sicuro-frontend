@@ -23,8 +23,8 @@ export const MyTheme = createTheme({
   },
   typography: {
     fontFamily: [
-      'Roboto Slab',
       'UnitRoundedOT',
+      'Roboto Slab',
       '"Segoe UI"',
       'Roboto',
       '"Helvetica Neue"',
@@ -33,7 +33,12 @@ export const MyTheme = createTheme({
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
-    ].join(',')
+    ].join(','),
+    fontSize: 12,
+    h5:{
+      fontWeight: 500,
+      marginBottom: '10px'
+    }
   },
   overrides: {
     MuiButton: { // Name of the component ⚛️ / style sheet
@@ -102,6 +107,10 @@ export const StyledTextField = withStyles({
       transformOrigin: "top left",
       margin: "10px 0px 0px 0px"
     },
+    "& .MuiFormLabel-root": {
+      fontWeight: '500',
+      fontSize:'0.9rem'
+    },
     "& .MuiInputLabel-formControl": {
       top: "10px",
       left: "6px",
@@ -118,8 +127,13 @@ export const StyledTextField = withStyles({
 
     },
     "& .MuiInputBase-root.Mui-error": {
+      borderRadius: "2px",
       border: '1px solid #cc071e',
       outline: "0px solid transparent",
+    },
+
+    "& .MuiFormHelperText-root.Mui-error": {
+      margin:"3px 0"
     },
     "& .MuiInputBase-root:hover": {
       outline: "0px solid transparent",

@@ -5,7 +5,7 @@ import styles from "./ResetPasswordForm.module.css";
 import {StyledFormTypography, StyledTextField, ActionButton} from "./CustomMaterialUI";
 import {useTranslation, Trans} from "next-i18next";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
-import {validateEmail} from "../service/UtilService";
+import {isValidEmail} from "../service/UtilService";
 import CloseIcon from '@material-ui/icons/Close';
 import ErrorTwoToneIcon from '@material-ui/icons/ErrorTwoTone';
 import {resetPassword} from "../service/authentication";
@@ -51,7 +51,7 @@ const ResetPasswordForm:React.FC<Props>=(props) => {
         isEmailError: true
       });
       return;
-    } else if (!validateEmail(state.email)) {
+    } else if (!isValidEmail(state.email)) {
       setState({
         ...state,
         isEmailError: true,
@@ -122,6 +122,7 @@ const ResetPasswordForm:React.FC<Props>=(props) => {
           variant="contained"
           color="primary"
           disableElevation={true}
+          type="submit"
           size="large"
           onClick={props.onClose}>
           {t('common:close_label')}

@@ -16,6 +16,7 @@ import CommonStyles from './common.module.css'
 import {updateCustomer, useDispatch} from "../service/Auth.context";
 import {updateCustomerPersonalData} from "../service/customerService";
 import {languageToString, titleToString} from "../service/common";
+import {isEmpty} from "../service/UtilService";
 
 interface Props {
   onClose: ()=> void,
@@ -43,7 +44,7 @@ const EditPersonaData =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
   const [, dispatch] = useDispatch()
   const customer = props.customer;
-
+ console.log(customer)
   const checkOrganisation = (customer:Customer):boolean => {
     return ( !(customer.organisation === undefined) && customer.organisation !== null )? true: false;
   }
@@ -64,10 +65,10 @@ const EditPersonaData =  (props:Props) => {
     languageError:false
   })
 
-  const changeIsValid = () =>{
-    return (state.organisationName  && (state.taxNumber === null || state.taxNumber.length === 0) ||
-      state.firstName === '' ||
-      state.lastName === '' ||
+  const changeIsValid = () => {
+    return (state.organisationName && (isEmpty(state.taxNumber)) ||
+      isEmpty(state.firstName) ||
+      isEmpty(state.lastName) ||
       state.language === Language.SELECT ||
       state.title === Title.SELECT);
   }
@@ -77,9 +78,9 @@ const EditPersonaData =  (props:Props) => {
       setState({
         ...state,
         titleError: (state.title === Title.SELECT),
-        firstNameError: (state.firstName === ''),
-        lastNameError: (state.lastName === ''),
-        organisationNameError: (state.isOrganistion && state.organisationName === ''),
+        firstNameError: isEmpty(state.firstName),
+        lastNameError: isEmpty(state.lastName),
+        organisationNameError: (state.isOrganistion && isEmpty(state.organisationName)),
         taxNumberError: (state.isOrganistion && state.taxNumber === ''),
         languageError: (state.language === Language.SELECT)
       });
@@ -179,7 +180,7 @@ const EditPersonaData =  (props:Props) => {
           }
 
           <StyledFormControls error={state.titleError}>
-            <StyledSelect>{t('common:title')}</StyledSelect>
+            <StyledSelectLabel>{t('common:title')}</StyledSelectLabel>
             <StyledSelect
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}
               labelId="title-label"
@@ -216,7 +217,7 @@ const EditPersonaData =  (props:Props) => {
             error={state.lastNameError}
             value={state.lastName} onChange={onChange("lastName", "lastNameError")}/>
 
-          <StyledFormControls error={state.titleError}>
+           <StyledFormControls error={state.titleError}>
             <StyledSelectLabel>{t('common:chooseLanguage')}</StyledSelectLabel>
             <StyledSelect
               MenuProps={{ disableScrollLock: true ,  style: {zIndex: 35001}}}

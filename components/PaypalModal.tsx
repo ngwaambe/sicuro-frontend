@@ -9,14 +9,16 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import {ActionButton, StyledFormControls, StyledTextField} from "./CustomMaterialUI";
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
-import {useDispatch} from "../service/Auth.context";
-import {PaypalAccount} from "../state";
-import {updatePaypalAccount} from "../service/customerService";
+import {PaymentType, PaypalAccount} from "../state";
+import {createPaymentAccount, updatePaymentAccount} from "../service/customerService";
+import {isValidEmail} from "../service/UtilService";
 
 interface Props {
+  titleText: string,
+  customerId: number,
   onClose: ()=> void,
   onSave:  ()=> void,
   account: PaypalAccount
@@ -26,8 +28,9 @@ interface LocalProps {
   id: number,
   owner: string,
   ownerError: boolean,
-  email: string,
+  paypalAccount: string,
   emailError: boolean,
+  emailErrorText: string
 }
 
 const PaypalModal =  (props:Props) => {
@@ -36,11 +39,12 @@ const PaypalModal =  (props:Props) => {
     id: props.account.id,
     owner: props.account.owner,
     ownerError: false,
-    email: props.account.email,
+    paypalAccount: props.account.paypalAccount,
     emailError: false,
+    emailErrorText: ''
   })
 
-  const changeIsValid = () => (state.owner !== '' && state.email !== '')
+  const changeIsValid = () => (state.owner !== '' && state.paypalAccount !== '' && isValidEmail(state.paypalAccount))
 
   const update = async () => {
     if (!changeIsValid()) {
@@ -48,28 +52,37 @@ const PaypalModal =  (props:Props) => {
         ...state,
         owner: state.owner,
         ownerError: (state.owner === ''),
-        email: state.email,
-        emailError: (state.email === '')
+        paypalAccount: state.paypalAccount,
+        emailError: (state.paypalAccount === '' || !isValidEmail(state.paypalAccount)),
+        emailErrorText: evaluateEmailErrorText()
       });
+
+      console.log("Error occured:"+evaluateEmailErrorText())
       return;
     }
-    const request = (state.id !== undefined) ? {
+    const request:PaypalAccount = {
       id: state.id,
+      paymentType: PaymentType.PAYPAL,
       owner: state.owner,
-      email: state.email
-    } : {
-      owner: state.owner,
-      email: state.email
+      paypalAccount: state.paypalAccount
     }
 
-    const result =  await updatePaypalAccount(request)
-    if (result.success) {
-        props.onSave();
+    console.log(JSON.stringify(request))
+
+    let result;
+    if (request.id === undefined)  {
+      result = await createPaymentAccount(props.customerId, request);
     } else {
-       console.log("Error occured")
+      //put => update
+      result = await updatePaymentAccount(props.customerId, request);
     }
-  }
+    if (result.success) {
+      props.onSave();
+    } else {
+      console.log("Error occured")
+    }
 
+  }
 
   const onChange = (propAttr: string) => (event) => {
     setState({
@@ -78,10 +91,19 @@ const PaypalModal =  (props:Props) => {
     })
   }
 
+  const evaluateEmailErrorText = (): string => {
+    if (state.paypalAccount === '') {
+      return t('paypal-required')
+    } else if (!isValidEmail(state.paypalAccount)) {
+      return t('login:invalid_email_text')
+    } else
+      return ''
+  }
+
   return (
     <Modal onEsc={props.onClose} >
       <ModalHeader>
-        <h3>{t('change_password_label')}</h3>
+        <h3>{t(props.titleText)}</h3>
         <IconButton
           onClick={props.onClose}
           data-testid="modal-close" >
@@ -90,26 +112,24 @@ const PaypalModal =  (props:Props) => {
       </ModalHeader>
       <ModalBody>
         <FormControl className={CommonStyles.formControl}>
-
           <StyledTextField
             id="owner"
-            label={t('owner')}
+            label={t('paypal-owner')}
             autoFocus={true}
-            helperText={state.ownerError && t('payment:owner_missing')}
+            helperText={state.ownerError && t('owner-required')}
             type="text"
             fullWidth={true}
             error={state.ownerError}
             value={state.owner} onChange={onChange("owner")}/>
-
           <StyledTextField
             id="email"
-            label={t('email')}
+            label={t('paypal-account')}
             autoFocus={true}
-            helperText={state.ownerError && t('payment:email_missing')}
+            helperText={state.emailError && state.emailErrorText}
             type="text"
             fullWidth={true}
             error={state.emailError}
-            value={state.email} onChange={onChange("email")}/>
+            value={state.paypalAccount} onChange={onChange("paypalAccount")}/>
         </FormControl>
       </ModalBody>
       <ModalFooter divider={true} confirm={true}>

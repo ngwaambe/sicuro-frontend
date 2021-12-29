@@ -1,4 +1,7 @@
 {
+  "account_activation_success": "Your account has been successfully activated. Proceed to login to sicuro",
+  "account_activation_failure":"Your account could not be activated.",
+  "account_activation_failure_text":"This activation link is invalid or has already been used. Please make sure you are using the link which was sent to you by e-mail after your registration. Otherwise, please contact our support team",
   "login_header": "Login to sicuro",
   "login_error": "Wrong email address or password.",
   "email_label": "Email Address",
@@ -10,6 +13,9 @@
   "confirm_password_equal_password": "Passwords are not the same",
   "confirm_password_label": "Confirm password",
   "login_button": "Sign in",
+  "current_password": "Current password",
+  "password_should_not_be_equal": "New password should not be the same as the your current password",
+  "current_password_not_correct": "This doesn't seem to be your old password. Try it again.",
   "forgotten_password": "Forgotten your password?",
   "signup_header": "Create a new sicuro account",
   "signup_text": "Create your sicuro.com account now and use our escrow service to secure your online transactions.",

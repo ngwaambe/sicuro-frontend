@@ -9,7 +9,6 @@ import executeLogin from "./middleware/process-login"
 import executeTokenCheck from "./middleware/checktoken"
 import {parseCookies} from "./service/common";
 import setToken from "./middleware/setToken";
-import cookie from "cookie";
 import executeAction from "./middleware/executeAction";
 
 const port = process.env.PORT || 3000
@@ -23,7 +22,7 @@ const handle = app.getRequestHandler();
     const serviceBaseUrl = SERVICE_BASE_URL()
     server.use('/api', setToken);
     if (isDev(process.env)) {
-      server.use('/api/auth/complete_signup', executeAction)
+      //server.use('/api/auth/complete_signup', executeAction)
       console.log(`>=> mock `)
       server.use('/api', mockRouter)
     } else {

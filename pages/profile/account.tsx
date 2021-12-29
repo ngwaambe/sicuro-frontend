@@ -12,10 +12,9 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {ActionButton} from "../../components/CustomMaterialUI";
 import {useTranslation} from "next-i18next";
 import EditPersonaData from "../../components/PersonalDataModal";
-import {Customer, PaymentAccount, ResponseData, ServiceError} from "../../state";
+import {Customer,  ResponseData } from "../../state";
 import {getCustomer} from "../../service/customerService";
 import {getCustomerSSR} from "../../service/ssrService";
-import EditAdressModal from "../../components/AddressModal";
 import {getCountry} from "../../service/UtilService";
 import EmailModal from "../../components/EmailModal";
 import PasswordModal from "../../components/PasswordModal";
@@ -26,12 +25,8 @@ const useStyle = makeStyles({
   root: {
     minHeight: "130px",
   },
-  title: {
-    fontSize: '1.15rem',
-    fontWeight: 500,
-  },
   content: {
-    minHeight: "calc(100% - 49px)",
+    minHeight: "130px",
   },
   action: {
     borderTop: 'solid',
@@ -50,9 +45,7 @@ enum Action {
   CHANGE_EMAIL,
   CHANGE_PASSWORD,
   EDIT_ADDRESS,
-  EDIT_PERSONAL_DATA,
-  VIEW_PAYMENT_ACCOUNT,
-  ADD_PAYMENT_ACCOUNT
+  EDIT_PERSONAL_DATA
 }
 
 interface Props {
@@ -63,9 +56,10 @@ interface Props {
 
 
 const AccountPage = ({data}) => {
-  const {t} = useTranslation('common')
+  const {t} = useTranslation(['common', 'login'])
   const classes = useStyle();
   const customer: Customer = JSON.parse(data)
+  console.log(customer)
   const [state, setState] = useState<Props>({
     action: Action.DO_NOTHING,
     customer: customer,
@@ -89,7 +83,6 @@ const AccountPage = ({data}) => {
     console.log("use effect<"+JSON.stringify(state.counter)+">")
     fetchCustomer()
   }, [state.counter>0])
-
 
   const changeEmail = () => {
     setState({...state, action: Action.CHANGE_EMAIL})
@@ -122,13 +115,6 @@ const AccountPage = ({data}) => {
     })
   }
 
-  const streetExtension = (value: string) => {
-    if (value === undefined || value === '') {
-      return ''
-    } else
-      return (<>{value}<br/></>)
-  }
-
   return (
     <div className="s-space-equal">
       {state.action === Action.CHANGE_EMAIL &&
@@ -147,32 +133,32 @@ const AccountPage = ({data}) => {
               </Grid>
               <Grid item xs={12} sm={12} md={9}>
                   <Typography variant="h5" component="h2">{t('UserAccount')}</Typography>
-                  <Grid container spacing={3} alignItems="stretch" direction="row">
+                  <Grid container spacing={5} alignItems="stretch" direction="row">
                       <Grid item xs={12} sm={12} md={6}>
                           <Card variant="outlined" className={classes.root}>
-                              <CardHeader title={t('email')} classes={{title: classes.title}}/>
                               <CardContent>
+                                  <Typography align={"left"} variant="h6" component="h6">{t('login:email_label')} </Typography>
                                   <Typography align={"left"} component="span">{state.customer.email}</Typography>
                               </CardContent>
-                              <CardActions className={classes.action}>
+                              <CardActions>
                                   <ActionButton
                                       className={classes.actionItem}
                                       startIcon={<EditTwoToneIcon/>}
                                       variant="outlined"
                                       size="medium"
                                       onClick={changeEmail}>
-                                    {t('edit-email')}
+                                    {t('email_address_edit')}
                                   </ActionButton>
                               </CardActions>
                           </Card>
                       </Grid>
                       <Grid item xs={12} sm={12} md={6}>
                           <Card variant="outlined">
-                              <CardHeader title={t('password')} classes={{title: classes.title}}/>
                               <CardContent>
+                                  <Typography align={"left"} variant="h6" component="h6">{t('password')} </Typography>
                                   <Typography align={"left"} component="span">*******</Typography>
                               </CardContent>
-                              <CardActions className={classes.action}>
+                              <CardActions>
                                   <ActionButton
                                       className={classes.actionItem}
                                       startIcon={<EditTwoToneIcon/>}
@@ -186,12 +172,12 @@ const AccountPage = ({data}) => {
                       </Grid>
                       <Grid item xs={12} sm={12} md={6}>
                           <Card variant="outlined">
-                              <CardHeader title={t('personalInformation')} classes={{title: classes.title}}/>
                               <CardContent>
+                                  <Typography align={"left"} variant="h6" component="h6">{t('personalInformation')} </Typography>
                                   <Typography align={"left"}
                                               component="span">{t(state.customer.title)} {state.customer.firstname} {state.customer.lastname}</Typography>
                               </CardContent>
-                              <CardActions className={classes.action}>
+                              <CardActions>
                                   <ActionButton
                                       className={classes.actionItem}
                                       startIcon={<EditTwoToneIcon/>}
@@ -205,8 +191,8 @@ const AccountPage = ({data}) => {
                       </Grid>
                       <Grid item xs={12} sm={12} md={6}>
                           <Card variant="outlined">
-                              <CardHeader title={t('address')} classes={{title: classes.title}}/>
                               <CardContent>
+                                  <Typography align={"left"} variant="h6" component="h6">{t('address')} </Typography>
                                 {state.customer.address !== null &&
                                 <>
                                     <Typography align={"left"} component="span">
@@ -223,21 +209,21 @@ const AccountPage = ({data}) => {
                                 </>
                                 }
                               </CardContent>
-                              <CardActions className={classes.action}>
+                              <CardActions>
                                   <ActionButton
                                       className={classes.actionItem}
                                       startIcon={<EditTwoToneIcon/>}
                                       variant="outlined"
                                       size="medium"
                                       onClick={editAddress}>
-                                    {t('person-details-edit')}
+                                    {t('address-details-edit')}
                                   </ActionButton>
                               </CardActions>
                           </Card>
                       </Grid>
                       <Grid item xs={12} sm={12} md={12}>
                           <Typography variant="h5" component="h2">Payment accounts</Typography>
-                          <PaymentAccounts customerId={state.customer.id}/>
+                          <PaymentAccounts customerId={state.customer.id} />
                       </Grid>
                   </Grid>
               </Grid>
@@ -258,7 +244,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         if (result.success) {
           return {
             props: {
-              ...await serverSideTranslations(ctx.locale, ["common"]),
+              ...await serverSideTranslations(ctx.locale, ["common", "login"]),
               data: JSON.stringify(result.data)
             }
           }

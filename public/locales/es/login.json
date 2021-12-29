@@ -1,4 +1,7 @@
 {
+  "account_activation_success": "Su cuenta ha sido activada con éxito. Proceda a iniciar sesión en sicuro",
+  "account_activation_failure":"Su cuenta no ha podido ser activada.",
+  "account_activation_failure_text":"Este enlace de activación no es válido o ya ha sido utilizado. Por favor, asegúrese de que está utilizando el enlace que se le envió por correo electrónico después de su registro. De lo contrario, póngase en contacto con nuestro equipo de asistencia",
   "login_header": "Iniciar sesión en sicuro",
   "login_error": "Dirección de correo electrónico o contraseña incorrecta.",
   "email_label": "Dirección de correo electrónico",
@@ -10,6 +13,9 @@
   "confirm_password_equal_password": "Las contraseñas no son iguales",
   "confirm_password_label": "Confirmar Contraseña",
   "login_button": "Registrarse",
+  "current_password": "Contraseña actual",
+  "password_should_not_be_equal": "La nueva contraseña no debe ser la misma que la actual",
+  "current_password_not_correct": "Esta no parece ser tu antigua contraseña. Inténtalo de nuevo.",
   "forgotten_password": "¿Olvidaste tu contraseña?",
   "signup_header": "Crea una nueva cuenta sicuro",
   "signup_text": "Cree su cuenta sicuro.com ahora y utilice nuestro servicio de depósito en garantía para asegurar sus transacciones en línea.",

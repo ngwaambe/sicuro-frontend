@@ -6,7 +6,7 @@ import {
   Address,
   Customer,
   ResponseData,
-  PaypalAccount, PaymentAccount, PaymentType
+  PaypalAccount, PaymentAccount, PaymentType, BankAccount
 } from '../state';
 import cookie from "cookie"
 import jwt_decode from "jwt-decode";
@@ -57,7 +57,7 @@ export const redirectTo = <T>(url: string) => new Promise<T>(() => {
   window.location.href = url;
   setTimeout(() => {
     throw new Error();
-  }, 2000);
+  }, 1000);
 });
 
 export const timeout = (ms: number, action: () => void): Promise<any> => {
@@ -140,20 +140,33 @@ export const formatCustomerName = (customer:Customer): string =>{
   return `${customer.title} ${customer.firstname} ${customer.lastname}`
 }
 
-export const toResponseData = <T>(success:boolean, data?:T): ResponseData<T>=>({
-  success:success,
+export const toResponseData = <T>(success: boolean, statusCode:Number, data?:T): ResponseData<T>=>({
+  success: success,
+  statusCode: statusCode,
   data:data
 })
 
 export const toPaypalAccount = (account: any): PaypalAccount => ({
   id: account.id,
-  type: account.type,
+  paymentType: account.paymentType,
   owner: account.owner,
-  email: account.email
+  paypalAccount: account.paypalAccount
+})
+
+export const toBankAccount = (account: any): BankAccount => ({
+  id: account.id,
+  paymentType: account.paymentType,
+  owner: account.owner,
+  bankName: account.bankName,
+  iban: account.iban,
+  swiftCode: account.swiftCode,
+  city: account.city,
+  postalCode: account.postalCode,
+  countryIso: account.countryIso
 })
 
 export const toPaymentAccounts = (accounts: any[]): PaymentAccount[] => {
-  return accounts.map(it => (it.type === PaymentType.PAYPAL? toPaypalAccount(it): toPaypalAccount(it)))
+  return accounts.map(it => (it.paymentType === PaymentType.PAYPAL? toPaypalAccount(it): toBankAccount(it)))
 }
 
 export const titleToString = (title:Title): string => Object.keys(Title).filter(k => Title[k] == title).pop()

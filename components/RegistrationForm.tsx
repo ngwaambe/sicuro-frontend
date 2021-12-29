@@ -24,7 +24,7 @@ import {createAccount} from "../service/createAccount";
 import {useTranslation, Trans} from "next-i18next";
 import styles from "./ResetPasswordForm.module.css";
 import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
-import {getEnumKey, validateEmail} from "../service/UtilService";
+import {getEnumKey, isValidEmail} from "../service/UtilService";
 import {useRouter} from "next/router";
 import Link  from "next/link";
 
@@ -175,7 +175,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
   const evaluateEmailErrorText = (): string => {
     if (state.email === '') {
        return t('email_missing')
-    } else if (!validateEmail(state.email)) {
+    } else if (!isValidEmail(state.email)) {
        return t('invalid_email_text')
     } else
       return ''
@@ -186,14 +186,14 @@ const RegistrationForm: React.FC<Props> = (props) => {
       state.firstName === '' ||
       state.lastName === '' ||
       state.email === '' ||
-      !validateEmail(state.email) ||
+      !isValidEmail(state.email) ||
       state.password === '' ||
       state.password !== state.confirmPassword ||
       state.language === Language.SELECT ||
       (state.isOrganistion && (state.organisationName === '' || state.taxNumber === ''))) {
       setState({
         ...state,
-        emailError: ((state.email === '') || !validateEmail(state.email)),
+        emailError: ((state.email === '') || !isValidEmail(state.email)),
         emailErrorText: evaluateEmailErrorText(),
         passwordError: (state.password === '')  || (state.password.length < 8 ),
         passwordErrorText: evaluatePasswordError(),
@@ -388,6 +388,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
                     disableElevation={true}
                     color="primary"
                     disabled={open}
+                    type="submit"
                     onClick={save}>
                   {open && <CircularProgress color="primary" size={20} thickness={4}/>}
                   {t('signup_button')}

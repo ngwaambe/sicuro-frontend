@@ -1,12 +1,13 @@
 import {CompleteSignupRequest, ResponseData, ResponseStatus, SignupRequest} from "../state";
 import {APP_BASE_URL} from "../config";
-import {checkStatus} from "./common";
+import {checkStatus, toResponseData} from "./common";
 import {defaultFailedResponsse, defaultSuccessResponse} from "./UtilService";
 
 
 export const createAccountResponse = (data:unknown, res: Response): ResponseData<any> =>(
   {
     success: res.status >= 200 && res.status < 300,
+    statusCode: res.status,
     data: {
       status: res.status
     }
@@ -36,13 +37,16 @@ export const completeSignup = (request: CompleteSignupRequest): Promise<Response
     error: (data) => defaultFailedResponsse(data)
   }))
 
-export const activateAccount = (activationCode: string): Promise<ResponseStatus> =>
-  fetch(`${APP_BASE_URL()}/api/auth/activate_account/${activationCode}`, {
+export const activateAccount = (activationCode: string): Promise<ResponseData<any>> => {
+  return fetch(`${APP_BASE_URL()}/api/auth/activate_account/${activationCode}`, {
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     },
     method: 'GET'
   }).then( checkStatus({
-    success: (data) => defaultSuccessResponse(data),
-    error: (data) => defaultFailedResponsse(data)
+    success: (data, resp ) => toResponseData(true, resp.status, data),
+    error: (data, resp) =>{
+      return toResponseData(false, resp.status, data)
+    }
   }))
+}

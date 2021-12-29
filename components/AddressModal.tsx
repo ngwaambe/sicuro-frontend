@@ -3,9 +3,7 @@ import {
   FormControl,
   FormHelperText,
   IconButton,
-  InputLabel,
   MenuItem,
-  Select
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import {
@@ -20,7 +18,7 @@ import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
 import {updateCustomer, useDispatch} from "../service/Auth.context";
 import {updateCustomerAddress} from "../service/customerService";
-import {getCountries} from "../service/UtilService";
+import {getCountries, isEmpty} from "../service/UtilService";
 
 interface Props {
   onClose: ()=> void,
@@ -41,6 +39,8 @@ interface LocalProps {
   cityError: boolean,
   countryIso: string,
   countryIsoError: boolean
+  phoneNumber: string
+  phoneNumberError: boolean
 }
 
 const EditAdressModal =  (props:Props) => {
@@ -58,7 +58,8 @@ const EditAdressModal =  (props:Props) => {
       houseNumber:'',
       postalCode:'',
       city:'',
-      countryIso:'DE'
+      countryIso:'DE',
+      phoneNumber: ''
     }
   }
   const address =  getInitailAddress(customer)
@@ -76,23 +77,28 @@ const EditAdressModal =  (props:Props) => {
     city: address.city,
     cityError: false,
     countryIso: address.countryIso,
-    countryIsoError: false
+    countryIsoError: false,
+    phoneNumber: address.phoneNumber,
+    phoneNumberError: false
   })
 
 
 
-  const changeIsValid = () => (state.street === ''  || state.houseNumber === '' ||
-      state.postalCode === '' || state.city === '' ||  state.countryIso === '')
+  const changeIsValid = () => (isEmpty(state.street)  || isEmpty(state.houseNumber) ||
+    isEmpty(state.postalCode) || isEmpty(state.city) ||  isEmpty(state.countryIso) || isEmpty(state.phoneNumber))
 
   const update = async () => {
+    console.log(changeIsValid())
+    console.log(state)
     if (changeIsValid()) {
       setState({
         ...state,
-        streetError: (state.street === ''),
-        houseNumberError: (state.houseNumber === ''),
-        postalCodeError: (state.postalCode === ''),
-        cityError: (state.city === ''),
-        countryIsoError: (state.countryIso === ''),
+        streetError: isEmpty(state.street),
+        houseNumberError: isEmpty(state.houseNumber),
+        postalCodeError: isEmpty(state.postalCode),
+        cityError: isEmpty(state.city),
+        countryIsoError: isEmpty(state.countryIso),
+        phoneNumberError: isEmpty(state.phoneNumber)
       });
       return;
     }
@@ -103,10 +109,12 @@ const EditAdressModal =  (props:Props) => {
       houseNumber: state.houseNumber,
       postalCode: state.postalCode,
       city: state.city,
-      countryIso: state.countryIso
+      countryIso: state.countryIso,
+      phoneNumber: state.phoneNumber
    }
 
     const result =  await updateCustomerAddress(customer.id, request)
+    console.log(result)
     if (result.success) {
       updateLocalState();
       updateGlobalState;
@@ -121,7 +129,8 @@ const EditAdressModal =  (props:Props) => {
     houseNumber: state.houseNumber,
     postalCode: state.postalCode,
     city: state.city,
-    countryIso: state.countryIso
+    countryIso: state.countryIso,
+    phoneNumber: state.phoneNumber
   })
 
   const updateGlobalState = () => dispatch(updateCustomer({
@@ -133,7 +142,8 @@ const EditAdressModal =  (props:Props) => {
       streetExtension:state.streetExtension,
       houseNumber: state.houseNumber,
       city: state.city,
-      countryIso: state.countryIso
+      countryIso: state.countryIso,
+      phoneNumber: state.phoneNumber
     },
   }));
 
@@ -156,7 +166,6 @@ const EditAdressModal =  (props:Props) => {
       </ModalHeader>
       <ModalBody>
         <FormControl className={CommonStyles.formControl}>
-
           <StyledTextField
             id="address_street"
             label={t('street')}
@@ -168,14 +177,6 @@ const EditAdressModal =  (props:Props) => {
             value={state.street} onChange={onChange("street")}/>
 
           <StyledTextField
-            id="address_street_ext"
-            label={t('streetExtension')}
-            autoFocus={false}
-            type="text"
-            fullWidth={true}
-            value={state.streetExtension} onChange={onChange("streetExtension")}/>
-
-          <StyledTextField
             id="address_house_nr"
             label={t('house_number')}
             autoFocus={false}
@@ -184,6 +185,15 @@ const EditAdressModal =  (props:Props) => {
             fullWidth={true}
             error={state.houseNumberError}
             value={state.houseNumber} onChange={onChange("houseNumber")}/>
+
+          <StyledTextField
+            id="address_street_ext"
+            label={t('streetExtension')}
+            autoFocus={false}
+            type="text"
+            fullWidth={true}
+            value={state.streetExtension} onChange={onChange("streetExtension")}/>
+
 
           <StyledTextField
             id="address_postalcode"
@@ -223,6 +233,17 @@ const EditAdressModal =  (props:Props) => {
             </StyledSelect>
             {state.countryIsoError && <FormHelperText>{t('country_required')}</FormHelperText>}
           </StyledFormControls>
+
+          <StyledTextField
+            id="address_phoneNumber"
+            label={t('phoneNumber')}
+            helperText={state.cityError && t('phoneNumber_required')}
+            autoFocus={false}
+            type="text"
+            fullWidth={true}
+            error={state.phoneNumberError}
+            value={state.phoneNumber} onChange={onChange("phoneNumber")}/>
+
         </FormControl>
       </ModalBody>
       <ModalFooter divider={true} confirm={true}>

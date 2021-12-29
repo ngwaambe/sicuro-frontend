@@ -15,6 +15,8 @@ import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
 import {updateCustomer, useDispatch} from "../service/Auth.context";
 import {updateCustomerEmail} from "../service/customerService";
+import {isValidEmail, isEmpty} from "../service/UtilService";
+import Typography from "@material-ui/core/Typography";
 
 interface Props {
   onClose: ()=> void,
@@ -24,6 +26,7 @@ interface Props {
 
 interface LocalProps {
   email: string,
+  currentEmail: string,
   emailError: boolean,
 }
 
@@ -31,28 +34,25 @@ const EmailModal =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
   const [, dispatch] = useDispatch()
   const customer = props.customer;
-  const {i18n} = useTranslation()
   const [state, setState] = useState<LocalProps>({
-    email: customer.email,
+    email: '',
+    currentEmail: customer.email,
     emailError: false
   })
 
-  const changeIsValid = () => (state.email === '' || state.email === undefined)
-
-
   const update = async () => {
-    if (changeIsValid()) {
+    if (isEmpty(state.email) || !isValidEmail(state.email)) {
       setState({
         ...state,
-        emailError: (state.email === '')
+        emailError: isEmpty(state.email) || !isValidEmail(state.email)
       });
       return;
     }
-    const request = { email: state.email }
+    const request = {email: state.email}
 
-    const result =  await updateCustomerEmail(customer.id, request)
+    const result = await updateCustomerEmail(customer.id, request)
     if (result.success) {
-      setState({ ...state, email: state.email})
+      setState({...state, email: state.email})
       dispatch(updateCustomer({...customer, email: state.email}));
       props.onSave();
     }
@@ -78,7 +78,8 @@ const EmailModal =  (props:Props) => {
       </ModalHeader>
       <ModalBody>
         <FormControl className={CommonStyles.formControl}>
-
+          <Typography variant="h6" gutterBottom>Current email</Typography>
+          <Typography variant="subtitle1" gutterBottom>{state.currentEmail}</Typography>
           <StyledTextField
             id="email"
             label={t('email_address')}
