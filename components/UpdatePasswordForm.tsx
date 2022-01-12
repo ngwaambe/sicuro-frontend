@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Styles from './LoginForm.module.css';
 import CommonStyles from './common.module.css'
 import {
@@ -11,75 +11,109 @@ import {useDispatch} from "../service/Auth.context";
 import {useTranslation, Trans} from "next-i18next";
 import {Customer} from "../state";
 import {updateCustomerPassword} from "../service/customerService";
+import {isEmpty} from "../service/UtilService";
 
 interface Props {
-  customer:Customer;
+  customer: Customer;
 }
 
-interface PasswordState {
+interface State {
+  currentPassword: string,
+  currentPasswordError: boolean,
+  currentPasswordErrorText: string,
   password: string;
   passwordError: boolean;
+  passwordErrorText: string,
   password2: string;
   password2Error: boolean;
-  error: boolean;
 }
 
 
-const UpdatePasswordForm : React.FC<Props> = (props) => {
-  const {t} = useTranslation(['login','common']);
-  const [ _ , dispatch] = useDispatch();
-  const [passwordState, setPasswordState] = useState<PasswordState>({
+const UpdatePasswordForm = (props: Props) => {
+
+  const {t} = useTranslation(['login', 'common']);
+  const [_, dispatch] = useDispatch();
+  const [state, setState] = useState<State>({
+    currentPassword: '',
+    currentPasswordError: false,
+    currentPasswordErrorText: '',
     password: '',
     passwordError: false,
+    passwordErrorText: '',
     password2: '',
     password2Error: false,
-    error: false
   });
   const router = useRouter()
 
   const onChange = (propAttr: string, propErrorAttr: string) => (event) => {
-    setPasswordState({
-      ...passwordState,
+    setState({
+      ...state,
       [propAttr]: event.target.value,
-      [propErrorAttr]: (event.target.value !== '') ? false : passwordState[propErrorAttr],
+      [propErrorAttr]: (event.target.value !== '') ? false : state[propErrorAttr],
     })
   }
 
-  const checkInput = (): boolean => {
-    return (passwordState.password === '') || (passwordState.password2 === '')
+  const isValidPassword = (): boolean => {
+    return !isEmpty(state.password) && state.password.trim().length >= 8
+      && !isPasswordSame(state.currentPassword, state.password)
+      && (state.password === state.password2)
+  }
+  const checkInput = (): boolean => isEmpty(state.password2) || isEmpty(state.currentPassword) || !isValidPassword()
+
+  const isPasswordSame = (currentPassword: string, newpassword: string): boolean => {
+    return !isEmpty(currentPassword) && !isEmpty(newpassword) && currentPassword.trim() == newpassword.trim()
+  }
+
+
+  const evaluateErrorMessage = (): string => {
+    if (isEmpty(state.password))
+      return 'password_missing'
+    else if (state.password.trim().length < 8)
+      return 'password_min_length'
+    else if (isPasswordSame(state.currentPassword, state.password))
+      return 'password_should_not_be_equal'
+    else if (state.password !== state.password2)
+      return 'common:password_not_match'
+    else
+      return ''
   }
 
   const onUpdatePassword = e => {
     e.preventDefault();
     if (checkInput()) {
-      setPasswordState({
-        ...passwordState,
-        passwordError: (passwordState.password === ''),
-        password2Error: (passwordState.password2 === '')
+      setState({
+        ...state,
+        currentPasswordError: isEmpty(state.currentPassword),
+        passwordError: !isValidPassword(),
+        password2Error: isEmpty(state.password2),
+        currentPasswordErrorText: isEmpty(state.currentPassword) ? 'password_missing' : '',
+        passwordErrorText: evaluateErrorMessage(),
       })
       return;
     }
 
-    if (passwordState.password !== passwordState.password2) {
-      setPasswordState({
-        ...passwordState,
-        error: true,
-      })
-      return;
-
-    }
-
-    updateCustomerPassword(props.customer.id, {password:passwordState.password})
+    updateCustomerPassword(props.customer.id, {currentPassword: state.currentPassword, password: state.password})
       .then(res => {
-        if (!res.success) {
-          setPasswordState({...passwordState, error: true})
-        } else {
+        if (res.success) {
           router.push('/profile')
+        } else {
+          if (res.statusCode == 409) {
+            setState({
+              ...state,
+              currentPasswordError: true,
+              currentPasswordErrorText: 'current_password_not_correct',
+              passwordError: false,
+              passwordErrorText: ''
+            })
+          }
+          if (res.statusCode == 401) {
+            //redirect to login
+            router.push('/authenticate')
+          }
         }
       })
       .catch(error => {
-        setPasswordState({...passwordState, error: true})
-        console.log(+error.message);
+        console.log("Error: "+error.message);
       });
   };
 
@@ -89,27 +123,30 @@ const UpdatePasswordForm : React.FC<Props> = (props) => {
         <Card className={CommonStyles.cardForm}>
           <CardContent className={CommonStyles.cardFormContent}>
             <h2 className={Styles.loginHeader}><Trans>{t('change_password_label')}</Trans></h2>
-           <div className={Styles.inputField}>
-              <StyledTextField
-                id="password_id"
-                label={t('common:new_password')}
-                type="password"
-                fullWidth={true}
-                helperText={passwordState.passwordError && t('password_missing')}
-                error={passwordState.passwordError}
-                value={passwordState.password} onChange={onChange("password", "passwordError")}/>
-            </div>
-            <div className={Styles.inputField}>
-              <StyledTextField
-                id="password2_id"
-                label={t('common:repeat_new_password')}
-                type="password"
-                fullWidth={true}
-                helperText={passwordState.password2Error && t('password_missing')}
-                error={passwordState.password2Error}
-                value={passwordState.password2} onChange={onChange("password2", "password2Error")}/>
-            </div>
-            {passwordState.error && <p className={Styles.loginError}>{t('common:password_not_match')}</p>}
+            <StyledTextField
+              id="current_password"
+              label={t('current_password')}
+              type="password"
+              fullWidth={true}
+              helperText={state.currentPasswordError && t(state.currentPasswordErrorText)}
+              error={state.currentPasswordError}
+              value={state.currentPassword} onChange={onChange("currentPassword", "currentPasswordError")}/>
+            <StyledTextField
+              id="password_id"
+              label={t('common:new_password')}
+              type="password"
+              fullWidth={true}
+              helperText={state.passwordError && t(state.passwordErrorText)}
+              error={state.passwordError}
+              value={state.password} onChange={onChange("password", "passwordError")}/>
+            <StyledTextField
+              id="password2_id"
+              label={t('common:repeat_new_password')}
+              type="password"
+              fullWidth={true}
+              helperText={state.password2Error && t('password_missing')}
+              error={state.password2Error}
+              value={state.password2} onChange={onChange("password2", "password2Error")}/>
           </CardContent>
           <StyledCardActions>
             <ActionButton

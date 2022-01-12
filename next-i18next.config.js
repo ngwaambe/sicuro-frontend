@@ -1,6 +1,4 @@
-import Backend from 'i18next-http-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import { initReactI18next } from 'react-i18next';
+const  { initReactI18next } = require('react-i18next')
 
 module.exports = {
     i18n: {
@@ -24,7 +22,7 @@ module.exports = {
             'slider',
             'transferpage'
         ],
-        use:[initReactI18next, LanguageDetector],
+        use:[initReactI18next],
         serializeConfig:false,
 
     },

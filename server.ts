@@ -7,9 +7,8 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 import setRequestBody from "./middleware/set-request-body"
 import executeLogin from "./middleware/process-login"
 import executeTokenCheck from "./middleware/checktoken"
-import {parseCookies} from "./service/common";
 import setToken from "./middleware/setToken";
-import executeAction from "./middleware/executeAction";
+import refreshTokenAction from "./middleware/executeAction";
 
 const port = process.env.PORT || 3000
 const app = next({ dev: process.env.NODE_ENV !== 'production' })
@@ -21,14 +20,14 @@ const handle = app.getRequestHandler();
     const server = express();
     const serviceBaseUrl = SERVICE_BASE_URL()
     server.use('/api', setToken);
-    if (isDev(process.env)) {
+    if (isDev()) {
       //server.use('/api/auth/complete_signup', executeAction)
       console.log(`>=> mock `)
       server.use('/api', mockRouter)
     } else {
-      console.log(`>=> int/pre/prod `)
-      server.use('/api/auth/complete_signup', executeAction)
-      server.use('/api/auth/update_password', executeAction)
+      console.info(`>=> int/test/prod `)
+      server.use('/api/auth/complete_signup', refreshTokenAction)
+      server.use('/api/customers/**/change_password', refreshTokenAction)
       server.use('/api', createProxyMiddleware([
         '/api/**',
         '!/api/logout',
@@ -38,7 +37,6 @@ const handle = app.getRequestHandler();
         '!/api/auth/check_token'],{
         target: `${serviceBaseUrl}`,
         changeOrigin: false,
-        //onProxyReq:onProxyReq,
         logLevel: 'debug'
       }))
       server.use('/api/auth/check_token',setRequestBody, executeTokenCheck)
@@ -51,7 +49,7 @@ const handle = app.getRequestHandler();
       })
       .listen(port, (err?: any) => {
         if (err) throw err;
-        console.log(`> Ready on localhost:${port} - env ${process.env.NODE_ENV} - api ${serviceBaseUrl}`);
+        console.info(`> Ready on localhost:${port} - env ${process.env.NODE_ENV} - api ${serviceBaseUrl}`);
       }).timeout = 0;
 
   } catch (e) {
@@ -60,13 +58,3 @@ const handle = app.getRequestHandler();
   }
 })();
 
-function onProxyReq(proxyReq, req, res) {
-  // add custom header
-  const cookies = parseCookies(req);
-  console.log(JSON.stringify(req.get('set-cookie')))
-
-  //console.log("3=>"+JSON.stringify(req.headers['cookie']))
-  //console.log(JSON.stringify(req.headers)+"#########################################################")
-  console.log("3=>"+JSON.stringify(req.headers['Authorization'])+"#########################################################")
-  //proxyReq.setHeader('Authorization', req.headers['authorization']); //TODO do we really neeed to copy this
-}

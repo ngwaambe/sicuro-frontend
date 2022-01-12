@@ -2,7 +2,7 @@ export const isProd = () => {
   return (process.env.NODE_ENV != undefined) ? process.env.NODE_ENV.endsWith('production') : false;
 }
 
-export const isDev = (env) => {
+export const isDev = () => {
   return (process.env.NODE_ENV != undefined) ? process.env.NODE_ENV.endsWith('development') : false;
 }
 

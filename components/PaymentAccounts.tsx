@@ -86,7 +86,6 @@ const PaymentAccounts = (props: Props) => {
           loading: false
         })
       }
-      console.log(result)
     });
   }
 

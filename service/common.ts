@@ -25,7 +25,6 @@ export const checkStatus = <T>(props: CheckStatusProps<T>) => async (response: R
     data = JSON.parse(data);
   } catch (err) { /* ignore */
   }
-  //console.log("checkingStatus:"+JSON.stringify(data))
   if (response.status >= 200 && response.status < 300) {
     return props.success(data, response);
   }
@@ -97,7 +96,6 @@ export const getTokenExpirationDate = (token: string):number =>{
 
 export const hasTemproraryPwd = (token: string): boolean => {
   const decodedtoken = jwt_decode(token)
-  console.log(JSON.stringify(decodedtoken))
   return decodedtoken['tempPwd'];
 }
 

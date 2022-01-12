@@ -1,20 +1,10 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
-import {
-  FormControl,
-  FormHelperText,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select
-} from "@material-ui/core";
+import {IconButton} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {ActionButton, StyledFormControls, StyledTextField} from "./CustomMaterialUI";
-import React, { useState} from "react";
+import {ActionButton} from "./CustomMaterialUI";
+import React from "react";
 import {useTranslation} from "next-i18next";
-import CommonStyles from './common.module.css'
-import {PaymentType, PaypalAccount} from "../state";
-import {createPaypalAccount, updatePaypalAccount} from "../service/customerService";
-import {isValidEmail} from "../service/UtilService";
+
 
 interface Props {
   titleText: string,

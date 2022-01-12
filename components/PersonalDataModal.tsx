@@ -44,7 +44,6 @@ const EditPersonaData =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
   const [, dispatch] = useDispatch()
   const customer = props.customer;
- console.log(customer)
   const checkOrganisation = (customer:Customer):boolean => {
     return ( !(customer.organisation === undefined) && customer.organisation !== null )? true: false;
   }

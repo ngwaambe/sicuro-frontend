@@ -8,7 +8,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {isValidEmail} from "../service/UtilService";
 import CloseIcon from '@material-ui/icons/Close';
 import ErrorTwoToneIcon from '@material-ui/icons/ErrorTwoTone';
-import {resetPassword} from "../service/authentication";
+import {initPasswordReset} from "../service/authentication";
 
 interface Props {
   onClose: () => void;
@@ -59,7 +59,7 @@ const ResetPasswordForm:React.FC<Props>=(props) => {
         step: Step.INIT
       });
     } else {
-      resetPassword(state.email).then(res => {
+      initPasswordReset(state.email).then(res => {
         if (res.success){
           setState({
             ...state,

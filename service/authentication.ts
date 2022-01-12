@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
 import { APP_BASE_URL} from '../config';
-import { checkStatus } from './common';
-import { ResponseStatus } from '../state'
+import {checkStatus, toResponseData} from './common';
+import {ResponseData, ResponseStatus} from '../state'
 import {defaultFailedResponsse, defaultSuccessResponse} from "./UtilService";
 
 export interface GetTokenResponse {
@@ -92,11 +92,11 @@ export const clearToken = (): Promise<ResponseStatus> => {
   }));
 }
 
-export const resetPassword = (email: string): Promise<ResponseStatus> =>
-  fetch(`${APP_BASE_URL()}/api/auth/reset_password/`, {
-    body: `{email:${email}}`,
+export const initPasswordReset = (email: string): Promise<ResponseStatus> =>
+  fetch(`${APP_BASE_URL()}/api/auth/init_reset_password`, {
+    body: `{"email":"${email}"}`,
     headers:{
-      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/json',
     },
     method: 'POST'
   }).then(checkStatus({
@@ -104,6 +104,18 @@ export const resetPassword = (email: string): Promise<ResponseStatus> =>
     error:(data)=>defaultFailedResponsse(data)
   }));
 
+export const resetPassword = (uuid: string): Promise<ResponseData<any>> => {
+  console.log(`${APP_BASE_URL}/api/auth/reset_password/${uuid}`)
+  return fetch(`${APP_BASE_URL()}/api/auth/reset_password/${uuid}`, {
+    headers:{'Content-Type': 'application/json'},
+    method: 'GET'
+  }).then(checkStatus({
+    success: (data, resp ) => toResponseData(true, resp.status, data),
+    error: (data, resp) =>{
+      return toResponseData(false, resp.status, data)
+    }
+  }));
+}
 //const tokenCache = new cache.Cache();
 
 

@@ -96,7 +96,6 @@ const BankModal =  (props:Props) => {
   }
 
   const update = async () => {
-     console.log(isValidIBAN(state.iban))
     if (!isValid()) {
       setState({
         ...state,
@@ -130,7 +129,6 @@ const BankModal =  (props:Props) => {
       postalCode: state.postalCode,
       countryIso: state.iban.substr(0,2)
     }
-    console.log(JSON.stringify(request))
     let result;
     if (request.id === undefined)  {
       result = await createPaymentAccount(props.customerId, request)
@@ -142,7 +140,6 @@ const BankModal =  (props:Props) => {
     if (result.success) {
       props.onSave();
     } else {
-      console.log(JSON.stringify(result));
       if(result.statusCode == 401) {
         await Router.push("/authenticate");
       }
@@ -157,7 +154,6 @@ const BankModal =  (props:Props) => {
       ...state,
       [propAttr]: value,
     })
-    console.info(state)
   }
 
 

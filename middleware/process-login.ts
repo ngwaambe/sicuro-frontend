@@ -31,9 +31,7 @@ export default (req: Request, res: Response, next: any) => {
     }
   }))
   .catch(error => {
-    console.log(error.message);
-    console.log(error.data);
-    //console.log(error.response);
+    console.log("Error:"+error.message);
     res.status(401).json({loggedIn:false})
   });
 };

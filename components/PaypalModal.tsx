@@ -57,7 +57,6 @@ const PaypalModal =  (props:Props) => {
         emailErrorText: evaluateEmailErrorText()
       });
 
-      console.log("Error occured:"+evaluateEmailErrorText())
       return;
     }
     const request:PaypalAccount = {
@@ -66,8 +65,6 @@ const PaypalModal =  (props:Props) => {
       owner: state.owner,
       paypalAccount: state.paypalAccount
     }
-
-    console.log(JSON.stringify(request))
 
     let result;
     if (request.id === undefined)  {

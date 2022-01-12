@@ -59,7 +59,6 @@ const AccountPage = ({data}) => {
   const {t} = useTranslation(['common', 'login'])
   const classes = useStyle();
   const customer: Customer = JSON.parse(data)
-  console.log(customer)
   const [state, setState] = useState<Props>({
     action: Action.DO_NOTHING,
     customer: customer,

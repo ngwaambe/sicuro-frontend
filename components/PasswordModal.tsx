@@ -64,14 +64,18 @@ const PasswordModal =  (props:Props) => {
     if (result.success) {
         props.onSave();
     } else {
-       if (result.statusCode == 409)
-         setState( {
+       if (result.statusCode == 409) {
+         setState({
            ...state,
            currentPasswordError: true,
-           currentPasswordErrorText:'current_password_not_correct',
+           currentPasswordErrorText: 'current_password_not_correct',
            passwordError: false,
-           passwordErrorText:''
+           passwordErrorText: ''
          })
+       }
+       if (result.statusCode == 401) {
+         //redirect to login
+       }
     }
   }
 

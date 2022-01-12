@@ -137,7 +137,6 @@ const CompleteRegistrationPage = ({data}) => {
     })
 
     setTabState(isAddressValid)
-    console.log('Tab-State:' + tabState)
   }
   const onChangeSecurityQuestion = (propAttr: string) => (event) => {
     setState({

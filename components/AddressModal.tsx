@@ -64,7 +64,6 @@ const EditAdressModal =  (props:Props) => {
   }
   const address =  getInitailAddress(customer)
 
-  console.debug(JSON.stringify(address))
   const [state, setState] = useState<LocalProps>({
     id: address.id,
     street: address.street,
@@ -88,8 +87,6 @@ const EditAdressModal =  (props:Props) => {
     isEmpty(state.postalCode) || isEmpty(state.city) ||  isEmpty(state.countryIso) || isEmpty(state.phoneNumber))
 
   const update = async () => {
-    console.log(changeIsValid())
-    console.log(state)
     if (changeIsValid()) {
       setState({
         ...state,
@@ -114,7 +111,6 @@ const EditAdressModal =  (props:Props) => {
    }
 
     const result =  await updateCustomerAddress(customer.id, request)
-    console.log(result)
     if (result.success) {
       updateLocalState();
       updateGlobalState;

@@ -9,7 +9,7 @@ import {
   FormHelperText,
   FormControlLabel,
   Checkbox,
-  CircularProgress, Link as MuiLink, Divider, InputLabel, Select,
+  CircularProgress, Link as MuiLink, Divider
 } from '@material-ui/core';
 import {
   StyledCardActions,
@@ -26,7 +26,6 @@ import styles from "./ResetPasswordForm.module.css";
 import ErrorTwoToneIcon from "@material-ui/icons/ErrorTwoTone";
 import {getEnumKey, isValidEmail} from "../service/UtilService";
 import {useRouter} from "next/router";
-import Link  from "next/link";
 
 export enum RegistrationStep {
   register,
@@ -215,7 +214,6 @@ const RegistrationForm: React.FC<Props> = (props) => {
     setOpen(true);
     createAccount(toSignupRequest()).then(
       (res) => {
-        console.log(JSON.stringify(res))
         if (res.success) {
           setStep(RegistrationStep.done);
           setOpen(false);
@@ -376,7 +374,7 @@ const RegistrationForm: React.FC<Props> = (props) => {
                 </FormControl>
 
                 <StyledFormTypography variant="body2" color="textSecondary" className={Styles.terms_conditions}>
-                    <Trans i18nKey="term_and_conditions" t={t} components={[<LinkText href="/legal/terms"/>]}/>
+                    <Trans i18nKey="term_and_conditions" t={t} components={[<LinkText href="/legal/terms" children=""></LinkText>]}/>
                 </StyledFormTypography>
             </CardContent>
 

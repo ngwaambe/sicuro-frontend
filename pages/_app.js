@@ -48,12 +48,11 @@ const SicuroApp = ({Component, pageProps, userProps}) => {
 }
 
 SicuroApp.getInitialProps = async (appContext) => {
-    //console.log("_APP_PAGE:")
     const {res} = appContext.ctx;
     const pageProps = await App.getInitialProps(appContext)
     const result = await processToken(appContext)
     const isProtectedRoute = appContext.ctx.pathname === '/profile'
-    console.log(result)
+
     if (isProtectedRoute) {
         if (result.active === false) {
             if (res) {
@@ -69,11 +68,11 @@ SicuroApp.getInitialProps = async (appContext) => {
             if (res) {
                 //console.log("redirect_server_side_update_pwd")
                 res.statusCode = 307
-                res.setHeader("Location", "/update_password")
+                res.setHeader("Location", "profile/update_password")
                 res.end();
             } else {
                 //console.log("redirect_client_side_update_pwd")
-                await Router.push("/update_password");
+                await Router.push("profile/update_password");
             }
         } else if (result.active === true && result.completeRegistration === true) {
             if (res) {

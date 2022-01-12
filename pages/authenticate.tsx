@@ -30,6 +30,7 @@ enum ActivationStatus{
   FAILED
 }
 
+
 interface ActivationProps{
   onClose: () => void,
   status: ActivationStatus

@@ -209,12 +209,17 @@ export const StyledFormControls = withStyles({
   }
 })(FormControl)
 
+const enum FontWeight {
+  Light = 300,
+  Normal = 400,
+}
+
 export const StyledTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
       textTransform: 'none',
       minWidth: 72,
-      fontWeight: theme.typography.fontWeightRegular,
+      //fontWeight: theme.typography.fontWeightMedium,
       marginRight: theme.spacing(1),
       marginLeft: theme.spacing(1),
       '&:hover': {
