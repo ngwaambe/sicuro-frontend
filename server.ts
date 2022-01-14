@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import next from 'next'
-import { isProd, isTest, isDev, isInt } from './env';
-import { SERVICE_BASE_URL } from './config';
-import mockRouter from './mock-data';
+import { isProd, isTest, isDev, isInt } from './util/env';
+import { SERVICE_BASE_URL } from './util/config';
+import mockRouter from './util/mock-data';
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import setRequestBody from "./middleware/set-request-body"
 import executeLogin from "./middleware/process-login"

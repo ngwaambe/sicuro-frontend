@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import {checkStatus} from "../service/common";
-import { SERVICE_BASE_URL } from './../config';
+import { SERVICE_BASE_URL } from '../util/config';
 import { v4 as uuidv4 } from 'uuid';
 const memCache = require('memory-cache');
 

@@ -6,7 +6,7 @@ import {
   Title,
   UpdateCustomerRequest,
 } from "../state";
-import {APP_BASE_URL} from "../config";
+import {APP_BASE_URL} from "../util/config";
 import {
   checkStatus,
   redirectTo,

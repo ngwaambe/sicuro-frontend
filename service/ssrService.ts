@@ -1,5 +1,5 @@
 import {Customer, ResponseData} from "../state";
-import {APP_BASE_URL} from "../config";
+import {APP_BASE_URL} from "../util/config";
 import {checkStatus, toCustomer, toResponseData, getCustomerId} from "./common";
 const memCache = require('memory-cache');
 

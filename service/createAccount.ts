@@ -1,5 +1,5 @@
 import {CompleteSignupRequest, ResponseData, ResponseStatus, SignupRequest} from "../state";
-import {APP_BASE_URL} from "../config";
+import {APP_BASE_URL} from "../util/config";
 import {checkStatus, toResponseData} from "./common";
 import {defaultFailedResponsse, defaultSuccessResponse} from "./UtilService";
 

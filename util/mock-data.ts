@@ -1,7 +1,7 @@
 import express from 'express';
-import {parseCookies} from "./service/common";
+import {parseCookies} from "../service/common";
 import {v4 as uuidv4} from 'uuid';
-import {CompleteSignupRequest, Customer} from "./state";
+import {CompleteSignupRequest, Customer} from "../state";
 
 const memCache = require('memory-cache');
 

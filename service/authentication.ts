@@ -1,5 +1,5 @@
 import 'isomorphic-fetch';
-import { APP_BASE_URL} from '../config';
+import { APP_BASE_URL} from '../util/config';
 import {checkStatus, toResponseData} from './common';
 import {ResponseData, ResponseStatus} from '../state'
 import {defaultFailedResponsse, defaultSuccessResponse} from "./UtilService";

@@ -3,7 +3,7 @@ import {
   Notification,
   State,
   User,
-} from './state';
+} from '../state';
 
 export const Notify = (notification: Notification) => (state: State) =>
   ({...state, notification});

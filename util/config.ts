@@ -4,7 +4,7 @@ const localIp = 'localhost'; //internalIp.v4.sync()
 export const SERVICE_BASE_URL = ( ) =>{
 
   return isProd() ?
-    'http://api.sicuro.com' :
+    'http://api.sicuro.com:8080' :
     (isInt()) ?
       'http://localhost:8080' : 'http://localhost:8080';
 }

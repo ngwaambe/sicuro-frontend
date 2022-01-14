@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {SERVICE_BASE_URL} from './../config';
+import {SERVICE_BASE_URL} from '../util/config';
 import{ getCustomerId, getTokenExpirationDate, hasTemproraryPwd, completeRegistration } from "../service/common"
 const memCache = require('memory-cache');
 
