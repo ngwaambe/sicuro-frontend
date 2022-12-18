@@ -1,9 +1,8 @@
 import { ReactNode } from "react";
 
 export interface Notification {
-  message?: string | ReactNode;
-  title?: string;
-  error?: Error;
+  message: string;
+  title: string;
 }
 
 export class ServiceError extends Error {
@@ -24,7 +23,7 @@ export interface ResponseStatus {
 
 export interface ResponseData<T>{
   success:boolean;
-  statusCode:Number
+  statusCode:Number;
   data?:T
 }
 
@@ -46,8 +45,18 @@ export enum AppView{
 export interface User {
   loggedIn: boolean,
   tempPwd?: boolean,
-  securityQuestion?: boolean,
+  hasSecurityQuestion?: boolean,
   customerId?: number
+}
+
+export interface UserSecurityQuestion {
+  question: string,
+  activationId: string,
+}
+
+export interface Resetpassword {
+  questionAnswer: string,
+  activationId: string
 }
 
 export enum Title {
@@ -177,6 +186,7 @@ export interface BankAccount extends PaymentAccount{
 
 export interface State {
   user?: User,
-  customer?:Customer
+  customer?:Customer,
+  notification?: Notification,
   view?: AppView
 }

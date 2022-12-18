@@ -1,5 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {
+  CircularProgress,
   FormControl,
   FormHelperText,
   IconButton,
@@ -19,6 +20,7 @@ import InputMask from 'react-input-mask';
 import {isValidBIC, isValidIBAN} from "ibantools";
 import {redirectTo} from "../service/common";
 import Router from "next/router";
+import {Notify, useDispatch} from "../service/Auth.context";
 
 
 interface Props {
@@ -45,10 +47,12 @@ interface LocalProps {
   cityError: boolean,
   postalCode: string,
   postalCodeError: boolean
+  loading: boolean
 }
 
 const BankModal =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
+  const [, dispatch] = useDispatch();
   const {i18n} = useTranslation()
   const countries = getCountries(i18n.language)
   const [state, setState] = useState<LocalProps>({
@@ -67,6 +71,7 @@ const BankModal =  (props:Props) => {
     cityError: false,
     postalCode: props.account.postalCode,
     postalCodeError: false,
+    loading: false
   })
 
   const isValid = () => (
@@ -129,21 +134,29 @@ const BankModal =  (props:Props) => {
       postalCode: state.postalCode,
       countryIso: state.iban.substr(0,2)
     }
-    let result;
-    if (request.id === undefined)  {
-      result = await createPaymentAccount(props.customerId, request)
-    } else {
-      //put => update
-      result = await updatePaymentAccount(props.customerId, request)
-    }
 
-    if (result.success) {
-      props.onSave();
-    } else {
-      if(result.statusCode == 401) {
-        await Router.push("/authenticate");
+    try {
+      setState({...state, loading: true})
+      let result;
+      if (request.id === undefined)  {
+        result = await createPaymentAccount(props.customerId, request)
+      } else {
+        //put => update
+        result = await updatePaymentAccount(props.customerId, request)
       }
-      console.log("Error occured")
+
+      if (result.success) {
+        props.onSave();
+      } else {
+        if(result.statusCode == 401) {
+          redirectTo(`/authenticate?redirect${window.location.href}`)
+        }
+        props.onSave();
+        dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
+      }
+    } catch (error) {
+      props.onSave();
+      dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
     }
 
   }
@@ -178,6 +191,7 @@ const BankModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.ownerError}
+            disabled={state.loading}
             value={state.owner} onChange={onChange("owner")}/>
 
           <StyledTextField
@@ -188,6 +202,7 @@ const BankModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.bankNameError}
+            disabled={state.loading}
             value={state.bankName} onChange={onChange("bankName")}/>
 
           <InputMask
@@ -213,6 +228,7 @@ const BankModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.swiftCodeError}
+            disabled={state.loading}
             value={state.swiftCode} onChange={onChange("swiftCode")}/>
 
           <StyledTextField
@@ -223,6 +239,7 @@ const BankModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.postalCodeError}
+            disabled={state.loading}
             value={state.postalCode} onChange={onChange("postalCode")}/>
 
           <StyledTextField
@@ -233,6 +250,7 @@ const BankModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.cityError}
+            disabled={state.loading}
             value={state.city} onChange={onChange("city")}/>
         </FormControl>
       </ModalBody>
@@ -243,7 +261,8 @@ const BankModal =  (props:Props) => {
           disableElevation={true}
           size="large"
           onClick={update}>
-          {t('save')}
+          {state.loading && <CircularProgress color="inherit" size={30} thickness={4}/>}
+          {!state.loading && t('save')}
         </ActionButton>
       </ModalFooter>
     </Modal>

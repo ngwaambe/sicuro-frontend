@@ -1,5 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {
+  CircularProgress,
   FormControl,
   FormHelperText,
   IconButton,
@@ -13,10 +14,11 @@ import React, {useState} from "react";
 import {Address, Customer, Language, Title} from "../state";
 import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
-import {updateCustomer, useDispatch} from "../service/Auth.context";
+import {Notify, updateCustomer, useDispatch} from "../service/Auth.context";
 import {updateCustomerEmail} from "../service/customerService";
 import {isValidEmail, isEmpty} from "../service/UtilService";
 import Typography from "@material-ui/core/Typography";
+import {redirectTo} from "../service/common";
 
 interface Props {
   onClose: ()=> void,
@@ -28,6 +30,7 @@ interface LocalProps {
   email: string,
   currentEmail: string,
   emailError: boolean,
+  loading: boolean
 }
 
 const EmailModal =  (props:Props) => {
@@ -37,7 +40,8 @@ const EmailModal =  (props:Props) => {
   const [state, setState] = useState<LocalProps>({
     email: '',
     currentEmail: customer.email,
-    emailError: false
+    emailError: false,
+    loading: false
   })
 
   const update = async () => {
@@ -48,14 +52,25 @@ const EmailModal =  (props:Props) => {
       });
       return;
     }
-    const request = {email: state.email}
 
-    const result = await updateCustomerEmail(customer.id, request)
-    if (result.success) {
-      setState({...state, email: state.email})
-      dispatch(updateCustomer({...customer, email: state.email}));
+    try {
+      setState({...state, loading: true})
+      const result = await updateCustomerEmail(customer.id, {email: state.email})
+      if (result.success) {
+        setState({...state, email: state.email})
+        dispatch(updateCustomer({...customer, email: state.email}));
+        props.onSave();
+      } else {
+        if (result.statusCode == 401) {
+          //redirect to login
+          redirectTo(`/authenticate?redirect${window.location.href}`)
+        }
+      }
+    } catch(error) {
       props.onSave();
+      dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
     }
+
   }
 
 
@@ -88,6 +103,7 @@ const EmailModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.emailError}
+            disabled={state.loading}
             value={state.email} onChange={onChange("email", "emailError")}/>
         </FormControl>
       </ModalBody>
@@ -98,7 +114,8 @@ const EmailModal =  (props:Props) => {
           disableElevation={true}
           size="large"
           onClick={update}>
-          {t('save')}
+          {state.loading && <CircularProgress color="inherit" size={30} thickness={4}/>}
+          {!state.loading && t('save')}
         </ActionButton>
       </ModalFooter>
     </Modal>

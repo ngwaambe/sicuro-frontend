@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
-import {checkStatus} from "../service/common";
+import {
+  checkStatus,
+  getCustomerId,
+  hasSecurityQuestion,
+  hasTemproraryPwd
+} from "../service/common";
 import { SERVICE_BASE_URL } from '../util/config';
 import { v4 as uuidv4 } from 'uuid';
 const memCache = require('memory-cache');
@@ -16,6 +21,7 @@ export default (req: Request, res: Response, next: any) => {
     success:(data, resp) =>{
       const sessionId = uuidv4()
       const ttl = ( (data as any).expires_in * 1000) - Date.now();
+      console.log("token:"+JSON.stringify(data));
       memCache.put( sessionId, data, ttl);
       res.cookie("token",sessionId,{
         httpOnly: true,
@@ -23,8 +29,17 @@ export default (req: Request, res: Response, next: any) => {
         sameSite: "strict",
         path: "/",
       });
-
-      res.status(200).json({loggedIn:true});
+      const access_token = (data as any).access_token
+      const tempPwd = hasTemproraryPwd(access_token)
+      const securityQuestion = hasSecurityQuestion(access_token)
+      const customerId = getCustomerId(access_token)
+      res.status(200).json({
+        active: true,
+        orphanedToken:false,
+        tempPwd: tempPwd,
+        hasSecurityQuestion: securityQuestion,
+        customerId: customerId
+      });
     },
     error: (data, resp) =>{
       res.status(resp.status).json({loggedIn:false})

@@ -3572,12 +3572,15 @@ label {
 }
 
 .mobile-menu-area {
+  background-color: #02404f;
   display: flex;
   visibility: hidden;
+  display: none;
 }
 @media only screen and (max-width: 991px) {
   .mobile-menu-area {
     visibility: visible;
+    display: flex;
   }
 }
 label:-internal-autofill-selected {

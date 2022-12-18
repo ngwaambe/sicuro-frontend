@@ -73,10 +73,10 @@ router.post('/auth/check_token', (req, res) => {
 router.post('/api/auth/refresh_token', (req, res) => {
   console.log("------> mock -------->" + req.url + "<mem>" + MEM.expireDate + "<mem>")
   return res.json({
-    "access_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjQ2ODMwODUsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTYyNDY4MzMyNSwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsInNlY3VyaXR5UXVlc3Rpb24iOnRydWV9.P37CnfbR1vJI4Hnr-xWndUj2tPkeTmmQHxvrqgZQTHIWsnezGqg8idh-saAlM3Qai0QJxldYd2nv0iQDvIOZrA",
+    "access_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NDI5NjA3OTAsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTY0Mjk2MTY5MCwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsImhhc1NlY3VyaXR5UXVlc3Rpb24iOnRydWV9.tpmWc8Ghn5fld4D05TpSzWtyHahfq0SIaAI8b4pbmqRgbQySdTJHlTE4xoGvZBTfC-Zf-cwZQ4tpO44sW_x1kQ",
     "expires_in": 1624683325,
     "type": "JWT",
-    "refresh_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjQ2ODMwODUsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTYyNDY4MzU2NSwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsInNlY3VyaXR5UXVlc3Rpb24iOnRydWV9.fDaa4FkbNkkJiYVUhys8dqq_IRkKviyczjPqX2eKz08mJUAyDBLRdLQF_DW3og7sYQQLtuNFMCYOpHlhsOuEEA"
+    "refresh_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NDI5NjA3OTAsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTY0Mjk2MTA5MCwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsImhhc1NlY3VyaXR5UXVlc3Rpb24iOnRydWV9.tpMGZ-ib4EJ9zQflVxzrNIzwe0l8ZD__UQhabBM_dkvjtfqj_Qwf8Zvfj4jh_F4lvTR5o7fBZLSq7soUXjiT0Q"
   })
 });
 
@@ -84,10 +84,10 @@ router.post('/auth/token', (req, res) => {
   console.log("------ mock --------" + JSON.stringify(req.body))
   const sessionId = uuidv4()
   var data = {
-    "access_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjQ2ODMwODUsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTYyNDY4MzMyNSwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsInNlY3VyaXR5UXVlc3Rpb24iOnRydWV9.P37CnfbR1vJI4Hnr-xWndUj2tPkeTmmQHxvrqgZQTHIWsnezGqg8idh-saAlM3Qai0QJxldYd2nv0iQDvIOZrA",
+    "access_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NDI5NjA3OTAsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTY0Mjk2MTY5MCwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsImhhc1NlY3VyaXR5UXVlc3Rpb24iOnRydWV9.tpmWc8Ghn5fld4D05TpSzWtyHahfq0SIaAI8b4pbmqRgbQySdTJHlTE4xoGvZBTfC-Zf-cwZQ4tpO44sW_x1kQ",
     "expires_in": 1624683325,
     "type": "JWT",
-    "refresh_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjQ2ODMwODUsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTYyNDY4MzU2NSwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsInNlY3VyaXR5UXVlc3Rpb24iOnRydWV9.fDaa4FkbNkkJiYVUhys8dqq_IRkKviyczjPqX2eKz08mJUAyDBLRdLQF_DW3og7sYQQLtuNFMCYOpHlhsOuEEA"
+    "refresh_token": "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NDI5NjA3OTAsInN1YiI6Im5nd2FhbWJlQGdtYWlsLmNvbSIsImV4cCI6MTY0Mjk2MTA5MCwiY3VzdG9tZXJJZCI6MSwidGVtcFB3ZCI6ZmFsc2UsImhhc1NlY3VyaXR5UXVlc3Rpb24iOnRydWV9.tpMGZ-ib4EJ9zQflVxzrNIzwe0l8ZD__UQhabBM_dkvjtfqj_Qwf8Zvfj4jh_F4lvTR5o7fBZLSq7soUXjiT0Q"
   };
   memCache.put(sessionId, data);
   //console.log("-setting-payload:" + JSON.stringify(memCache.get(sessionId)) + " token:" + sessionId)
@@ -98,7 +98,24 @@ router.post('/auth/token', (req, res) => {
     path: "/",
   });
 
-  setTimeout(() => { res.status(200).json({loggedIn: false}); }, 1000)
+  res.status(200).json({
+    active: true,
+    orphanedToken:false,
+    tempPwd: false,
+    hasSecurityQuestion: true,
+    customerId: 1
+  })
+  setTimeout(() => {
+      res.status(200).json({
+          active: true,
+          orphanedToken: false,
+          tempPwd: false,
+          hasSecurityQuestion: true,
+          customerId: 1
+        }
+      );
+    },
+    1000)
 });
 
 router.post('/auth/signup', (req, res) => {
@@ -123,11 +140,28 @@ router.put('/auth/complete_signup', (req, res) => {
     address.phoneNumber = req.body.address.phoneNumber
     customer.address = address
     res.status(200).send()
-  }, 2);
+  }, 200);
+});
+
+router.post('/auth/init_reset_password', (req, res) => {
+  console.log("2#####------ mock --------" + req.url)
+  setTimeout( () => { res.status(500).send(); }, 2500)
 });
 
 router.post('/auth/reset_password', (req, res) => {
-  res.status(201).send();
+  console.log("2#####------ mock --------" + req.url)
+  if (req.body.questionAnswer === 'angela') {
+    setTimeout( () => { res.status(200).send(); }, 2500)
+  } else {
+    setTimeout( () => { res.status(409).send(); }, 2500)
+  }
+});
+
+router.get('/auth/reset_password/:resetPasswordId', (req, res) => {
+  console.log("3#####------ mock --------" + req.url)
+  setTimeout( () => {
+    res.status(200).json({question: 'GRAND_MOTHERS_MAIDEN_NAME', activationId:req.params.resetPasswordId})
+  }, 100)
 });
 
 router.get('/auth/activate_account/:activationCode', (req, res) => {
@@ -153,8 +187,8 @@ router.put("/customers/:customerId", (req, res) => {
   customer.taxNumber = req.body.organisation.taxNumber
   customer.language = req.body.language
   setTimeout(() => {
-    res.json(customer)
-  }, 2);
+    res.status(200).json(customer)
+  }, 2000);
 })
 
 router.put("/customers/:customerId/address", (req, res) => {
@@ -171,24 +205,24 @@ router.put("/customers/:customerId/address", (req, res) => {
     customer.address = req.body
   }
   setTimeout(() => {
-    res.json(customer)
-  }, 2);
+    res.status(200).json(customer)
+  }, 1500);
 })
 
 router.put("/customers/:customerId/change_email", (req, res) => {
   console.log("1------ mock --------" + req.url + " <" + JSON.stringify(req.body) + ">")
   customer.email = req.body.email
   setTimeout(() => {
-    res.status(200).send();
-  })
+    res.status(500).send();
+  }, 2000)
 })
 
 router.put("/customers/:customerId/change_password", (req, res) => {
   console.log("1------ mock --------" + req.url + " <" + JSON.stringify(req.body) + ">")
   setTimeout(() => {
     Action.tempPwd = false;
-    res.status(409).send();
-  }, 2)
+    res.status(500).send();
+  }, 2000)
 })
 
 router.get("/customers/:customerId/payment_accounts", (req, res) => {
@@ -204,7 +238,7 @@ router.post("/customers/:customerId/paypal_accounts",  ( req, res ) => {
   console.log(JSON.stringify(paymentAccounts))
   setTimeout(() => {
     res.status(200).send();
-  }, 2)
+  }, 2000)
 });
 
 router.put("/customers/:customerId/paypal_accounts/:paypalId",  ( req, res ) => {
@@ -213,7 +247,7 @@ router.put("/customers/:customerId/paypal_accounts/:paypalId",  ( req, res ) => 
   console.log(JSON.stringify(paymentAccounts))
   setTimeout(() => {
     res.status(200).send();
-  }, 2)
+  }, 2000)
 });
 
 router.post("/customers/:customerId/payment_accounts",  ( req, res ) => {
@@ -232,7 +266,7 @@ router.put("/customers/:customerId/payment_accounts",  ( req, res ) => {
   console.log(JSON.stringify(paymentAccounts))
   setTimeout(() => {
     res.status(200).send();
-  }, 2)
+  }, 2000)
 });
 
 router.delete("/customers/:customerId/payment_accounts/:paymentAccountId",  ( req, res ) => {
@@ -244,7 +278,7 @@ router.delete("/customers/:customerId/payment_accounts/:paymentAccountId",  ( re
   console.log("<<"+JSON.stringify(paymentAccounts)+">>")
   setTimeout(() => {
     res.status(200).send();
-  }, 2)
+  }, 2000)
 });
 
 

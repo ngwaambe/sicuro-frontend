@@ -33,3 +33,4 @@ export const getCountry = (countryIso: string, locale:string):string => {
 
 export const isNotEmpty = (value : string ): boolean => (value !== undefined && value.trim() !== '')
 export const isEmpty = (value: string): boolean => !isNotEmpty(value)
+export const isNotNull = (value: any): boolean => (value !== null && value !== undefined)

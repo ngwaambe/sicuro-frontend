@@ -1,5 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {
+  CircularProgress,
   FormControl,
   FormHelperText,
   IconButton,
@@ -13,12 +14,13 @@ import {
   StyledSelectLabel,
   StyledSelect } from "./CustomMaterialUI";
 import React, {useState} from "react";
-import {Address, Customer, Language, Title} from "../state";
+import {Address, Customer} from "../state";
 import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
-import {updateCustomer, useDispatch} from "../service/Auth.context";
+import {Notify, updateCustomer, useDispatch} from "../service/Auth.context";
 import {updateCustomerAddress} from "../service/customerService";
 import {getCountries, isEmpty} from "../service/UtilService";
+import {redirectTo} from "../service/common";
 
 interface Props {
   onClose: ()=> void,
@@ -26,7 +28,7 @@ interface Props {
   customer:Customer
 }
 
-interface LocalProps {
+interface State {
   id: number,
   street: string,
   streetError: boolean,
@@ -40,13 +42,14 @@ interface LocalProps {
   countryIso: string,
   countryIsoError: boolean
   phoneNumber: string
-  phoneNumberError: boolean
+  phoneNumberError: boolean,
+  loading: boolean
 }
 
-const EditAdressModal =  (props:Props) => {
+const AddressModal =  (props:Props) => {
 
   const {t} = useTranslation(['common', 'login'])
-  const [, dispatch] = useDispatch()
+  const [_, dispatch] = useDispatch();
   const customer = props.customer;
   const {i18n} = useTranslation()
   const countries = getCountries(i18n.language)
@@ -63,8 +66,7 @@ const EditAdressModal =  (props:Props) => {
     }
   }
   const address =  getInitailAddress(customer)
-
-  const [state, setState] = useState<LocalProps>({
+  const [state, setState] = useState<State>({
     id: address.id,
     street: address.street,
     streetError: false,
@@ -78,10 +80,9 @@ const EditAdressModal =  (props:Props) => {
     countryIso: address.countryIso,
     countryIsoError: false,
     phoneNumber: address.phoneNumber,
-    phoneNumberError: false
+    phoneNumberError: false,
+    loading: false
   })
-
-
 
   const changeIsValid = () => (isEmpty(state.street)  || isEmpty(state.houseNumber) ||
     isEmpty(state.postalCode) || isEmpty(state.city) ||  isEmpty(state.countryIso) || isEmpty(state.phoneNumber))
@@ -110,12 +111,25 @@ const EditAdressModal =  (props:Props) => {
       phoneNumber: state.phoneNumber
    }
 
-    const result =  await updateCustomerAddress(customer.id, request)
-    if (result.success) {
-      updateLocalState();
-      updateGlobalState;
-      props.onSave();
+    try {
+      setState({...state, loading: true})
+      const result =  await updateCustomerAddress(customer.id, request)
+      if (result.success) {
+        updateLocalState();
+        updateGlobalState;
+        props.onSave();
+      } else {
+        if (result.statusCode === 401) {
+          redirectTo(`/authenticate?redirect${window.location.href}`)
+        }
+        props.onSave();
+        dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
+      }
+    } catch (error){
+        props.onSave();
+        dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
     }
+
   }
 
   const updateLocalState = () => setState({
@@ -168,6 +182,7 @@ const EditAdressModal =  (props:Props) => {
             autoFocus={true}
             helperText={state.streetError && t('street_required')}
             type="text"
+            disabled={state.loading}
             fullWidth={true}
             error={state.streetError}
             value={state.street} onChange={onChange("street")}/>
@@ -178,6 +193,7 @@ const EditAdressModal =  (props:Props) => {
             autoFocus={false}
             helperText={state.houseNumberError && t('house_number_required')}
             type="text"
+            disabled={state.loading}
             fullWidth={true}
             error={state.houseNumberError}
             value={state.houseNumber} onChange={onChange("houseNumber")}/>
@@ -187,6 +203,7 @@ const EditAdressModal =  (props:Props) => {
             label={t('streetExtension')}
             autoFocus={false}
             type="text"
+            disabled={state.loading}
             fullWidth={true}
             value={state.streetExtension} onChange={onChange("streetExtension")}/>
 
@@ -197,6 +214,7 @@ const EditAdressModal =  (props:Props) => {
             autoFocus={false}
             helperText={state.postalCodeError && t('postal_code_required')}
             type="text"
+            disabled={state.loading}
             fullWidth={true}
             error={state.postalCodeError}
             value={state.postalCode} onChange={onChange("postalCode")}/>
@@ -207,6 +225,7 @@ const EditAdressModal =  (props:Props) => {
             helperText={state.cityError && t('city_required')}
             autoFocus={false}
             type="text"
+            disabled={state.loading}
             fullWidth={true}
             error={state.cityError}
             value={state.city} onChange={onChange("city")}/>
@@ -218,6 +237,7 @@ const EditAdressModal =  (props:Props) => {
               labelId="country-label"
               autoFocus={false}
               id="address_country"
+              disabled={state.loading}
               value={state.countryIso.toUpperCase()}
               error={state.countryIsoError}
               onChange={onChange("countryIso")}
@@ -236,6 +256,7 @@ const EditAdressModal =  (props:Props) => {
             helperText={state.cityError && t('phoneNumber_required')}
             autoFocus={false}
             type="text"
+            disabled={state.loading}
             fullWidth={true}
             error={state.phoneNumberError}
             value={state.phoneNumber} onChange={onChange("phoneNumber")}/>
@@ -247,13 +268,15 @@ const EditAdressModal =  (props:Props) => {
           variant="contained"
           color="primary"
           disableElevation={true}
+          disabled={state.loading}
           size="large"
           onClick={update}>
-          {t('save')}
+          {state.loading && <CircularProgress color="inherit" size={30} thickness={4}/>}
+          {!state.loading && t('save')}
         </ActionButton>
       </ModalFooter>
     </Modal>
   );
 };
 
-export default EditAdressModal
+export default AddressModal

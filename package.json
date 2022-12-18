@@ -8,6 +8,7 @@
     "dev": "ts-node --project tsconfig.server.json server.ts",
     "build:next": "next build",
     "build:server": "tsc --project tsconfig.server.json",
+    "build": "next build && tsc --project tsconfig.server.json",
     "start": "NODE_ENV=production node dist/server.js",
     "lint": "eslint --ext=jsx,ts,tsx ."
   },

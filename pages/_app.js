@@ -13,7 +13,7 @@ import {MyTheme} from "../components/CustomMaterialUI";
 import {MuiThemeProvider, ThemeProvider} from "@material-ui/core";
 import nextI18NextConfig from '../next-i18next.config'
 import {parseCookies} from "../service/common";
-import {authServiceCheckToken, CheckTokenResponse} from "../service/authentication";
+import {authServiceCheckToken} from "../service/authentication";
 
 
 //Binding events.
@@ -25,10 +25,7 @@ Router.events.on('routeChangeError', () => NProgress.done());
 const SicuroApp = ({Component, pageProps, userProps}) => {
     const Layout = Component.layout || FrontendLayout;
     return (
-
-        <AuthProvider loggedIn={userProps.loggedIn} tempPwd={userProps.tempPwd}
-                      securityQuestion={userProps.securityQuestion}>
-
+        <AuthProvider user={userProps}>
             <Head>
                 <title>sicuro.com</title>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
@@ -52,7 +49,7 @@ SicuroApp.getInitialProps = async (appContext) => {
     const pageProps = await App.getInitialProps(appContext)
     const result = await processToken(appContext)
     const isProtectedRoute = appContext.ctx.pathname === '/profile'
-
+    console.log("Process-token:"+JSON.stringify(result))
     if (isProtectedRoute) {
         if (result.active === false) {
             if (res) {
@@ -74,7 +71,7 @@ SicuroApp.getInitialProps = async (appContext) => {
                 //console.log("redirect_client_side_update_pwd")
                 await Router.push("profile/update_password");
             }
-        } else if (result.active === true && result.completeRegistration === true) {
+        } else if (result.active === true && result.hasSecurityQuestion === false) {
             if (res) {
                 //console.log("redirect_server_side")
                 res.statusCode = 307
@@ -90,13 +87,15 @@ SicuroApp.getInitialProps = async (appContext) => {
         pageProps, userProps: {
             loggedIn: result.active,
             tempPwd: result.tempPwd,
-            securityQuestion: result.completeRegistration
+            hasSecurityQuestion: result.hasSecurityQuestion,
+            customerId: result.customerId
         }
     }
 
 }
 
 const processToken = async (appContext) => {
+
     if (appContext.ctx.req) {
         const data = parseCookies(appContext.ctx.req)
         if (!(Object.keys(data).length === 0 && data.constructor === Object) && data.token !== '' && data.token !== undefined) {

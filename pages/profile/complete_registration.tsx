@@ -243,8 +243,8 @@ const CompleteRegistrationPage = ({data}) => {
       <div className="s-space-login">
         <form>
           <div className="s-inner-space-login">
-            <Grid container justifyContent="center"  spacing={3} >
-              <Grid container item xs={12} md={6} sm={8}  justifyContent="center">
+            <Grid container justifyContent="center" spacing={3}>
+              <Grid container item xs={12} md={6} sm={8} justifyContent="center">
                 <Box bgcolor="#fff">
                   <Tabs
                     value={value}
@@ -254,7 +254,7 @@ const CompleteRegistrationPage = ({data}) => {
                     <StyledTab label="Provide address information" {...a11yProps(0)} />
                     <StyledTab label="Setup your security question"  {...a11yProps(0)} disabled={tabState}/>
                   </Tabs>
-                  <TabPanel value={value} index={0} >
+                  <TabPanel value={value} index={0}>
                     <div>
                       <div>
                         <FormControl className={CommonStyles.formControl}>
@@ -417,7 +417,11 @@ export const getServerSideProps = async (ctx) => {
   const token = cookies.get('token')
   if (token !== '' && token !== undefined) {
     const result = await authServiceCheckToken(token)
-    if (result.active && result.orphanedToken === false && result.tempPwd === false && result.completeRegistration === false) {
+    if (result.active &&
+      result.orphanedToken === false &&
+      result.tempPwd === false &&
+      result.hasSecurityQuestion !== false)
+    {
       return {
         redirect: {
           permanent: false,

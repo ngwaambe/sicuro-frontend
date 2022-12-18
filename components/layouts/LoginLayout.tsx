@@ -2,6 +2,7 @@ import {withTranslation} from 'next-i18next';
 import React, {Component, ReactNode, useRef, useState} from "react";
 import PropTypes from "prop-types";
 import LoginHeader from "../LoginHeader";
+import MobileMenuHeader from "../MobileMenuHeader";
 
 interface Props {
   t:any
@@ -27,8 +28,9 @@ class FrontendLayout extends Component<Props> {
 
         <div>
           {/* Header Area Start Here */}
-          <div className="header-area header-fixed header-style-four">
+          <div className="header-area header-fixed">
             <LoginHeader />
+            <MobileMenuHeader/>
           </div>
           {this.props.children}
         </div>

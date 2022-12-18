@@ -136,7 +136,8 @@ const RegistrationForm: React.FC<Props> = (props) => {
     })
   }
 
-  const cancelRegistration = (): void => {
+  const cancelRegistration = e => {
+     e.preventDefault()
      router.push('/authenticate')
   }
 
@@ -180,7 +181,8 @@ const RegistrationForm: React.FC<Props> = (props) => {
       return ''
   }
 
-  const save = () => {
+  const save = e => {
+    e.preventDefault();
     if (state.title === Title.SELECT ||
       state.firstName === '' ||
       state.lastName === '' ||

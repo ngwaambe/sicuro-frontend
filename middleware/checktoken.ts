@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import {SERVICE_BASE_URL} from '../util/config';
-import{ getCustomerId, getTokenExpirationDate, hasTemproraryPwd, completeRegistration } from "../service/common"
+import {
+  getCustomerId,
+  getTokenExpirationDate,
+  hasTemproraryPwd,
+  hasSecurityQuestion
+} from "../service/common"
 const memCache = require('memory-cache');
 
 
@@ -20,14 +25,14 @@ export default async (req: Request, mainResponse: Response, next: any) => {
                memCache.put( tokenRequest.token, result.data, ttl);
 
                const tempPwd = hasTemproraryPwd(access_token)
-               const registrationNotCompleted = completeRegistration(access_token)
+               const securityQuestion = hasSecurityQuestion(access_token)
                const customerId = getCustomerId(payload.access_token)
 
                return mainResponse.json({
                  active: true,
                  orphanedToken:false,
                  tempPwd: tempPwd,
-                 completeRegistration: registrationNotCompleted,
+                 hasSecurityQuestion: securityQuestion,
                  customerId: customerId
                })
              }
@@ -40,13 +45,13 @@ export default async (req: Request, mainResponse: Response, next: any) => {
            }
          } else {
            const tempPwd = hasTemproraryPwd(payload.access_token)
-           const registrationNotCompleted = completeRegistration(payload.access_token)
+           const securityQuestion = hasSecurityQuestion(payload.access_token)
            const customerId = getCustomerId(payload.access_token)
            return mainResponse.json({
              active: true,
              orphanedToken:false,
              tempPwd: tempPwd,
-             completeRegistration: registrationNotCompleted,
+             hasSecurityQuestion: securityQuestion,
              customerId: customerId
            })
          }

@@ -26,10 +26,35 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1.15rem',
       fontWeight: 500,
     },
+    cardBarActions: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      padding: "16px 16px 0px 16px",
+      flexWrap: "wrap",
+      gap: "10px",
+      width:'100%',
+      [theme.breakpoints.down('sm')]: {
+        '& > :not(:first-child)':{
+           marginLeft:'0px'
+        }
+      }
+    },
     action: {
       borderTop: 'solid',
       borderWidth: '1px',
       borderColor: '#0000001E'
+    },
+    addActionItem: {
+      [theme.breakpoints.down('sm')]: {
+        width: '100%',
+        marginLeft: '0px'
+      },
+      [theme.breakpoints.up('sm')]: {
+        minWidth: '250px',
+      },
+      justifyContent: 'left'
+
     },
     actionItem: {
       width: '100%',
@@ -77,7 +102,7 @@ const PaymentAccounts = (props: Props) => {
       ...state,
       loading: true
     });
-   getPaymentAccounts(props.customerId.toString()).then(result => {
+    getPaymentAccounts(props.customerId.toString()).then(result => {
       if (result.success) {
         setState({
           ...state,
@@ -115,7 +140,7 @@ const PaymentAccounts = (props: Props) => {
 
   const saveAndCloseModal = () => {
     selectBankAccount(undefined)
-    selectPaypalAccount( undefined )
+    selectPaypalAccount(undefined)
     fetchPaymentAccounts();
     setState({
       ...state,
@@ -125,7 +150,7 @@ const PaymentAccounts = (props: Props) => {
 
   const editPaypalAccount = (account: PaypalAccount, action: Action) => {
     selectPaypalAccount(account);
-    setState( {
+    setState({
       ...state,
       action: action
     })
@@ -133,7 +158,7 @@ const PaymentAccounts = (props: Props) => {
 
   const editBankAccount = (account: BankAccount, action: Action) => {
     selectBankAccount(account);
-    setState( {
+    setState({
       ...state,
       action: action
     })
@@ -177,77 +202,79 @@ const PaymentAccounts = (props: Props) => {
   }
 
   const deleteAccount = (customerId: number, paymentAccountId: number) => {
-      deletePaymentAccount(customerId, paymentAccountId).then( response => {
-         if (response.success){
-           selectPaypalAccount(undefined)
-           selectBankAccount(undefined)
-           fetchPaymentAccounts()
-         }
-      })
+    deletePaymentAccount(customerId, paymentAccountId).then(response => {
+      if (response.success) {
+        selectPaypalAccount(undefined)
+        selectBankAccount(undefined)
+        fetchPaymentAccounts()
+      }
+    })
   }
 
   return (
     <>
       {state.action === Action.ADD_PAYPAL_ACCOUNT &&
-      <PaypalModal
-          titleText={"contact-details-add-paypal"}
-          customerId={props.customerId}
-          onClose={closeModal}
-          onSave={saveAndCloseModal}
-          account={createPaypalAccount()}/>}
+          <PaypalModal
+              titleText={"contact-details-add-paypal"}
+              customerId={props.customerId}
+              onClose={closeModal}
+              onSave={saveAndCloseModal}
+              account={createPaypalAccount()}/>}
 
       {selectedPaypalAccount && state.action === Action.EDIT_ACCOUNT &&
-      <PaypalModal
-          titleText={"paypal-edit"}
-          customerId={props.customerId}
-          onClose={closePaypalModal}
-          onSave={saveAndCloseModal}
-          account={selectedPaypalAccount}/>}
+          <PaypalModal
+              titleText={"paypal-edit"}
+              customerId={props.customerId}
+              onClose={closePaypalModal}
+              onSave={saveAndCloseModal}
+              account={selectedPaypalAccount}/>}
 
       {selectedPaypalAccount && state.action === Action.DELETE_ACCOUNT &&
-      <ConfirmModal
-          titleText={"Delete Paypal account"}
-          confirmText={"Do you really want to delete this paypal account"}
-          onClose={closePaypalModal}
-          onConfirm={() => deleteAccount(props.customerId, selectedPaypalAccount.id)}/>}
+          <ConfirmModal
+              titleText={"Delete Paypal account"}
+              confirmText={"Do you really want to delete this paypal account"}
+              onClose={closePaypalModal}
+              onConfirm={() => deleteAccount(props.customerId, selectedPaypalAccount.id)}/>}
 
       {state.action === Action.ADD_BANK_ACCOUNT &&
-      <BankModal
-          titleText={"contact-details-add-paypal"}
-          customerId={props.customerId}
-          onClose={closeModal}
-          onSave={saveAndCloseModal}
-          account={createBankAccount()}/>}
+          <BankModal
+              titleText={"contact-details-add-paypal"}
+              customerId={props.customerId}
+              onClose={closeModal}
+              onSave={saveAndCloseModal}
+              account={createBankAccount()}/>}
 
       {selectedBankAccount && state.action === Action.EDIT_ACCOUNT &&
-      <BankModal
-          titleText={"contact-details-add-paypal"}
-          customerId={props.customerId}
-          onClose={closeBankModal}
-          onSave={saveAndCloseModal}
-          account={selectedBankAccount}/>}
+          <BankModal
+              titleText={"contact-details-add-paypal"}
+              customerId={props.customerId}
+              onClose={closeBankModal}
+              onSave={saveAndCloseModal}
+              account={selectedBankAccount}/>}
 
       {selectedBankAccount && state.action === Action.DELETE_ACCOUNT &&
-      <ConfirmModal
-          titleText={"Delete Bank account"}
-          confirmText={"Do you really want to delete this bank account"}
-          onClose={closeBankModal}
-          onConfirm={() => deleteAccount(props.customerId, selectedBankAccount.id)}/>}
+          <ConfirmModal
+              titleText={"Delete Bank account"}
+              confirmText={"Do you really want to delete this bank account"}
+              onClose={closeBankModal}
+              onConfirm={() => deleteAccount(props.customerId, selectedBankAccount.id)}/>}
 
       <Card variant="outlined">
-        <CardActions>
+        <CardActions className={classes.cardBarActions}>
           <ActionButton
-            className={classes.actionItem}
+            className={classes.addActionItem}
             startIcon={<AddCircleTwoToneIcon/>}
-            variant="outlined"
+            variant="contained"
+            color="primary"
             size="medium"
             onClick={addBankAccount}>
             {t('common:contact-details-add-bank')}
           </ActionButton>
           <ActionButton
-            className={classes.actionItem}
+            className={classes.addActionItem}
             startIcon={<AddCircleTwoToneIcon/>}
-            variant="outlined"
+            variant="contained"
+            color="primary"
             onClick={addPaypalAccount}
             size="medium">
             {t('common:contact-details-add-paypal')}
@@ -255,77 +282,77 @@ const PaymentAccounts = (props: Props) => {
         </CardActions>
         <CardContent>
           {!state.loading && state.accounts.length == 0 &&
-          <Typography align={"center"} component={"span"}>
-              No saved payment accounts
-          </Typography>}
+              <Typography align={"center"} component={"span"}>
+                  No saved payment accounts
+              </Typography>}
 
           {state.loading && <CircularProgress color="inherit"/>}
 
           {!state.loading && state.accounts.length >= 0 &&
-          <Grid container spacing={3} alignItems="stretch" direction="row">
-            {state.accounts.map((item) => (
-              <Grid item xs={12} sm={12} md={6} key={item.id}>
-                {item.paymentType === PaymentType.PAYPAL &&
-                <Card variant="outlined">
-                    <CardContent>
-                        <Typography align={"center"} component={"span"}>
-                            <Paypal/>
-                            <br/>{item.owner}
-                            <br/>{(item as PaypalAccount).paypalAccount}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <ActionButton
-                            className={classes.actionItem}
-                            startIcon={<EditTwoToneIcon/>}
-                            variant="outlined"
-                            size="medium"
-                            onClick={() => editPaypalAccount(item as PaypalAccount, Action.EDIT_ACCOUNT)}>
-                          {t('common:edit')}
-                        </ActionButton>
-                        <ActionButton
-                            className={classes.actionItem}
-                            startIcon={<DeleteTwoTone/>}
-                            variant="outlined"
-                            onClick={() => editPaypalAccount(item as PaypalAccount, Action.DELETE_ACCOUNT)}
-                            size="medium">
-                          {t('common:delete')}
-                        </ActionButton>
-                    </CardActions>
-                </Card>
-                }
-                {item.paymentType === PaymentType.BANK &&
-                <Card variant="outlined">
-                    <CardContent>
-                        <Typography align={"center"} component={"span"}>
-                            <AccountBalanceTwoToneIcon/>
-                            <br/>{item.owner}
-                            <br/>{`${(item as BankAccount).iban?.substr(0, 4)} **** **** **** ${(item as BankAccount).iban?.substr((item as BankAccount).iban?.length - 6, 4)} **`}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <ActionButton
-                            className={classes.actionItem}
-                            startIcon={<EditTwoToneIcon/>}
-                            variant="outlined"
-                            size="medium"
-                            onClick={() => editBankAccount(item as BankAccount, Action.EDIT_ACCOUNT)}>
-                          {t('common:edit')}
-                        </ActionButton>
-                        <ActionButton
-                            className={classes.actionItem}
-                            startIcon={<DeleteTwoTone/>}
-                            variant="outlined"
-                            onClick={() => editBankAccount(item as BankAccount, Action.DELETE_ACCOUNT)}
-                            size="medium">
-                          {t('common:delete')}
-                        </ActionButton>
-                    </CardActions>
-                </Card>
-                }
+              <Grid container spacing={3} alignItems="stretch" direction="row">
+                {state.accounts.map((item) => (
+                  <Grid item xs={12} sm={12} md={6} key={item.id}>
+                    {item.paymentType === PaymentType.PAYPAL &&
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography align={"center"} component={"span"}>
+                                    <Paypal/>
+                                    <br/>{item.owner}
+                                    <br/>{(item as PaypalAccount).paypalAccount}
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <ActionButton
+                                    className={classes.actionItem}
+                                    startIcon={<EditTwoToneIcon/>}
+                                    variant="outlined"
+                                    size="medium"
+                                    onClick={() => editPaypalAccount(item as PaypalAccount, Action.EDIT_ACCOUNT)}>
+                                  {t('common:edit')}
+                                </ActionButton>
+                                <ActionButton
+                                    className={classes.actionItem}
+                                    startIcon={<DeleteTwoTone/>}
+                                    variant="outlined"
+                                    onClick={() => editPaypalAccount(item as PaypalAccount, Action.DELETE_ACCOUNT)}
+                                    size="medium">
+                                  {t('common:delete')}
+                                </ActionButton>
+                            </CardActions>
+                        </Card>
+                    }
+                    {item.paymentType === PaymentType.BANK &&
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography align={"center"} component={"span"}>
+                                    <AccountBalanceTwoToneIcon/>
+                                    <br/>{item.owner}
+                                    <br/>{`${(item as BankAccount).iban?.substr(0, 4)} **** **** **** ${(item as BankAccount).iban?.substr((item as BankAccount).iban?.length - 6, 4)} **`}
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <ActionButton
+                                    className={classes.actionItem}
+                                    startIcon={<EditTwoToneIcon/>}
+                                    variant="outlined"
+                                    size="medium"
+                                    onClick={() => editBankAccount(item as BankAccount, Action.EDIT_ACCOUNT)}>
+                                  {t('common:edit')}
+                                </ActionButton>
+                                <ActionButton
+                                    className={classes.actionItem}
+                                    startIcon={<DeleteTwoTone/>}
+                                    variant="outlined"
+                                    onClick={() => editBankAccount(item as BankAccount, Action.DELETE_ACCOUNT)}
+                                    size="medium">
+                                  {t('common:delete')}
+                                </ActionButton>
+                            </CardActions>
+                        </Card>
+                    }
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
           }
         </CardContent>
       </Card>

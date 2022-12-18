@@ -1,5 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {
+  CircularProgress,
   FormControl,
   FormHelperText,
   IconButton,
@@ -13,9 +14,9 @@ import React, {useState} from "react";
 import {Customer, Language, Title} from "../state";
 import {useTranslation} from "next-i18next";
 import CommonStyles from './common.module.css'
-import {updateCustomer, useDispatch} from "../service/Auth.context";
+import {Notify, updateCustomer, useDispatch} from "../service/Auth.context";
 import {updateCustomerPersonalData} from "../service/customerService";
-import {languageToString, titleToString} from "../service/common";
+import {languageToString, redirectTo, titleToString} from "../service/common";
 import {isEmpty} from "../service/UtilService";
 
 interface Props {
@@ -37,7 +38,8 @@ interface LocalProps {
   lastName: string,
   lastNameError: boolean,
   language: Language,
-  languageError: boolean
+  languageError: boolean,
+  loading: boolean
 }
 
 const EditPersonaData =  (props:Props) => {
@@ -61,7 +63,8 @@ const EditPersonaData =  (props:Props) => {
     lastName: customer.lastname,
     lastNameError: false,
     language: customer.language,
-    languageError:false
+    languageError:false,
+    loading: false
   })
 
   const changeIsValid = () => {
@@ -97,12 +100,25 @@ const EditPersonaData =  (props:Props) => {
         taxNumber: state.taxNumber
       }
     }
-    const result =  await updateCustomerPersonalData(customer.id, request)
-    if (result.success) {
-      updateLocalState();
-      updateGlobalState;
+
+    try{
+      setState({...state, loading: true})
+      const result =  await updateCustomerPersonalData(customer.id, request)
+      if (result.success) {
+        updateLocalState();
+        updateGlobalState;
+        props.onSave();
+      } else {
+        if (result.statusCode == 401) {
+          //redirect to login
+          redirectTo(`/authenticate?redirect${window.location.href}`)
+        }
+      }
+    }catch(error){
       props.onSave();
+      dispatch(Notify({message: 'errorText', title: 'ErrorPageHeader'}));
     }
+
   }
 
   const updateLocalState = () => setState({
@@ -162,6 +178,7 @@ const EditPersonaData =  (props:Props) => {
                   helperText={state.organisationNameError && t('login:organisation_name_missing')}
                   type="text"
                   fullWidth={true}
+                  disabled={state.loading}
                   error={state.organisationNameError}
                   value={state.organisationName}
                   onChange={onChange("organisationName", "organisationNameError")}/>
@@ -173,6 +190,7 @@ const EditPersonaData =  (props:Props) => {
                   helperText={state.taxNumberError && t('login:taxnumber_missing')}
                   type="text"
                   fullWidth={true}
+                  disabled={state.loading}
                   error={state.taxNumberError}
                   value={state.taxNumber} onChange={onChange("taxNumber", "taxNumberError")}/>
           </>
@@ -186,6 +204,7 @@ const EditPersonaData =  (props:Props) => {
               id="person_title"
               value={state.title}
               error={state.titleError}
+              disabled={state.loading}
               disableUnderline
               onChange={onChange("title", "titleError")}>
               {Object.values(Title).map(
@@ -204,6 +223,7 @@ const EditPersonaData =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.firstNameError}
+            disabled={state.loading}
             value={state.firstName} onChange={onChange("firstName", "firstNameError")}/>
 
           <StyledTextField
@@ -214,6 +234,7 @@ const EditPersonaData =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.lastNameError}
+            disabled={state.loading}
             value={state.lastName} onChange={onChange("lastName", "lastNameError")}/>
 
            <StyledFormControls error={state.titleError}>
@@ -224,6 +245,7 @@ const EditPersonaData =  (props:Props) => {
               id="person_language"
               value={state.language}
               error={state.languageError}
+              disabled={state.loading}
               disableUnderline
               onChange={onChange("language", "languageError")}>
               {Object.values(Language).map(
@@ -244,7 +266,8 @@ const EditPersonaData =  (props:Props) => {
           disableElevation={true}
           size="large"
           onClick={update}>
-          {t('save')}
+          {state.loading && <CircularProgress color="inherit" size={30} thickness={4}/>}
+          {!state.loading && t('save')}
         </ActionButton>
       </ModalFooter>
     </Modal>

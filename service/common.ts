@@ -99,9 +99,9 @@ export const hasTemproraryPwd = (token: string): boolean => {
   return decodedtoken['tempPwd'];
 }
 
-export const completeRegistration = (token: string): boolean => {
+export const hasSecurityQuestion = (token: string): boolean => {
   const decodedtoken = jwt_decode(token)
-  return decodedtoken['completeRegistration'];
+  return decodedtoken['hasSecurityQuestion'];
 }
 
 

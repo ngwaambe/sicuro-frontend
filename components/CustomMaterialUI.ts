@@ -19,6 +19,9 @@ export const MyTheme = createTheme({
     },
     error: {
       main: '#cc071e'
+    },
+    success: {
+      main: '#28a745'
     }
   },
   typography: {
@@ -35,7 +38,7 @@ export const MyTheme = createTheme({
       '"Segoe UI Symbol"',
     ].join(','),
     fontSize: 12,
-    h5:{
+    h5: {
       fontWeight: 500,
       marginBottom: '10px'
     }
@@ -43,12 +46,16 @@ export const MyTheme = createTheme({
   overrides: {
     MuiButton: { // Name of the component ⚛️ / style sheet
       text: { // Name of the rule
+
         textTransform: 'none', // Some CSS
       },
-
     },
-  },
-
+    MuiPaper: {
+      rounded: {
+        borderRadius: "0px"
+      }
+    },
+  }
 });
 
 export const StyledCardActions = withStyles({
@@ -57,13 +64,13 @@ export const StyledCardActions = withStyles({
     alignItems: 'center',
     padding: '16px',
     "& .MuiButton-outlined": {
-      outline:"1px solid #8c8c8c",
+      outline: "1px solid #8c8c8c",
       border: "2px solid transparent",
     },
 
     "& .MuiButton-outlined:hover": {
-      border:"2px solid #8c8c8c",
-      outline:"1px solid transparent",
+      border: "2px solid #8c8c8c",
+      outline: "1px solid transparent",
     }
 
 
@@ -87,8 +94,8 @@ export const ErrorStyledFormTypography = withStyles({
 
 export const StyledTextField = withStyles({
   root: {
-    "input:-internal-autofill-selected":{
-      backgroundColor:'none',
+    "input:-internal-autofill-selected": {
+      backgroundColor: 'none',
     },
     "& label.MuiInputLabel-root": {
       padding: "0px"
@@ -109,13 +116,13 @@ export const StyledTextField = withStyles({
     },
     "& .MuiFormLabel-root": {
       fontWeight: '500',
-      fontSize:'0.9rem'
+      fontSize: '0.9rem'
     },
     "& .MuiInputLabel-formControl": {
       top: "10px",
       left: "6px",
       position: "absolute",
-      zIndex:'100'
+      zIndex: '100'
     },
     "& .MuiInput-root": {
       borderRadius: "2px",
@@ -133,7 +140,7 @@ export const StyledTextField = withStyles({
     },
 
     "& .MuiFormHelperText-root.Mui-error": {
-      margin:"3px 0"
+      margin: "3px 0"
     },
     "& .MuiInputBase-root:hover": {
       outline: "0px solid transparent",
@@ -160,7 +167,7 @@ export const StyledSelect = withStyles({
     lineHeight: "46px",
     paddingLeft: "6px",
     "& .MuiOutlinedInput-input": {
-      padding:"6px 0 7px"
+      padding: "6px 0 7px"
     }
   },
 
@@ -175,7 +182,7 @@ export const StyledSelect = withStyles({
       border: "2px solid #8c8c8c",
     },
     "& .MuiOutlinedInput-input": {
-      padding:"6px 0 7px"
+      padding: "6px 0 7px"
     }
   }
 
@@ -202,9 +209,9 @@ export const StyledFormControls = withStyles({
     margin: '4px 0px 4px 0px',
     width: '100%',
     "& .Mui-error": {
-     '& .MuiSelect-root': {
-       outlineColor: "#cc071e !important",
-     }
+      '& .MuiSelect-root': {
+        outlineColor: "#cc071e !important",
+      }
     },
   }
 })(FormControl)

@@ -46,8 +46,8 @@ class FrontendLayout extends Component<Props> {
                 <div>
                     <div className="header-area header-fixed header-style-four">
                         <LoginHeader />
-                        <MenuHeader />
                         <MobileMenuHeader/>
+                        <MenuHeader />
                     </div>
                     {this.props.children}
                 </div>

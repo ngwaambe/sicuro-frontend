@@ -12,6 +12,7 @@ import {useTranslation, Trans} from "next-i18next";
 import {Customer} from "../state";
 import {updateCustomerPassword} from "../service/customerService";
 import {isEmpty} from "../service/UtilService";
+import {redirectTo} from "../service/common";
 
 interface Props {
   customer: Customer;
@@ -108,7 +109,7 @@ const UpdatePasswordForm = (props: Props) => {
           }
           if (res.statusCode == 401) {
             //redirect to login
-            router.push('/authenticate')
+            redirectTo(`/authenticate?redirect${window.location.href}`)
           }
         }
       })

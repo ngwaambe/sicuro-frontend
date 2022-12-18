@@ -79,7 +79,7 @@ export const updateCustomerAddress = (customerId: number, request:Address): Prom
   }))
 }
 
-export const updateCustomerEmail = (customerId: number, request: any): Promise<ResponseStatus> => {
+export const updateCustomerEmail = (customerId: number, request: any): Promise<ResponseData<any>> => {
   return fetch(`${APP_BASE_URL()}/api/customers/${customerId}/change_email`, {
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
@@ -87,8 +87,8 @@ export const updateCustomerEmail = (customerId: number, request: any): Promise<R
     body: JSON.stringify(request),
     method: 'PUT'
   }).then(checkStatus({
-    success: (data) => defaultSuccessResponse(data),
-    error: (data) => defaultFailedResponsse(data)
+    success: (data, resp) => toResponseData(true, resp.status, data),
+    error: (data, resp) => toResponseData(false, resp.status, data)
   }))
 }
 

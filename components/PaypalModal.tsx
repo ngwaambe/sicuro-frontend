@@ -1,5 +1,6 @@
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "./Modal";
 import {
+  CircularProgress,
   FormControl,
   FormHelperText,
   IconButton,
@@ -15,6 +16,8 @@ import CommonStyles from './common.module.css'
 import {PaymentType, PaypalAccount} from "../state";
 import {createPaymentAccount, updatePaymentAccount} from "../service/customerService";
 import {isValidEmail} from "../service/UtilService";
+import {Notify, useDispatch} from "../service/Auth.context";
+import {redirectTo} from "../service/common";
 
 interface Props {
   titleText: string,
@@ -30,18 +33,21 @@ interface LocalProps {
   ownerError: boolean,
   paypalAccount: string,
   emailError: boolean,
-  emailErrorText: string
+  emailErrorText: string,
+  loading: boolean
 }
 
 const PaypalModal =  (props:Props) => {
   const {t} = useTranslation(['common', 'login'])
+  const [, dispatch] = useDispatch();
   const [state, setState] = useState<LocalProps>({
     id: props.account.id,
     owner: props.account.owner,
     ownerError: false,
     paypalAccount: props.account.paypalAccount,
     emailError: false,
-    emailErrorText: ''
+    emailErrorText: '',
+    loading: false
   })
 
   const changeIsValid = () => (state.owner !== '' && state.paypalAccount !== '' && isValidEmail(state.paypalAccount))
@@ -66,18 +72,29 @@ const PaypalModal =  (props:Props) => {
       paypalAccount: state.paypalAccount
     }
 
-    let result;
-    if (request.id === undefined)  {
-      result = await createPaymentAccount(props.customerId, request);
-    } else {
-      //put => update
-      result = await updatePaymentAccount(props.customerId, request);
-    }
-    if (result.success) {
+    try {
+      setState({...state, loading: true})
+      let result;
+      if (request.id === undefined)  {
+        result = await createPaymentAccount(props.customerId, request);
+      } else {
+        //put => update
+        result = await updatePaymentAccount(props.customerId, request);
+      }
+      if (result.success) {
+        props.onSave();
+      } else {
+        if (result.statusCode === 401) {
+          redirectTo(`/authenticate?redirect${window.location.href}`)
+        }
+        props.onSave();
+        dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
+      }
+    } catch(error) {
       props.onSave();
-    } else {
-      console.log("Error occured")
+      dispatch(Notify({ message: 'errorText', title:'ErrorPageHeader' }));
     }
+
 
   }
 
@@ -117,6 +134,7 @@ const PaypalModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.ownerError}
+            disabled={state.loading}
             value={state.owner} onChange={onChange("owner")}/>
           <StyledTextField
             id="email"
@@ -126,6 +144,7 @@ const PaypalModal =  (props:Props) => {
             type="text"
             fullWidth={true}
             error={state.emailError}
+            disabled={state.loading}
             value={state.paypalAccount} onChange={onChange("paypalAccount")}/>
         </FormControl>
       </ModalBody>
@@ -136,7 +155,8 @@ const PaypalModal =  (props:Props) => {
           disableElevation={true}
           size="large"
           onClick={update}>
-          {t('save')}
+          {state.loading && <CircularProgress color="inherit" size={30} thickness={4}/>}
+          {!state.loading && t('save')}
         </ActionButton>
       </ModalFooter>
     </Modal>

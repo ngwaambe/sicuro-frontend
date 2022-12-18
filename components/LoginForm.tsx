@@ -12,7 +12,7 @@ import {StyledCardActions, StyledTextField, ActionButton} from "./CustomMaterial
 import {useRouter} from 'next/router';
 import {setView, updateUser, useDispatch} from "../service/Auth.context";
 import {useTranslation, Trans} from "next-i18next";
-import {AppView} from "../state";
+import {AppView, User} from "../state";
 
 interface Props {
   resetPassword: () => void;
@@ -70,7 +70,12 @@ const LoginForm : React.FC<Props> = (props) => {
         if (!res.success) {
           setUserState({...userState, error: true})
         } else {
-          const user = { loggedIn: true}
+          const user:User = {
+            loggedIn: res.data.active,
+            tempPwd:res.data.tempPwd,
+            hasSecurityQuestion: res.data.hasSecurityQuestion,
+            customerId: res.data.customerId
+          }
           dispatch(updateUser(user));
           dispatch(setView(AppView.DASCHBOARD)),
           router.push('/profile')
@@ -83,8 +88,9 @@ const LoginForm : React.FC<Props> = (props) => {
       })
   };
 
-  const registration = (): void => {
-    router.push('/registration')
+  const registration = e => {
+    e.preventDefault()
+    router.push('/registration', null, { shallow: true})
   }
 
 
@@ -130,6 +136,7 @@ const LoginForm : React.FC<Props> = (props) => {
               color="primary"
               disableElevation={true}
               disabled={loading}
+              type="submit"
               onClick={onLogin}>
               { loading && <CircularProgress color="primary"  size={30} thickness={4}/>}
               Sign in</ActionButton>

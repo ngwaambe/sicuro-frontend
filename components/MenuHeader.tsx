@@ -1,7 +1,6 @@
 import {default as BaseLink} from 'next/link';
 import React, { useState, useEffect } from "react";
 import classnames from "classnames";
-import PropTypes from 'prop-types'
 import {useTranslation} from "next-i18next";
 import Link from "next/link";
 import {Container} from "@material-ui/core";
