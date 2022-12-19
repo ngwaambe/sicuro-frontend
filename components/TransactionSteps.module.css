@@ -1,0 +1,58 @@
+.colors {
+    --primary:#a0c100;
+    --secondary:#5ec5ed;
+}
+
+.transactionStepsContainer {
+    padding-top: 115px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 88px;
+    margin-right: auto;
+    margin-left: auto;
+    flex-grow: 1;
+}
+
+.transactionStepHeader strong:first-of-type {
+    color: var(--secondary);
+}
+
+.transactionStepHeader strong:last-of-type {
+    color: var(--primary);
+}
+
+h1.transactionStepHeader {
+    color: #222222;
+    line-height: 1.4;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.transactionStep {
+    text-align: center;
+    line-height: 20px;
+    justify-content: center;
+    align-items: center;
+    box-sizing: content-box;
+    position: relative;
+    margin-top: 15px;
+}
+
+.transactionStep img {
+    margin-bottom: 15px;
+}
+
+.transactionStep strong:first-of-type {
+    color: #5ec5ed;
+}
+
+.transactionStepHeader strong:first-of-type {color: #5ec5ed;}
+.transactionStepHeader strong:last-of-type {color: var(--primary);}
+
+h1.transactionStepHeader {
+    color: #222222;
+    line-height: 1.4;
+    margin-bottom: 30px;
+    text-align: center;
+}
+

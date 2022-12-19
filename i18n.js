@@ -1,12 +1,9 @@
-const NextI18Next = require("next-i18next").default;
+const NextI18Next = require('next-i18next').default
 
-const NextI18NextInstance = new  NextI18Next({
+const NextI18NextInstance =  new NextI18Next({
     defaultLanguage: 'en',
-    otherLanguages: ['it'],
-    localePath: typeof window === "undefined" ? "public/lang" : "lang"
+    otherLanguages: ['it',"es"],
+    fallbackLng: 'en'
 })
-
-export const {
-    appWithTranslation,
-    withTranslation,
-} = NextI18NextInstance
+//NextI18NextInstance.i18n.languages = languages;
+module.exports = NextI18NextInstance;

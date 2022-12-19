@@ -1,0 +1,52 @@
+.registrationForm {
+    min-height: 280px;
+    max-height: 280px;
+    vertical-align: center;
+    display: flex;
+    flex: 2 1;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.typography{
+    margin-bottom: 30px;
+}
+
+.inputField {
+    width: 100%;
+}
+
+.actions {
+}
+
+.fillContent {
+    flex-grow: 2;
+}
+
+.terms_conditions{
+    margin-top: 24px !important;
+}
+
+.divider {
+    margin: 24px 10px !important;
+}
+
+.login_headline {
+    text-align: center;
+}
+
+.registerHeader {
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.33;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.loginHeader {
+    padding: 0px 16px 0px 16px;
+    margin: 0px;
+    font-size: 1.3rem;
+    line-height: 1.33;
+    font-weight: 500;
+}

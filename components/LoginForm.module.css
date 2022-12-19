@@ -1,0 +1,58 @@
+.loginForm {
+    min-height: 280px;
+    vertical-align: center;
+    margin-bottom: 20px;
+}
+
+.inputField {
+
+}
+
+.loginHeader {
+    font-size: 1.3rem;
+    line-height: 1.33;
+    font-weight: 500;
+    margin: 10px 0px 10px 0px;
+}
+
+.registerHeader {
+    margin: 10px 0px 10px 0px;
+    padding: 0px 16px 0px 16px;
+    font-size: 1.3rem;
+    line-height: 1.33;
+    font-weight: 500;
+}
+
+.loginError {
+    font-weight: 600;
+    font-size: 14px;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    color: #cc071e;
+    line-height: 1.5;
+    margin: 10px 0px 10px;
+    padding: 10px;
+    background-color: rgba(242, 177, 189, 0.91);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+
+.resetButton{
+    margin-top: 10px;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.divider {
+    margin: 10px 10px !important;
+}
+
+
